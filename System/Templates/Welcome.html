@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Genie Web Dev Engine</title>
+    <style>
+
+    </style>
+    <link rel="stylesheet" href="../lib/css/Genie.css">
+    <script src="../lib/Js/utilities/utilities.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="genie-top-nav fill_width">
+        <div class="home top_item align_center">
+
+            <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                <use xlink:href="../sources/svg_icons.svg#cat-home"></use>
+            </svg>
+            <a class="link align_center">
+                Home
+            </a>
+        </div>
+        <div class="about top_item align_center">
+            <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                <use xlink:href="../sources/svg_icons.svg#cat-home-audio"></use>
+            </svg>
+            <a class="link align_center">
+                about
+            </a>
+        </div>
+        <div class="products top_item align_center">
+            <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                <use xlink:href="../sources/svg_icons.svg#add-cart"></use>
+            </svg>
+            <a class="link align_center">
+                products
+            </a>
+        </div>
+        <div class="other top_item align_center">
+            <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                <use xlink:href="../sources/icons.svg#success"></use>
+            </svg>
+            <a class="link align_center">
+                other
+            </a>
+        </div>
+        <div class="logo top_item align_center" style="float: left">
+            <h1>GENIE</h1>
+        </div>
+    </div>
+    <div draggable="true" class="separator fill_width"></div>
+    <div class="genie-top fill_width">
+        <div class="genie-compressed-layout fill_height col"></div>
+        <div draggable="true" class="separator fill_height"></div>
+        <div class="genie-paint-field fill_height col"></div>
+        <div draggable="true" class="separator fill_height"></div>
+        <div class="genie-styles fill_height col"></div>
+    </div>
+    <div draggable="true" class="separator fill_width"></div>
+    <div class="genie-bottom fill_width"></div>
+</div>
+
+<script>
+    function GenieApplication() {
+        new Compressed_layout("genie-compressed-layout","container").init();
+        this.events = new Events().default();
+    }
+    new  GenieApplication();
+</script>
+</body>
+</html>

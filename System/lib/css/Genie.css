@@ -1,0 +1,375 @@
+/*
+***************************************
+  ==== CONTAINER
+***************************************
+*/
+
+.container{
+    height: 100%;
+    width: 100%;
+    background: url("../../sources/imgs/3b672ef3cbb2f5772cb44c41c680b7aa.jpg");
+    background-size: 100% 100%;
+    background-position: 0 890px;
+    margin: 0 .01%;
+    position: absolute;
+}
+
+
+/*
+***************************************
+  ==== COMPRESSED LAYOUT
+***************************************
+*/
+div.compressed_layout ul { list-style-type: none; margin: 0 0 8px 0; position: relative; padding-inline-start: 2px;height: 100%;width:fit-content}
+div.compressed_layout ul li { font-size: 0.875em; word-wrap: break-word; margin: 0 0 2px 0; line-height: 1.3em; padding: 0 0 0 25px; position: relative; }
+div.compressed_layout ul li.list_item input { outline: none; border: 0; padding: 0; cursor: pointer;}
+div.compressed_layout ul li div.leaf_node { width: 12px; height: 12px; border: #ffffff 0 solid; position: absolute; top: 2px; left: 0;background: transparent url('../../sources/imgs/sprites.png') no-repeat;background-position: -51px -129px;}
+div.compressed_layout ul li div.arrow { width: 12px; height: 12px; cursor: pointer; border: #19e3b1 0 solid; position: absolute; top: 2px; left: 0; background: transparent url('../../sources/imgs/all_sprites.png') no-repeat; background-position: -774px -336px}
+div.compressed_layout ul li div.icon { width: 12px; height: 12px; cursor: pointer; border: #19e3b1 0 solid; position: absolute; top: 2px; left: 12px; background: transparent url('../../sources/imgs/all_sprites.png') no-repeat; background-position: -412px -832px;}
+div.compressed_layout ul li div.collapsed { background-position: -774px -324px }
+div.compressed_layout ul li div.expanded { background-position: -774px -336px }
+div.compressed_layout ul li ul { margin: 1px 0 1px 0; }
+div.compressed_layout ul li ul li ul:before { left: 0; }
+div.compressed_layout ul li ul li div.arrow { left: -20px; }
+div.compressed_layout ul li ul li div.icon { left: -8px; }
+div.compressed_layout ul li ul li { font-size: 1em; padding: 0 0 0 10px; }
+div.compressed_layout ul li ul li ul li { font-size: 1em;  }
+
+input:hover{
+    background-color: lightblue;
+}
+.my_logo{
+    background-size: 100% 100%;
+}
+.side_nav, .main{
+    display: inline-block;
+    float: left;
+}
+.side_nav{
+    width: 20%;
+}
+.main{
+    width: 78%;
+}
+.top, .bottom{
+    display: inline-block;
+}
+.top{
+    height: 20%;
+    border-bottom: 1px solid rgba(34, 45, 67,.2);
+}
+.bottom{
+    height: 80%;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+.logo{
+    height: 10%;
+}
+.account{
+    height: 90%;
+}
+.avatar{
+    width: 100%;
+    height: 20%;
+}
+.user_image{
+    height: 100px;
+    width: 100px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.user_info{
+    height: 60%;
+    width: 100%;
+}
+.account, .logo{
+    display: inline-block;
+}
+.top_bar, .top_space{
+    display: inline-block;
+}
+.top_bar{
+    height: 30%;
+    display: inline-block;
+}
+.top_space{
+    height: 68%;
+    display: inline-block;
+}
+.top_item{
+    height: 100%;
+    width: 10%;
+    margin: 0 1%;
+    float: left;
+}
+.top_item:hover{
+    color: blue;
+    fill: blue;
+    font-weight: bolder;
+    border-bottom: blue solid 2px;
+    transition: border-bottom-width .3s;
+    cursor: pointer;
+}
+.link{
+    height: 100%;
+    width: 70%;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+}
+.do_options{
+    height: 60%;
+    width: 40%;
+}
+
+.opt_link{
+    font-size: 30px;
+}
+.opt:hover{
+    font-size: 35px;
+    color: blue;
+    cursor: pointer;
+    fill: blue;
+}
+
+.opt{
+    height: 30%;
+    margin: 0;
+    list-style-type: none;
+}
+.content{
+    width: 80%;
+    height: 100%;
+}
+.lst{
+    height: 100%;
+    width: 20%;
+}
+.ic{
+    width: 20%;
+    height: 100%;
+}
+.in{
+    float: left;
+}
+.align_center{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+.user_name{
+    height: 20px;
+    color: blue;
+    text-transform: capitalize;
+    font-weight: bold;
+    margin: 0 auto;
+}
+.description{
+    margin: 0 auto;
+    width: 50%;
+    height: 50%;
+    justify-content: center;
+    font-size: 16px;
+}
+.inert{
+    pointer-events: none;
+}
+.window{
+    height: 50%;
+    width: 50%;
+    border: 1px solid grey;
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    box-shadow: #151513 0 0 2px 0;
+    z-index: 50;
+    display: none;
+}
+.window_body, .window_top{
+    margin: 0;
+    padding: 0;
+}
+.window_top{
+    height: 10%;
+    background: grey;
+}
+.window_body{
+    height: 88%;
+    background: white;
+}
+.window_title, .window_controls{
+    float: left;
+    height: 100%;
+}
+.window_title{
+    width: 90%;
+}
+.window_controls{
+    width: 10%;
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.window_body_left, .window_body_right,.separator {
+    float: left;
+    border-bottom: solid 1px lightblue;
+    display: inline-block;
+}
+.window_body_left{
+    width: 20%;
+}
+.window_body_right{
+    width:78%;
+}
+
+.separator{
+    width: 1%;
+    height: 1%;
+    background-color: lightblue;
+}
+
+.fill_width{
+    width: 100%;
+}
+
+.fill_height{
+    height: 100%;
+}
+
+.window_body_right_top, .window_body_left_bottom{
+    height: 90%;
+}
+.window_body_right_bottom, .window_body_left_top{
+    height: 10%;
+}
+
+.code_display{
+    overflow: scroll;
+    outline: none;
+    height: 98%;
+    width: 98%;
+    display: inline-block;
+    border: 0;
+}
+
+.q_box{
+    float: right;
+    width: 40%;
+}
+
+.btn{
+    width: 50%;
+    float: left;
+}
+.typing{
+    font-size: 9px;
+}
+
+.verticalAppendedTool{
+    width: 10px;
+    height: 40px;
+    left: 100px;
+    top: 100px;
+}
+.horizontalAppendedTool{
+    width: 40px;
+    height: 10px;
+    left: 60px;
+    top: 140px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.appendedTool{
+    position: absolute;
+    background: transparent;
+}
+
+
+.tool_hovered{
+    border: yellow;
+}
+.tool_blur{
+    border: lightblue;
+}
+
+
+.point,.point_tail{
+    pointer-events: none;
+}
+.point{
+    background-color: transparent;
+    border-color: lightblue;
+}
+
+#left_resize .point,#left_resize .point_tail{
+    float: left;
+}
+#top_resize .point,#top_resize .point_tail{
+    float: top;
+}
+
+#left_resize .point{
+    width: 0;
+    height: 0;
+
+    margin-left: -5px;
+    border-top: solid transparent 5px;
+    border-left: solid transparent 5px;
+    border-right: solid lightblue 10px;
+    border-bottom: solid transparent 5px;
+}
+#top_resize .point{
+    width: 0;
+    height: 0;
+    margin-top: -5px;
+    margin-bottom: 0;
+
+    border-top: solid transparent 5px;
+    border-left: solid transparent 5px;
+    border-right: solid transparent 5px;
+    border-bottom: solid lightblue 10px;
+}
+#top_resize .point_tail{
+    height: 30px;
+    width: 4px;
+    background: lightblue;
+    margin-left: 30%;
+}
+
+#left_resize .point_tail{
+    width: 30px;
+    height: 3px;
+    background: lightblue;
+}
+.col{
+    float: left;
+}
+
+.genie-bottom{
+    height: 35%;
+}
+.genie-top-nav{
+    height: 5%;
+    background-color: #8ae0e6;
+}
+.genie-top{
+    height: 60%;
+}
+.genie-compressed-layout{
+    width: 15%;
+    background-color: white;
+}
+.genie-paint-field{
+    width: 60%;
+    background-color: white;
+}
+.genie-styles{
+    width: 20%;
+}

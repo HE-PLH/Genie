@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Genie Web Dev Engine</title>
+    <link rel="stylesheet" href="../lib/css/Genie.css">
+    <style id="st"></style>
+</head>
+<body>
+<div class="container">
+    <div id="top_resize" class="appendedTool normal_drag verticalAppendedTool" draggable="true">
+        <div class="point tool" id="top_resize_point" style="border-bottom-color: lightblue"></div>
+        <div class="point_tail tool" id="top_resize_point_tail" style="border-bottom-color: lightblue"></div>
+    </div>
+    <div id="left_resize" class="appendedTool normal_drag horizontalAppendedTool" draggable="true">
+        <div class="point tool" id="left_resize_point" style="border-right-color: lightblue"></div>
+        <div class="point_tail tool" id="left_resize_point_tail" style="border-right-color: lightblue"></div>
+    </div>
+    <div class="window">
+        <div class="window_top fill_width">
+            <div class="window_title normal_drag" draggable="true">
+                <p class="inert">window</p>
+            </div>
+            <div class="window_controls">
+                <button class="window_maximize">
+                    O
+                </button>
+                <button class="window_close">
+                    X
+                </button>
+            </div>
+
+        </div>
+        <div class="window_body fill_width">
+            <div class="window_body_left fill_height">
+                <div class="window_body_left_top fill_width">
+                    <button class="fill_height btn">FO</button>
+                    <button class="fill_height btn">F</button>
+                </div>
+                <div class="window_body_left_bottom fill_width"></div>
+            </div>
+            <div draggable="true" class="separator fill_height"></div>
+            <div class="window_body_right fill_height">
+                <div class="window_body_right_top fill_width">
+                    <textarea class="code_display"></textarea>
+                </div>
+                <div class="window_body_right_bottom fill_width">
+                    <form class="q_box fill_height" method="post" action="../server/ServerRequest.php" onsubmit="return rqst()">
+                        <button type="submit" class="ok fill_height btn">ok</button>
+                        <button class="cancel fill_height btn">cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side_nav fill_height">
+        <div class="logo align_center fill_width">
+            <h1>GENIE</h1>
+        </div>
+        <div class="account fill_width">
+            <div class="avatar">
+                <div class="user_image align_center">
+                    <img src="../sources/imgs/IMG_20200224_120902.jpg" class="my_logo fill_height fill_width" alt=""/>
+                    <svg viewBox="0 0 24 24" class="ic" width="24" height="24">
+                        <use xlink:href="../sources/svg_icons.svg#perm-identity"></use>
+                    </svg>
+                </div>
+            </div>
+            <div class="user_info">
+                <div><p class="user_name align_center fill_width">PATRICK K</p></div>
+                <div><p class="description align_center">passionate web dev. interested in coding</p></div>
+            </div>
+        </div>
+    </div>
+    <div class="main fill_height">
+        <div class="top fill_width">
+            <div class="top_space fill_width">
+
+            </div>
+            <div class="top_bar fill_width">
+                <div class="home top_item align_center">
+
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#cat-home"></use>
+                    </svg>
+                    <a class="link align_center">
+                        Home
+                    </a>
+                </div>
+                <div class="about top_item align_center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#cat-home-audio"></use>
+                    </svg>
+                    <a class="link align_center">
+                        about
+                    </a>
+                </div>
+                <div class="products top_item align_center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#add-cart"></use>
+                    </svg>
+                    <a class="link align_center">
+                        products
+                    </a>
+                </div>
+                <div class="other top_item align_center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/icons.svg#success"></use>
+                    </svg>
+                    <a class="link align_center">
+                        other
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="bottom fill_width">
+            <ul class="do_options">
+                <li class="opt" id="createDb">
+                    <div class="lst in align_center">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#menu"></use>
+                        </svg>
+                    </div>
+                    <div class="create in content">
+                        <a class="link align_center opt_link">create project</a>
+                    </div>
+                </li>
+                <li class="opt" id="openProject">
+                    <div class="lst in align_center">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#menu"></use>
+                        </svg>
+                    </div>
+                    <div class="go_to in content">
+                        <a class="link align_center opt_link">Go to projects</a>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="../lib/Js/external/jquery-3.3.1.min.js"></script>
+<script src="../lib/Js/external/jquery.dajax.js"></script>
+<script src="../lib/Js/utilities/utilities.js"></script>
+<script src="../lib/Js/utilities/Genie.js"></script>
+<script>
+    function sendRequest(info,URL) {
+        // let R = new SimpleAJAX();
+        // console.log(info)
+        // R.post(URL||"../server/ServerRequest.php",info,function (e,i) {
+        //     console.log("posted",i);
+        // });
+        // R.get(URL||"../server/ServerRequest.php",function (e,i) {
+        //     console.log("success",e,i);
+        // });
+        //alter(info)
+        $.ajax({
+            type: "post",
+            url: URL||"../server/ServerRequest.php",
+            data:info,
+            success: function f(e) {
+                console.log(JSON.parse(e))
+                //success();
+                //reset()
+            },
+            error:function (e) {
+                console.log(e)
+                //Error();
+            }
+        })
+    }
+    function GenieApplication() {
+        new CreateWindow();
+        let createDb = document.getElementById("createDb");
+        createDb.onclick = function (e) {
+            document.querySelector(".window").style.display = "block";
+        };
+        //Add events to application
+        this.events = new Events().default();
+    }
+    new  GenieApplication();
+
+</script>
+</body>
+</html>
