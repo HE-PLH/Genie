@@ -7,7 +7,8 @@
 .container{
     height: 100%;
     width: 100%;
-    background: url("../../sources/imgs/3b672ef3cbb2f5772cb44c41c680b7aa.jpg");
+    /*background: url("../../sources/imgs/3b672ef3cbb2f5772cb44c41c680b7aa.jpg");*/
+    background-color: #dfdfdf;
     background-size: 100% 100%;
     background-position: 0 890px;
     margin: 0 .01%;
@@ -22,10 +23,10 @@
 */
 div.compressed_layout ul { list-style-type: none; margin: 0 0 8px 0; position: relative; padding-inline-start: 2px;height: 100%;width:fit-content}
 div.compressed_layout ul li { font-size: 0.875em; word-wrap: break-word; margin: 0 0 2px 0; line-height: 1.3em; padding: 0 0 0 25px; position: relative; }
-div.compressed_layout ul li.list_item input { outline: none; border: 0; padding: 0; cursor: pointer;}
+div.compressed_layout ul li.list_item input { transition: background-color .3s ease-in; color: #00009a; outline: none; border: 0; padding: 0; cursor: pointer; font-family: "Century Gothic"}
 div.compressed_layout ul li div.leaf_node { width: 12px; height: 12px; border: #ffffff 0 solid; position: absolute; top: 2px; left: 0;background: transparent url('../../sources/imgs/sprites.png') no-repeat;background-position: -51px -129px;}
 div.compressed_layout ul li div.arrow { width: 12px; height: 12px; cursor: pointer; border: #19e3b1 0 solid; position: absolute; top: 2px; left: 0; background: transparent url('../../sources/imgs/all_sprites.png') no-repeat; background-position: -774px -336px}
-div.compressed_layout ul li div.icon { width: 12px; height: 12px; cursor: pointer; border: #19e3b1 0 solid; position: absolute; top: 2px; left: 12px; background: transparent url('../../sources/imgs/all_sprites.png') no-repeat; background-position: -412px -832px;}
+div.compressed_layout ul li div.icon { color: #00007A; fill: #00007A; stroke: #00007A; width: 12px; height: 12px; cursor: pointer; border: #19e3b1 0 solid; position: absolute; top: 2px; left: 12px;}
 div.compressed_layout ul li div.collapsed { background-position: -774px -324px }
 div.compressed_layout ul li div.expanded { background-position: -774px -336px }
 div.compressed_layout ul li ul { margin: 1px 0 1px 0; }
@@ -109,8 +110,6 @@ input:hover{
     color: blue;
     fill: blue;
     font-weight: bolder;
-    border-bottom: blue solid 2px;
-    transition: border-bottom-width .3s;
     cursor: pointer;
 }
 .link{
@@ -161,6 +160,24 @@ input:hover{
     display: flex;
     justify-content: center;
 }
+
+.align_center_left{
+    align-items: center;
+    display: flex;
+    justify-content: left;
+}
+
+.align_center_right{
+    align-items: center;
+    display: flex;
+    justify-content: right;
+}
+
+.align_top_right{
+    display: flex;
+    justify-content: right;
+}
+
 .user_name{
     height: 20px;
     color: blue;
@@ -241,6 +258,15 @@ input:hover{
     height: 100%;
 }
 
+
+.fill-height:hover{
+    cursor : col-resize !important;
+}
+
+.fill-width:hover{
+    cursor : row-resize !important;
+}
+
 .window_body_right_top, .window_body_left_bottom{
     height: 90%;
 }
@@ -270,106 +296,58 @@ input:hover{
     font-size: 9px;
 }
 
-.verticalAppendedTool{
-    width: 10px;
-    height: 40px;
-    left: 100px;
-    top: 100px;
-}
-.horizontalAppendedTool{
-    width: 40px;
-    height: 10px;
-    left: 60px;
-    top: 140px;
-    justify-content: center;
-    display: flex;
-    align-items: center;
-}
-
-.appendedTool{
-    position: absolute;
-    background: transparent;
-}
-
-
-.tool_hovered{
-    border: yellow;
-}
-.tool_blur{
-    border: lightblue;
-}
-
-
-.point,.point_tail{
-    pointer-events: none;
-}
-.point{
-    background-color: transparent;
-    border-color: lightblue;
-}
-
-#left_resize .point,#left_resize .point_tail{
-    float: left;
-}
-#top_resize .point,#top_resize .point_tail{
-    float: top;
-}
-
-#left_resize .point{
-    width: 0;
-    height: 0;
-
-    margin-left: -5px;
-    border-top: solid transparent 5px;
-    border-left: solid transparent 5px;
-    border-right: solid lightblue 10px;
-    border-bottom: solid transparent 5px;
-}
-#top_resize .point{
-    width: 0;
-    height: 0;
-    margin-top: -5px;
-    margin-bottom: 0;
-
-    border-top: solid transparent 5px;
-    border-left: solid transparent 5px;
-    border-right: solid transparent 5px;
-    border-bottom: solid lightblue 10px;
-}
-#top_resize .point_tail{
-    height: 30px;
-    width: 4px;
-    background: lightblue;
-    margin-left: 30%;
-}
-
-#left_resize .point_tail{
-    width: 30px;
-    height: 3px;
-    background: lightblue;
-}
 .col{
     float: left;
 }
 
 .genie-bottom{
-    height: 35%;
+    height: 25%;
 }
 .genie-top-nav{
     height: 5%;
-    background-color: #8ae0e6;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #f3f3f3;
 }
 .genie-top{
-    height: 60%;
+    height: 65%;
 }
+.genie-toolbar{
+    margin: 1px 0;
+    height: 5%;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid lightblue;
+}
+.genie-toolbar-item, .gti{
+    width: 40px;
+    background-color: #f0f0f0;
+    margin-left: 1px;
+    border-radius: 5px;
+}
+
+.genie-toolbar-item:hover{
+    background-color: lightblue;
+    transition: background-color .5s;
+}
+
 .genie-compressed-layout{
     width: 15%;
     background-color: white;
 }
 .genie-paint-field{
     width: 60%;
+    overflow: overlay;
+    position: relative;
     background-color: white;
+    transform-style: preserve-3d;
 }
 .genie-styles{
     width: 20%;
+}
+
+.toolbar-item-color{
+    background-color: white;
+}
+
+.lightblue{
+    background-color: lightblue;
 }

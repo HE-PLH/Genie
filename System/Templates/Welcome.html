@@ -2,17 +2,45 @@
 <html lang="en">
 <head>
     <title>Genie Web Dev Engine</title>
-    <style>
+    <style id="element">
 
     </style>
     <link rel="stylesheet" href="../lib/css/Genie.css">
-    <script src="../lib/Js/utilities/utilities.js"></script>
+    <link rel="stylesheet" href="../lib/css/element.css">
+    <link rel="stylesheet" href="../lib/css/contextmenu.css">
 </head>
 <body>
-<div class="container">
+<div class="container" id="container">
+    <div id="rot-resize-cont" class="rot-resize-cont align_center normal_drag rot">
+        <div id="rotate_z" class="rot-resize normal_drag" draggable="true"></div>
+        <div id="rotate_x" class="rot-resize normal_drag" draggable="true"></div>
+        <div id="rotate_y" class="rot-resize normal_drag" draggable="true"></div>
+    </div>
+    <!--
+        <div id="position-resize" class="position-resize">
+            <div id="top_resize" class="appendedTool normal_drag verticalAppendedTool position" draggable="true">
+                <div class="point tool" id="top_resize_point" style="border-bottom-color: lightblue"></div>
+                <div class="point_tail tool" id="top_resize_point_tail" style="border-bottom-color: lightblue"></div>
+            </div>
+            <div id="left_resize" class="appendedTool normal_drag horizontalAppendedTool position" draggable="true">
+                <div class="point tool" id="left_resize_point" style="border-right-color: lightblue"></div>
+                <div class="point_tail tool" id="left_resize_point_tail" style="border-right-color: lightblue"></div>
+            </div>
+        </div>
+
+        <div id="size-resize" class="size-resize">
+            <div id="height_resize" class="appendedTool normal_drag verticalAppendedTool size" draggable="true">
+                <div class="point tool" id="height_resize_point" style="border-bottom-color: lightblue"></div>
+                <div class="point_tail tool" id="height_resize_point_tail" style="border-bottom-color: lightblue"></div>
+            </div>
+            <div id="width_resize" class="appendedTool normal_drag horizontalAppendedTool size" draggable="true">
+                <div class="point tool" id="width_resize_point" style="border-right-color: lightblue"></div>
+                <div class="point_tail tool" id="width_resize_point_tail" style="border-right-color: lightblue"></div>
+            </div>
+        </div>
+       -->
     <div class="genie-top-nav fill_width">
         <div class="home top_item align_center">
-
             <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
                 <use xlink:href="../sources/svg_icons.svg#cat-home"></use>
             </svg>
@@ -48,21 +76,33 @@
             <h1>GENIE</h1>
         </div>
     </div>
-    <div draggable="true" class="separator fill_width"></div>
+    <div class="genie-toolbar fill_width">
+        <div title="click to adjust position" class="genie-toolbar-item fill_height align_center col" id="Q">Q</div>
+        <div title="click to resize" class="genie-toolbar-item fill_height align_center col" id="W">W</div>
+        <div title="click to rotate" class="genie-toolbar-item fill_height align_center col" id="E">E</div>
+        <div title="click to " class="genie-toolbar-item fill_height align_center col" id="R">R</div>
+        <div title="click to " class="genie-toolbar-item fill_height align_center col" id="T">T</div>
+        <div title="click to append element on mouse up" class="gti fill_height align_center col toolbar-item-color" id="A">A</div>
+    </div>
     <div class="genie-top fill_width">
         <div class="genie-compressed-layout fill_height col"></div>
-        <div draggable="true" class="separator fill_height"></div>
-        <div class="genie-paint-field fill_height col"></div>
-        <div draggable="true" class="separator fill_height"></div>
+        <div draggable="true" class="separator fill-height fill_height"></div>
+        <div class="genie-paint-field fill_height col" id="genie-paint-field">
+
+        </div>
+        <div draggable="true" class="separator fill-height fill_height"></div>
         <div class="genie-styles fill_height col"></div>
     </div>
-    <div draggable="true" class="separator fill_width"></div>
+    <div draggable="true" class="separator fill-width fill_width"></div>
     <div class="genie-bottom fill_width"></div>
 </div>
 
+<script src="../lib/Js/utilities/utilities.js"></script>
+<script src="../lib/Js/utilities/element.js"></script>
+<script src="../lib/Js/utilities/contextmenu.js"></script>
 <script>
     function GenieApplication() {
-        new Compressed_layout("genie-compressed-layout","container").init();
+        new Compressed_layout("genie-compressed-layout","container",boundary.el).init();
         this.events = new Events().default();
     }
     new  GenieApplication();

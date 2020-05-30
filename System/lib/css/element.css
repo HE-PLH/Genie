@@ -1,0 +1,177 @@
+/*
+***************************************
+  ==== RESETS & EXTRAS
+***************************************
+*/
+
+html,body,div,ul,ol,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,pre,form,p,blockquote,input,figure { margin: 0; padding: 0; }
+h1,h2,h3,h4,h5,h6,pre,cite,th { font-size: 1em; font-weight: normal; font-style: normal; }
+code { font-size: 1em; font-weight: normal; font-style: normal; background: #f0f0f0; padding: 1px 1px 0px 0px; }
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, video { display: block; }
+iframe { border: none; } caption,th { text-align: left; } table { border-collapse: collapse; border-spacing: 0; }
+img, img a, img a:hover { border: 0; max-width: 100%; }
+::-moz-selection { background: #999; color: #fff; text-shadow: none; }
+::selection { background: #999; color: #fff; text-shadow: none; }
+.clear:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }.clear { display: inline-table; clear: both; }
+/* Hides from IE-mac \*/ * html .clear { height: 1%; } .clear { display: block; } /* End hide from IE-mac */
+.left { float: left !important; } .right { float: right !important; }
+.hide {display: none !important;} .hidden { visibility: hidden; opacity: 0; }
+.mb0 { margin-bottom: 0 !important; } .mb5 { margin-bottom: 5px !important; } .mb10 { margin-bottom: 10px !important; } .mb20 { margin-bottom: 20px !important; }
+.mt10 { margin-top: 10px; } .mr0 { margin-right: 0 !important; } .mr10 { margin-right: 10px !important; }
+.cl { color: #99a0a7; } .cw { color: #fff !important; } .lh42 { line-height: 42px;} .rel { position: relative; }
+
+
+/*
+***************************************
+  ==== APPENDED TOOL
+***************************************
+*/
+
+
+.verticalAppendedTool{
+    width: 10px;
+    height: 40px;
+    left: 40px;
+    top: -40px;
+}
+.horizontalAppendedTool{
+    width: 40px;
+    height: 10px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.horizontalAppendedTool .point, .horizontalAppendedTool .point_tail{
+    float: left;
+}
+.verticalAppendedTool .point, .verticalAppendedTool .point_tail{
+    float: top;
+}
+
+.horizontalAppendedTool .point_tail{
+    width: 30px;
+    height: 3px;
+    background: lightblue;
+}
+
+
+.verticalAppendedTool .point_tail{
+    height: 30px;
+    width: 4px;
+    background: lightblue;
+    margin-left: 3px;
+}
+
+#size-resize, #position-resize{
+    z-index: 200;
+    display: block;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    transform: none;
+}
+
+.appendedTool{
+    z-index: 100;
+    position: absolute;
+    background: transparent;
+    cursor: pointer;
+    transform: rotateX(0deg) rotateY(0deg) rotateX(0deg);
+}
+.appendedTool:hover .point_tail{
+    background-color: red;
+}
+.appendedTool.horizontalAppendedTool:hover .point{
+    border-right-color : red;
+}
+
+.tool_hovered{
+    border: yellow;
+}
+.tool_blur{
+    border: lightblue;
+}
+
+
+.point,.point_tail{
+    pointer-events: none;
+}
+.point{
+    background-color: transparent;
+    border-color: lightblue;
+    width: 0;
+    height: 0;
+}
+
+#left_resize .point{
+    margin-left: -5px;
+    border-top: solid transparent 5px;
+    border-left: solid transparent 5px;
+    border-right: solid lightblue 10px;
+    border-bottom: solid transparent 5px;
+}
+#top_resize .point{
+    margin-top: -5px;
+    margin-bottom: 0;
+    border-top: solid transparent 5px;
+    border-left: solid transparent 5px;
+    border-right: solid transparent 5px;
+    border-bottom: solid lightblue 10px;
+}
+
+#left_resize:hover .point{
+    border-right-color : red !important;
+}
+#top_resize:hover .point{
+    border-bottom-color : red !important;
+}
+.size:hover .point{
+    border-color : red !important;
+}
+
+
+#width_resize .point{
+    margin-left: 0px;
+    border: solid lightblue 5px;
+}
+#height_resize .point{
+    margin-top: 0px;
+    margin-bottom: 0;
+    border: solid lightblue 5px;
+}
+
+.rot-resize{
+    border-radius: 50%;
+    display: inline-block;
+    width: 160px;
+    height: 160px;
+    border: solid 1px lightblue;
+    background-color: transparent;
+    position: absolute;
+    cursor: pointer;
+    z-index: 150;
+}
+#rot-resize-cont{
+    position: absolute;
+    display: none;
+    height: 160px;
+    width: 160px;
+    background-color: transparent;
+    pointer-events: visible;
+}
+.rot-resize:hover{
+    border-color: #a2a200;
+}
+
+#rotate_x{
+    transform: rotateX(60deg);
+}
+#rotate_y{
+    transform: rotateY(80deg);
+}
+#rotate_z{
+    transform: rotateZ(0deg);
+}
+
+

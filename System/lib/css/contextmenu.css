@@ -1,0 +1,26 @@
+
+div.contextmenu { position: absolute; display: none}
+div.contextmenu ul { list-style-type: none; margin: 0 0 8px 0; position: absolute; padding-inline-start: 0;height: 100%;width:fit-content}
+div.contextmenu ul li { text-align: left; z-index: 50; width: 125px; height: 30px; font-size: 1em; word-wrap: break-word; margin: 0 0 0 0; line-height: 1.3em; position: relative; }
+div.contextmenu ul li.list_item { font-family: "Segoe UI"; background-color: #363636;color: #e2e2e2;}
+div.contextmenu ul li.list_item span { float: left; pointer-events: none; height: 100%; width: 60%; outline: none; border: 0; padding: 0; cursor: pointer;}
+div.contextmenu ul li span.leaf_node { width: 12px; height: 12px; border: #ffffff 0 solid; position: absolute; top: 2px; left: 0;}
+div.contextmenu ul li div.arrow { pointer-events: none; width: 12px; height: 12px; cursor: pointer; border: #19e3b1 0 solid; position: absolute; top: 35%; right: -10px; background: transparent url('../../sources/imgs/all_sprites.png') no-repeat; background-position: -774px -324px}
+div.contextmenu ul li div.icon { float: left; pointer-events: none; height: 100%; width: 30%; cursor: pointer; border: #19e3b1 0 solid}
+div.contextmenu ul li svg.ic { width: 60%}
+div.contextmenu ul li ul { display:none; margin: 1% 0 0 100%; }
+div.contextmenu ul li ul li ul:before {left: 0; }
+div.contextmenu ul li div.arrow { right: 10px; }
+div.contextmenu ul li ul li { font-size: 1em; padding: 0 0 0 0; }
+div.contextmenu ul li ul li ul li { font-size: 1em;  }
+
+div.contextmenu ul .list_item:hover{
+    background-color: #4d4d4d;
+}
+
+div.contextmenu ul li.list_item:hover > .arrow{
+    background-position: -774px -336px
+}
+ul li.list_item:hover > ul{
+    display: block;
+}
