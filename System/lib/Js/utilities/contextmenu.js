@@ -39,6 +39,6 @@ function ContextMenu(parentClass,cls,data) {
     }
 }
 
-let b = createDomElement({name:"div"})
+let b = createDomElement({name:"div"});
 b.innerHTML = ctxmenu;
 new ContextMenu("container","hi",b).init();

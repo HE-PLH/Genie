@@ -66,8 +66,6 @@ img, img a, img a:hover { border: 0; max-width: 100%; }
 #size-resize, #position-resize{
     z-index: 200;
     display: block;
-    width: 40px;
-    height: 40px;
     position: absolute;
     transform: none;
 }
@@ -153,8 +151,9 @@ img, img a, img a:hover { border: 0; max-width: 100%; }
     z-index: 150;
 }
 #rot-resize-cont{
+    z-index: 200;
+    display: block;
     position: absolute;
-    display: none;
     height: 160px;
     width: 160px;
     background-color: transparent;
@@ -174,4 +173,6 @@ img, img a, img a:hover { border: 0; max-width: 100%; }
     transform: rotateZ(0deg);
 }
 
-
+b, i, font{
+    pointer-events: none;
+}

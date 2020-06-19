@@ -148,8 +148,13 @@ input:hover{
     height: 100%;
     width: 20%;
 }
-.ic{
+.genie-top-nav .ic{
     width: 20%;
+    height: 100%;
+}
+
+.ic{
+    width: 100%;
     height: 100%;
 }
 .in{
@@ -309,19 +314,55 @@ input:hover{
     border-bottom: 1px solid #f3f3f3;
 }
 .genie-top{
-    height: 65%;
+    height: 60%;
 }
-.genie-toolbar{
-    margin: 1px 0;
-    height: 5%;
-    background-color: #f1f1f1;
-    border-bottom: 1px solid lightblue;
-}
+
 .genie-toolbar-item, .gti{
     width: 40px;
     background-color: #f0f0f0;
     margin-left: 1px;
     border-radius: 5px;
+}
+
+.genie-instant-toolbar, .genie-toolbar{
+    background-color: #f1f1f1;
+    border-bottom: 1px solid lightblue;
+    cursor: pointer;
+}
+
+.genie-toolbar{
+    margin: 1px 0;
+    height: 5%;
+}
+
+.genie-toolbar img{
+    pointer-events: none;
+}
+
+.genie-instant-toolbar .gti{
+    width: fit-content;
+    min-width: 40px;
+    margin-left: 5px;
+}
+.genie-instant-toolbar .gti .ic{
+    height: 100%;
+    width: 100%;
+}
+
+#B{
+    font-weight: bold;
+}
+
+#I{
+    font-style: italic;
+}
+
+.genie-instant-toolbar{
+    margin: 1px 0;
+    height: 5%;
+    z-index: 500;
+    font-family: "Segoe UI";
+    display: none;
 }
 
 .genie-toolbar-item:hover{
@@ -330,6 +371,7 @@ input:hover{
 }
 
 .genie-compressed-layout{
+    overflow: overlay;
     width: 15%;
     background-color: white;
 }
@@ -342,6 +384,32 @@ input:hover{
 }
 .genie-styles{
     width: 20%;
+    position: relative;
+    overflow: overlay;
+}
+
+#genie-styles-top{
+    height: 5%;
+    display: flex;
+}
+#genie-styles-main{
+    background-color: white;
+    height: 95%;
+    width: fit-content;
+}
+
+.style-tab{
+    cursor: pointer;
+    height: 100%;
+    width: 50px;
+    margin-left: 2px;
+    border-radius: 10%;
+    font-family: "Segoe UI";
+    transition: all .2s ease-in;
+}
+
+.style-tab:hover{
+    font-weight: bold;
 }
 
 .toolbar-item-color{

@@ -1,0 +1,70 @@
+.styles{
+    width: fit-content;
+    position: absolute;
+    white-space: nowrap;
+}
+
+input{
+    border: 0;
+    margin: 0;
+    outline: none;
+    background-color: inherit;
+    font-family: "Segoe UI";
+    font-weight: bold;
+}
+
+.rule-props-cont{
+    width: 100%;
+    margin-bottom: 2px;
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+    padding-left: 10px;
+    background-color: white;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+.rule-prop{
+    white-space: nowrap;
+}
+
+.rule-prop:hover .rule-prop-delete{
+    white-space: nowrap;
+    visibility: visible;
+}
+
+.el_prop .prop{
+    margin-left: -10px;
+    color: gray;
+}
+
+.rule-prop-check-box{
+    width: 20px;
+}
+.prop{
+    width: content-box;
+    min-width: 1px;
+    color: #4c2dd6;
+}
+.val{
+    font-family: "Segoe UI";
+}
+
+.rule-prop-delete .ic{
+    width: 16px;
+    height: 16px;
+    fill: #5e77dc;
+    pointer-events: none;
+}
+
+.rule-prop-delete .ic:hover{
+    fill: #0000dc;
+}
+
+.rule-prop-delete{
+    width: 20px;
+    height: 100%;
+    visibility: hidden;
+    cursor: pointer;
+}

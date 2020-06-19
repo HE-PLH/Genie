@@ -4,7 +4,7 @@ let boundary = {
     el: document.getElementById("genie-paint-field"),
     x: 0,
     y: 0
-},ml = 0,mt = 0;
+},ml = 0,mt = 0, unitX ="", unitY ="", percX =false, percY =false;
 
 let Elements = {};
 let ruleIndex = 1;
@@ -15,6 +15,25 @@ let Styling = {
     changeRule: (rule, index) => {
         styleElement.sheet.deleteRule(index);
         styleElement.sheet.insertRule(rule, index);
+    },
+    commentRuleProperty : (property, value,index) => {
+        property = property.split(":")[0];
+        if (property.match(/\b/g)) {
+            let t = Styling.get_style("","", index, true).cssText;
+            value = value.split(";")[0];
+            let r = t.replace(new RegExp(`\\b(?:${property}\\s*?:\\s*([^;>]*?)(?=[;">}]))`), `/*${property}:${value}*/`);
+            Styling.changeRule(r, index);
+        }
+        else{
+            console.log("empty")
+        }
+    },
+    UncommentRuleProperty : (property, value,index) => {
+        property = property.split(":")[0];
+        value = value.split(";")[0];
+        if (!(property === "" || value === "")) {
+            Styling.edit_style("", property, value, index)
+        }
     },
     init_style : (rules) => {
         let styleSheet = styleElement.sheet;
@@ -32,6 +51,7 @@ let Styling = {
         let rules = styleElement.sheet.cssRules || styleElement.rules;
         if (ruleIndex !== undefined) {
             rules[ruleI].style[property] = value;
+            return rules[ruleI];
         } else {
             for (let i = 0; i < rules.length; i++) {
                 if (rules[i].selectorText === cls) {
@@ -56,22 +76,40 @@ let Styling = {
             }
         }
     },
+    changeClass(el, newId) {
+        let c = Styling.get_style(el.id, null, el.ruleIndex, true).cssText.split("{");
+        Styling.changeRule(Methods.replace(c[0].split(" "), `#${el.id}`, `${newId}`).join(" ") + "{" + c[1], el.ruleIndex);
+        el.id =`${newId.split("#")[1]}`;
+    }
 };
+
+function ff(el, id){
+    let a = Styling.get_style(id, "left", el.ruleIndex),
+        b = Styling.get_style(id, "top", el.ruleIndex),
+        c = (a.split(`${parseFloat(a)}`)),
+        d = (b.split(`${parseFloat(b)}`));
+    unitX = c[1];
+    unitY = d[1];
+    percX = unitX === "%";
+    percY = unitY === "%";
+    return [parseFloat(a), parseFloat(b)];
+}
 
 let BRICK = {
     multiple_drag_start: function (){
         let r = getFocusedClasses("hi");
-        mouse.dragging.elementClass = r[0];
+        mouse.dragging.id = r[0];
         mouse.dragging.position = [];
         dragger.pt = [];
         dragger.pl = [];
         dragger.angle = [];
         wnd = r[1];
-        for (let i = 0, len =mouse.dragging.elementClass.length;i< len;i++) {
-            Styling.edit_style(mouse.dragging.elementClass[i], "position", "absolute", wnd[i].ruleIndex);
+        for (let i = 0, len =mouse.dragging.id.length;i< len;i++) {
+            Styling.edit_style(mouse.dragging.id[i], "position", "absolute", wnd[i].ruleIndex);
             if (currentResize === "Q") {
-                dragger.pl.push(parseFloat(Styling.get_style(mouse.dragging.elementClass[i], "left", wnd[i].ruleIndex).split("px")[0]));
-                dragger.pt.push(parseFloat(Styling.get_style(mouse.dragging.elementClass[i], "top", wnd[i].ruleIndex).split("px")[0]));
+                let a = ff(wnd[i], mouse.dragging.id[i]);
+                dragger.pl.push(a[0]);
+                dragger.pt.push(a[1]);
                 dragger.check = false;
             } else if (currentResize === "W") {
                 dragger.pl.push(wnd[i].clientWidth);
@@ -79,7 +117,7 @@ let BRICK = {
                 dragger.check = true;
             } else if (currentResize === "E") {
                 dragger.pt.push(wnd.getBoundingClientRect());
-                let str = (Styling.get_style(mouse.dragging.elementClass[i], "transform", wnd[i].ruleIndex)).split(" ");
+                let str = (Styling.get_style(mouse.dragging.id[i], "transform", wnd[i].ruleIndex)).split(" ");
                 dragger.angle.push({x: 0, y: 0, z: 0});
                 for (let i in str) {
                     if (str.hasOwnProperty(i)) {
@@ -98,13 +136,14 @@ let BRICK = {
         }
     },
     drag_start: function () {
-        mouse.dragging.elementClass = `${mouse.dragging.element.classList[0]}`;
+        mouse.dragging.id = `${mouse.dragging.element.id}`;
         wnd = mouse.dragging.element;
-        // mouse.dragging.position = Styling.get_style(mouse.dragging.elementClass, "position", wnd.ruleIndex);
-        Styling.edit_style(mouse.dragging.elementClass, "position", "absolute", wnd.ruleIndex);
+        // mouse.dragging.position = Styling.get_style(mouse.dragging.id, "position", wnd.ruleIndex);
+        // Styling.edit_style(mouse.dragging.id, "position", "absolute", wnd.ruleIndex);
         if (currentResize === "Q") {
-            dragger.pl = parseFloat(Styling.get_style(mouse.dragging.elementClass, "left", wnd.ruleIndex).split("px")[0]);
-            dragger.pt = parseFloat(Styling.get_style(mouse.dragging.elementClass, "top", wnd.ruleIndex).split("px")[0]);
+            let a = ff(wnd, mouse.dragging.id);
+            dragger.pl = a[0];
+            dragger.pt = a[1];
             dragger.check = false;
         } else if (currentResize === "W") {
             dragger.pl = wnd.clientWidth;
@@ -112,7 +151,7 @@ let BRICK = {
             dragger.check = true;
         } else if (currentResize === "E") {
             dragger.pt = wnd.getBoundingClientRect();
-            let str = (Styling.get_style(mouse.dragging.elementClass, "transform", wnd.ruleIndex)).split(" ");
+            let str = (Styling.get_style(mouse.dragging.id, "transform", wnd.ruleIndex)).split(" ");
             dragger.angle = {x: 0, y: 0, z: 0};
             for (let i in str) {
                 if (str.hasOwnProperty(i)) {
@@ -132,7 +171,7 @@ let BRICK = {
     click: function (el) {
         //the shitty negating part
         if (dragger.angle) {
-            let str = Styling.get_style(el.classList[0], "transform", el.ruleIndex).split(" ");
+            let str = Styling.get_style(el.id, "transform", el.ruleIndex).split(" ");
             let t = "";
             for (let i in str){
                 if (str.hasOwnProperty(i)) {
@@ -145,14 +184,15 @@ let BRICK = {
         }
         hightlightAll();
         el.done.scrollIntoView(false)
-    }
+    },
+    typing: false
 };
 
 let Resizers = {
     drag_start : ()=>{
         //mouse.dragging.element.style.transform = "rotate(0deg)";
         wnd = mouse.dragging.element.parentElement.parentElement;
-        mouse.dragging.elementClass = `${wnd.classList[0]}`;
+        mouse.dragging.id = `${wnd.id}`;
         dragger.height_resize = mouse.dragging.element.id === "height_resize";
         dragger.width_resize = mouse.dragging.element.id === "width_resize";
         dragger.top_resize = mouse.dragging.element.id === "top_resize";
@@ -162,15 +202,16 @@ let Resizers = {
             dragger.pt = wnd.clientHeight;
         }
         else if (mouse.dragging.element.classList.contains("position")){
-            dragger.pl = parseFloat(Styling.get_style(mouse.dragging.elementClass, "left", wnd.ruleIndex).split("px")[0]);
-            dragger.pt = parseFloat(Styling.get_style(mouse.dragging.elementClass, "top", wnd.ruleIndex).split("px")[0]);
+            let a = ff(wnd, mouse.dragging.id);
+            dragger.pl = a[0];
+            dragger.pt = a[1];
         }
-        let t = ((Styling.get_style(mouse.dragging.elementClass, "transform", wnd.ruleIndex)).match(new RegExp("[Z][(].+[)]"))[0]);
+        let t = ((Styling.get_style(mouse.dragging.id, "transform", wnd.ruleIndex)).match(new RegExp("[Z][(].+[)]"))[0]);
         dragger.angle = parseFloat(t.substring(2,t.length-1));
     },
     multiple_drag_start : ()=>{
         let r = getFocusedClasses("hi");
-        mouse.dragging.elementClass = r[0];
+        mouse.dragging.id = r[0];
         mouse.dragging.position = [];
         dragger.pt = [];
         dragger.pl = [];
@@ -180,7 +221,7 @@ let Resizers = {
         dragger.width_resize = mouse.dragging.element.id === "width_resize";
         dragger.top_resize = mouse.dragging.element.id === "top_resize";
         dragger.left_resize = mouse.dragging.element.id === "left_resize";
-        for (let i = 0, len = mouse.dragging.elementClass.length;i< len;i++){
+        for (let i = 0, len = mouse.dragging.id.length;i< len;i++){
             //mouse.dragging.element.style.transform = "rotate(0deg)";
             // wnd.push(mouse.dragging.element.parentElement.parentElement);
             if (mouse.dragging.element.classList.contains("size")) {
@@ -188,26 +229,27 @@ let Resizers = {
                 dragger.pt.push(wnd[i].clientHeight);
             }
             else if (mouse.dragging.element.classList.contains("position")){
-                dragger.pl.push(parseFloat(Styling.get_style(mouse.dragging.elementClass[i], "left", wnd[i].ruleIndex).split("px")[0]));
-                dragger.pt.push(parseFloat(Styling.get_style(mouse.dragging.elementClass[i], "top", wnd[i].ruleIndex).split("px")[0]));
+                let a = ff(wnd[i], mouse.dragging.id[i]);
+                dragger.pl.push(a[0]);
+                dragger.pt.push(a[1]);
             }
-            let t = ((Styling.get_style(mouse.dragging.elementClass[i], "transform", wnd[i].ruleIndex)).match(new RegExp("[Z][(].+[)]"))[0]);
+            let t = ((Styling.get_style(mouse.dragging.id[i], "transform", wnd[i].ruleIndex)).match(new RegExp("[Z][(].+[)]"))[0]);
             dragger.angle.push(parseFloat(t.substring(2,t.length-1)));
         }
     }
 };
 
-function initiateStyle(parentPath, className,custom) {
+function initiateStyle(parentPath, id,custom) {
     Styling.init_style(`
-        div#${parentPath||"genie-paint-field"} .${className}{${custom||"transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); border: 1px solid gray; cursor: all-scroll; left:0; top:0; position: absolute; width: 100px; height: 50px; background-color: white; }"}`
+        div#${parentPath||"genie-paint-field"} #${id}{${custom||"transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); border: 1px solid gray;cursor:all-scroll;left:0;top:0;position:absolute; width: 100px; height: 50px; background-color: white; }"}`
     );
 }
 
 
-function G(class_name) {
+function G(id) {
     this.tagName = "div";
-    this.className = class_name||"div";
-    this.target =  document.querySelector(`.${this.className}`);
+    this.id = id||"div";
+    this.target =  document.getElementById(`.${this.id}`);
     this.parentPath = null;
     this.parent = null;
 }
@@ -228,9 +270,8 @@ G.prototype.create = function(tag_name, parent_path,parent){
     this.tagName = tag_name||"div";
     parent = parent.classList.contains("hi")?parent:null;
     this.parent = parent||document.getElementById(`${this.parentPath}`);
-    this.target = createDomElement({name: `${this.tagName}`,appendTo:this.parent, class: `${this.className} hi normal_drag`,innerHTML:"hi there" });
-    this.target.setAttribute("draggable","true");
-    initiateStyle(this.parentPath,this.className);
+    this.target = createDomElement({name: `${this.tagName}`,appendTo:this.parent, id: `${this.id}`, class: `hi normal_drag`,innerHTML:"hi there", contentEditable: false});
+    initiateStyle(this.parentPath,this.id);
     this.target.ruleIndex = ruleIndex;
     //this.bindings();
     reload_compressed_layout();
