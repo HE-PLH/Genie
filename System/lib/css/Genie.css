@@ -36,7 +36,7 @@ div.compressed_layout ul li ul li div.icon { left: -8px; }
 div.compressed_layout ul li ul li { font-size: 1em; padding: 0 0 0 10px; }
 div.compressed_layout ul li ul li ul li { font-size: 1em;  }
 
-input:hover{
+.compressed_layout input:hover{
     background-color: lightblue;
 }
 .my_logo{
@@ -314,7 +314,8 @@ input:hover{
     border-bottom: 1px solid #f3f3f3;
 }
 .genie-top{
-    height: 60%;
+    height: 70%;
+    background: repeating-linear-gradient(40deg, #f3f3f3 20px, #e0f8e3) 1%;
 }
 
 .genie-toolbar-item, .gti{
@@ -325,7 +326,7 @@ input:hover{
 }
 
 .genie-instant-toolbar, .genie-toolbar{
-    background-color: #f1f1f1;
+    background-color: inherit;
     border-bottom: 1px solid lightblue;
     cursor: pointer;
 }
@@ -335,7 +336,10 @@ input:hover{
     height: 5%;
 }
 
-.genie-toolbar img{
+.genie-toolbar .ic{
+    fill: black;
+    color: black;
+    stroke: none;
     pointer-events: none;
 }
 
@@ -373,10 +377,10 @@ input:hover{
 .genie-compressed-layout{
     overflow: overlay;
     width: 15%;
-    background-color: white;
+    background-color: inherit;
 }
 .genie-paint-field{
-    width: 60%;
+    width: 62%;
     overflow: overlay;
     position: relative;
     background-color: white;
@@ -385,17 +389,71 @@ input:hover{
 .genie-styles{
     width: 20%;
     position: relative;
-    overflow: overlay;
+    background: inherit;
 }
 
 #genie-styles-top{
     height: 5%;
     display: flex;
 }
-#genie-styles-main{
-    background-color: white;
+#genie-styles-body{
+    background-color: inherit;
     height: 95%;
+    width: 100%;
+    position: relative;
+}
+
+#genie-styles-main, #genie-classes-main{
+    background-color: inherit;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    transition: all .3s;
+    overflow-y: scroll;
+    overflow-x: overlay;
+}
+
+#genie-classes-main{
+    visibility: hidden;
+}
+
+#create-new-class-btn{
+    border-radius: 10px;
+}
+
+#genie-new-style{
+    height: 50px;
+    width: 100%;
+    color: purple;
+    display: flex;
+    flex-direction: column;
+}
+#genie-new-style-field{
+    height: 100%;
+    width: 100%;
+    color: purple;
+    display: flex;
+    flex-direction: column;
+}
+#all-cls-pl{
+    height: fit-content;
     width: fit-content;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    background-color: #5a69b3;
+}
+#genie-new-style label{
+    height: 30px;
+    width: 100%;
+    display: flex;
+    padding: 5px 0 5px 5%;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+}
+
+#input-new-class{
+    width: 50%;
 }
 
 .style-tab{

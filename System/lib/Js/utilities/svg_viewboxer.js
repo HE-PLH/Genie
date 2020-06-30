@@ -2,35 +2,48 @@ function SVG_OBJECT(svg_text, svg_obj) {
     this.svg_text = svg_text;
     this.svg_obj = svg_obj;
     this.svg_element = null;
+    this.temp = null;
     this.toViewBox = function (str) {
+        console.time("t");
         if (this.svg_obj) {
             this.svg_element = this.svg_obj;
         } else {
-            let el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            el.innerHTML = this.svg_text;
-            this.svg_element = el.querySelector("svg");
+            this.temp = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            this.temp.innerHTML = this.svg_text;
+            this.svg_element = this.temp.querySelector("svg");
         }
-        this.recurse();
+        console.log(this.recurse());
+        console.timeEnd("t")
     };
-    this.scrutinize = function (obj) {
-        let m = [], left = {};
-        for (let i = 0, len = obj.length; i < len; i++) {
-            if (!isNaN(parseFloat(obj[i]))){
-                if (!(obj[i][0] === "0" || obj[i][0] === "1")) {
-                    m.push(obj[i]);
-                }else {
-                    if (parseFloat(obj[i])===0){
-
-                    }
+    this.scrutinize = function (obj, multiplier) {
+        let str = "";
+        let ex = (n)=>{
+            for (let i = 0; i<n;i++){
+                let a = (/-?(\d*\.\d+|\d+\.?)/).exec(obj)[0];
+                let p = parseFloat(a);
+                if (p<0){
+                    str = str.trim();
                 }
-            }else {
-
+                str+=`${a*multiplier} `;
+                obj = obj.replace(new RegExp(`${a}`), "");
             }
+        };
+        let f = ()=>{
+            ex(3);
+            let a = (/(00)|(01)|(10)|(11)/).exec(obj)[0];
+
+            str+=`${a} `;
+            str = str.trim();
+            obj = (obj.replace(`${a}`, ""));
+            ex(2);
+        };
+        while (obj.trim().length>0){
+            f();
         }
-        console.log(m);
+        return str;
     };
     this.executeViewBox = function (el) {
-        let multiplier = 2;
+        let multiplier = 1;
         let f = (d)=>{
 /*
             console.log(/([mzlhvcsqta]|([+\-])?(\d*\.\d+|\d+\.?)([eE][+\-]?\d+)*)/gi.exec(d))
@@ -41,46 +54,38 @@ function SVG_OBJECT(svg_text, svg_obj) {
             for (let i = 0,len = d.length; i<len;i++){
                 let op = ((/[mzlhvcsqta]/i).exec(d[i]));
                 str += op;
-
                 let s = d[i].split((/[mzlhvcsqta]/i)), temp = '';
                 if (s[1]) {
                     s = s[1];
-                    d1 = s.match(/(\d*\.\d+|\d+\.?)|-/g);
-                    if (op.indexOf("a")>-1) {
-                        this.scrutinize(d1);
-                    }
-                    for (let j = 0,len1 = d1.length; j<len1;j++){
-                        let m;
-                        if (!isNaN(parseFloat(d1[j]))){
-                            m = d1[j];
-                            temp += `${m} `;
+                    d1 = s.match(/-?(\d*\.\d+|\d+\.?)/g);
+                    if (op.indexOf("a")>-1||op.indexOf("A")>-1) {
+                        if (d1.length % 7 !== 0) {
+                            str += (this.scrutinize(s, multiplier)).trim();
                         }else {
-                            m = d1[j].trim();
-                            if (temp[temp.length-1]===" "){
-                                temp = temp.trim();
-                            }
-                            temp += `${m}`;
+                            str += (d1.join(" ")).trim();
                         }
-                        // console.log(parseFloat(d1[j]),d1[j])
+                    }else {
+                        for (let j = 0, len1 = d1.length; j < len1; j++) {
+                            let m = d1[j];
+                            temp += `${parseFloat(m)*multiplier} `;
+                        }
+                        str += temp.trim();
                     }
-                    str+=temp.trim();
                 }
             }
             return str.trim();
         };
         if(el.tagName === "path"){
-            console.log(el.getAttribute("d"));
-            console.log(f(el.getAttribute("d"))+"\n\n");
             el.setAttribute("d", f(el.getAttribute("d")))
         }
-        // return el;
+        return el;
     };
     this.recurse = function () {
         this.executeViewBox(this.svg_element);
         let f = (el) => {
             for (let i in el) {
                 if (el.hasOwnProperty(i)) {
-                    (this.executeViewBox(el[i]));
+                    el[i].parentNode.replaceChild(this.executeViewBox(el[i]), el[i]);
                     if (el[i]["children"] && el[i]["children"].length > 0) {
                         f(el[i]["children"]);
                     }
@@ -88,5 +93,6 @@ function SVG_OBJECT(svg_text, svg_obj) {
             }
         };
         f(this.svg_element["children"]);
+        return this.svg_element;
     }
 }

@@ -1,5 +1,5 @@
 .styles{
-    width: fit-content;
+    width: 100%;
     position: absolute;
     white-space: nowrap;
 }
@@ -13,16 +13,24 @@ input{
     font-weight: bold;
 }
 
+.rule-props-cont:hover .rule-prop-check-box{
+    visibility: visible;
+}
+
 .rule-props-cont{
     width: 100%;
     margin-bottom: 2px;
     display: flex;
     flex-direction: column;
     white-space: nowrap;
-    padding-left: 10px;
     background-color: white;
+    overflow: overlay;
+}
+
+#genie-styles-main .rule-props-cont{
     border-top: 1px solid gray;
     border-bottom: 1px solid gray;
+    overflow-x: scroll;
 }
 
 .rule-prop{
@@ -30,8 +38,11 @@ input{
 }
 
 .rule-prop:hover .rule-prop-delete{
-    white-space: nowrap;
     visibility: visible;
+}
+
+.el_prop{
+    padding-left: 10px;
 }
 
 .el_prop .prop{
@@ -40,7 +51,7 @@ input{
 }
 
 .rule-prop-check-box{
-    width: 20px;
+    visibility: hidden;
 }
 .prop{
     width: content-box;
@@ -67,4 +78,10 @@ input{
     height: 100%;
     visibility: hidden;
     cursor: pointer;
+}
+.colon, .s-colon{
+    width: 3px;
+}
+.s-colon{
+
 }

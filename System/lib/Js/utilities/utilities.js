@@ -28,6 +28,21 @@ let SizeTool = `
         </div>
     </div>
 `;
+let traditionalTool = `
+    <g id="traditional" class="traditional _tool">
+        <rect id="t_top_left" class="t_tool normal_drag "></rect>
+        <rect id="t_top" class=" t_tool normal_drag "></rect>
+        <rect id="t_top_right" class=" t_tool normal_drag "></rect>
+        <rect id="t_right" class=" t_tool normal_drag "></rect>
+        <rect id="t_bottom_right" class=" t_tool normal_drag "></rect>              
+        <rect id="t_bottom" class=" t_tool normal_drag "></rect>              
+        <rect id="t_bottom_left" class=" t_tool normal_drag "></rect>
+        <rect id="t_left" class=" t_tool normal_drag "></rect>
+        <rect id="t_rot" class=" t_tool normal_drag ">
+            <path id="t_rot_neck" style="position:absolute;"></path>
+        </rect>
+    </g>
+`;
 
 
 /*
@@ -55,7 +70,7 @@ const RADIAN_COEFFICIENT = 180 / Math.PI;
  ==== 7. GLOBAL VARIABLES
 ***************************************
 */
-let wnd, isWindow, isInsideElement, isAppendedTool, isListItem, isRotationTool, no = 0, is_field;
+let wnd, isWindow, isInsideElement, isAppendedTool, isListItem, isTTool, isRotationTool, no = 0, is_field;
 let appendingGL = false;
 let timeOut;
 let my_icons = {
@@ -266,6 +281,19 @@ let Methods = {
         }
         return [lst, lst1];
     },
+    isInViewPort: function (el, bound) {
+        if (bound){
+            let rect = el.getBoundingClientRect();
+            return rect.top >= 0 && rect.left >= 0 &&
+                rect.bottom <= bound.clientHeight&&
+                rect.right <= bound.clientWidth;
+        }else {
+            let rect = el.getBoundingClientRect();
+            return rect.top >= 0 && rect.left >= 0 &&
+                rect.bottom <= window.innerHeight || document.documentElement.clientHeight &&
+                rect.right <= window.innerWidth || document.documentElement.clientWidth;
+        }
+        },
     remove_duplicates: function (arr) {
         return arr.filter((t = {}, a => !(t[a] = a in t)));
     },
@@ -466,14 +494,38 @@ function setAttributesTo(attr, el1, el2) {
     el1[`${attr}`] = el2;
     f(el1.querySelector("ul") ? el1.querySelector("ul")["children"] : "", el2["children"]);
 }
-
+function get_angle(original, pt) {
+    if (pt.x >= 0 && pt.y <= 0) {
+        angle = Math.atan(Math.abs(pt.x / pt.y)) * RADIAN_COEFFICIENT;
+    } else if (pt.y >= 0 && pt.x >= 0) {
+        angle = 90 + Math.atan(Math.abs(pt.y / pt.x)) * RADIAN_COEFFICIENT;
+    } else if (pt.x <= 0 && pt.y >= 0) {
+        angle = 180 + Math.atan(Math.abs(pt.x / pt.y)) * RADIAN_COEFFICIENT;
+    } else if (pt.x <= 0 && pt.y <= 0) {
+        angle = 270 + Math.atan(Math.abs(pt.y / pt.x)) * RADIAN_COEFFICIENT;
+    }
+    /*if(original%360- (rotation_count<0?angle-360:angle) >= 1) {
+        rotation_count++;
+    }else if((original%360 < 0?original%360 + 360:original%360) - angle <= -1){
+        rotation_count --;
+    }
+    angle += rotation_count*360;*/
+    return angle;
+}
 
 function removeEditable() {
     for (let i = 0, len = focusedElements.length; i < len; i++) {
         focusedElements[i].contentEditable = false;
     }
+    typing = false;
     BRICK.typing = false;
 }
+
+
+function drag_style (wnd, property, value) {
+    Styling.edit_style(mouse.dragging.id, property, value, wnd.ruleIndex)
+}
+
 
 function click(el, e) {
     /*inside element*/
@@ -486,7 +538,7 @@ function click(el, e) {
     if (el.classList.contains("layout_title")) {
         /*compressed layout title focus*/
         handleEditing(el);
-        handleCurrentResize(el.parentNode.creator, el);
+        handleCurrentResize(el.parentNode.creator);
         hightlightAll();
     } else if (el.classList.contains("appendedTool")) {
         handleCurrentResize(el.parentNode.parentElement);
@@ -512,6 +564,7 @@ function click(el, e) {
                 toolbar items
         */
     if (el.classList.contains("genie-paint-field")) {
+        handleEditing(el);
         removeCurrentTool();
         highlightLayout();
         removeEditable();
@@ -531,7 +584,7 @@ function click(el, e) {
 }
 
 function isDraggable(el) {
-    return el.classList.contains("hi") || el.classList.contains("appendedTool") || el.classList.contains("separator") || el.classList.contains("list_item");
+    return el.classList.contains("normal_drag");
 }
 
 function displayInstantToolbar() {
@@ -705,6 +758,12 @@ function addCurrentTool(el) {
             resize = y.querySelector("#rot-resize-cont");
             f(resize, 80);
             break;
+        case "T":
+            let tr = createDomElement({name: "div"});
+            tr.innerHTML = traditionalTool;
+            resize = tr.querySelector("#traditional");
+            f(resize);
+            break;
     }
 
     function f(p, flag) {
@@ -713,6 +772,7 @@ function addCurrentTool(el) {
                 center = {x: e.pageX-el.getBoundingClientRect().left, y: e.pageY-el.getBoundingClientRect().top};
             }else{*/
             center = {x: el.clientWidth / 2, y: el.clientHeight / 2};
+
             /*}*/
 
             el.appendChild(p);
@@ -723,8 +783,8 @@ function addCurrentTool(el) {
                 if (focusedElements[i].classList.contains("hi")) {
                     center = {x: focusedElements[i].clientWidth / 2, y: focusedElements[i].clientHeight / 2};
                     focusedElements[i].appendChild(p);
-                    p.style.left = `${center.x - 40}px`;
-                    p.style.top = `${center.y}px`;
+                    p.style.left = `${center.x - (flag ? flag : 40)}px`;
+                    p.style.top = `${center.y - (flag ? flag : 0)}px`;
                 }
             }
         }
@@ -749,51 +809,41 @@ function reloadCurrentTool(el) {
 
 function handleEditing(el) {
     if (el.classList.contains("editable")) {
-        if (!Methods.find(focusedElements, el)) {
+        if (!Methods.find(focusedElements, el.parentNode.creator)) {
             Methods.edit.block(el);
         }
     }
 }
 
-function handleCurrentResize(el, lt) {
+function handleCurrentResize(el) {
     if (Methods.find(focusedElements, el)) {
         if (BRICK.typing) {
 
         } else {
             /*on double clicking list_title*/
-            if (lt) {
-                el = lt;
-            }
-            if (el.classList.contains("editable")) {
-                if (!Methods.find(currentBeingTyped, el)) {
-                    Methods.edit.allow(el);
-                }
-            }
             if (keySequence.isSequenced([CTRL])) {
                 Methods.remove(focusedElements, el);
                 removeCurrentTool(el);
             }
         }
     } else {
-        if (el.classList.contains("editable")) {
-            Methods.edit.block(el);
-        } else
             /*if ctrl is down ,multi-select!*/
-        if (keySequence.isSequenced([CTRL])) {
-            removeEditable();
-            Styling.edit_style("", "cursor", "all-scroll", el.ruleIndex);
-            focusedElements.push(el);
-            addCurrentTool(el);
-        } else {
-            new Styles(el).init();
-            removeEditable();
-            removeCurrentTool();
-            Styling.edit_style("", "cursor", "all-scroll", el.ruleIndex);
-            addCurrentTool(el);
-            focusedElements = [];
-            focusedElements.push(el);
+            if (keySequence.isSequenced([CTRL])) {
+                removeEditable();
+                Styling.edit_style("", "cursor", "all-scroll", el.ruleIndex);
+                focusedElements.push(el);
+                addCurrentTool(el);
+            } else {
+                new Styles(el).init();
+                removeEditable();
+                removeCurrentTool();
+                Styling.edit_style("", "cursor", "all-scroll", el.ruleIndex);
+                addCurrentTool(el);
+                focusedElements = [];
+                focusedElements.push(el);
 
-        }
+            }
+
     }
 }
 
@@ -969,6 +1019,9 @@ let keySequence = {
     },
     POS_RESIZE: () => {
         return keySequence.isSequenced([Q]);
+    },
+    TRADITIONAL_TOOL: () => {
+        return keySequence.isSequenced([T]);
     },
     SIZE_RESIZE: () => {
         return keySequence.isSequenced([W]);
@@ -1163,6 +1216,11 @@ KeyEventHandler.prototype.handleKeys = function () {
                 currentResize = "E";
                 toolbarItems(document.getElementById("E"));
                 reloadCurrentTool();
+            } else if (keySequence.TRADITIONAL_TOOL()) {
+                this.element.preventDefault();
+                currentResize = "T";
+                toolbarItems(document.getElementById("T"));
+                reloadCurrentTool();
             }
         }
     }
@@ -1184,7 +1242,6 @@ KeyEventHandler.prototype.handle_key_up = function () {
             }
         } else if (this.el.classList.contains("prop")) {
             if (KEY.isCharCode(this.key)) {
-                this.el.value = this.el.value.split(":")[0] + ":";
                 if (this.el.parentNode.classList.contains("el_prop")) {
                     let e = this.el.parentNode.el, v = Methods.removeSpaces(this.el.value.split("{")[0]);
                     Styling.changeClass(e, v);
@@ -1193,13 +1250,12 @@ KeyEventHandler.prototype.handle_key_up = function () {
                     let val = this.el.parentNode.querySelector(".val");
                     Styling.UncommentRuleProperty(Methods.trim(this.el.value), Methods.trim(val.value), this.el.parentNode.querySelector(".rule-prop-check-box").ruleIndex);
                 }
-                this.el.style.width = (this.el.value.length + 1) * 7 + unitX;
+                this.el.style.width = (this.el.value.length + 1) * 6 + "px";
             }
         } else if (this.el.classList.contains("val")) {
             if (KEY.isCharCode(this.key)) {
-                this.el.value = this.el.value.split(";")[0] + ";";
                 Styling.edit_style("", Methods.removeSpaces(this.el.parentNode.querySelector(".prop").value.split(":")[0]), Methods.trim(this.el.value.split(";")[0]), this.el.parentNode.querySelector(".rule-prop-check-box").ruleIndex);
-                this.el.style.width = (this.el.value.length + 1) * 7 + unitX;
+                this.el.style.width = (this.el.value.length + 1) * 6 + "px";
             }
         }
     }
@@ -1360,6 +1416,12 @@ MouseEventHandler.prototype.dblclick = function () {
         BRICK.typing = true;
         this.el.contentEditable = true;
         Styling.edit_style("", "cursor", "text", this.el.ruleIndex)
+    }else {
+        if (this.el.classList.contains("editable")) {
+            if (!Methods.find(currentBeingTyped, this.el)) {
+                Methods.edit.allow(this.el);
+            }
+        }
     }
 };
 
@@ -1382,7 +1444,6 @@ MouseEventHandler.prototype.handle_late_click = function () {
     /*hide context menu*/
     let el = document.querySelector(".contextmenu");
     el ? (el.style.display === "block" ? el.style.display = `none` : "") : "";
-
     /*context menu clicks*/
     if (this.el.classList.contains("cm")) {
         if (!this.el.classList.contains("carrying")) {
@@ -1392,38 +1453,62 @@ MouseEventHandler.prototype.handle_late_click = function () {
             removeCurrentTool();
             addCurrentTool(e);
         }
-    } else if (this.el.classList.contains("arrow") && this.el.parentNode.classList.contains("carrying")) {
+    }
+    else if (this.el.classList.contains("arrow") && this.el.parentNode.classList.contains("carrying")) {
         /*
                 if compressed layout list_item has other list_items
         */
         Methods.toogle.classes(this.el, "expanded", "collapsed");
         Methods.toogle.display(this.el.parentNode.querySelector("ul"));
-    } else if (this.el.classList.contains("cancel") || this.el.classList.contains("window_close")) {
+    }
+    else if (this.el.classList.contains("cancel") || this.el.classList.contains("window_close")) {
         document.querySelector(".window").style.display = "none";
-    } else if (this.el.classList.contains("code_display")) {
+    }
+    else if (this.el.classList.contains("code_display")) {
         let cd = document.querySelector(".code_display");
         cd.readOnly = false;
         cd.style.cursor = "auto";
-    } else if (this.el.classList.contains("genie-toolbar-item")) {
+    }
+    else if (this.el.classList.contains("genie-toolbar-item")) {
         toolbarItems(this.el);
         currentResize = this.el.id;
         reloadCurrentTool();
-    } else if (this.el.classList.contains("style-tab")) {
+    }
+    else if (this.el.classList.contains("style-tab")) {
+        if (this.el.id === "style-tab-title"){
+            let a = document.getElementById("genie-styles-main");
+            let b = document.getElementById("genie-classes-main");
+            a.style.opacity = "1";
+            b.style.opacity = "0";
+            a.style.visibility = "visible";
+            b.style.visibility = "hidden";
+        }
+        else if (this.el.id === "class-tab-title"){
+            let a = document.getElementById("genie-styles-main");
+            let b = document.getElementById("genie-classes-main");
+            a.style.opacity = "0";
+            b.style.opacity = "1";
+            a.style.visibility = "hidden";
+            b.style.visibility = "visible";
+        }
         Methods.changeClassProperty(".style-tab", [this.el], "backgroundColor", "lightblue", "inherit");
         Methods.changeClassProperty(".style-tab", [this.el], "border-bottom", "1px solid rgba(11, 23, 64, 0.96)", "0");
-    } else if (this.el.classList.contains("rule-prop-delete")) {
+    }
+    else if (this.el.classList.contains("rule-prop-delete")) {
         let p = this.el.parentNode;
         Styling.commentRuleProperty(p.querySelector(".prop").value, p.querySelector(".val").value, this.el.ruleIndex);
         Methods.removeNode(p);
 
-    } else if (this.el.classList.contains("rule-prop-check-box")) {
+    }
+    else if (this.el.classList.contains("rule-prop-check-box")) {
         let p = this.el.parentNode;
         if (this.el.checked) {
             Styling.UncommentRuleProperty(Methods.trim(p.querySelector(".prop").value), p.querySelector(".val").value, this.el.ruleIndex);
         } else {
             Styling.commentRuleProperty(Methods.trim(p.querySelector(".prop").value), p.querySelector(".val").value, this.el.ruleIndex);
         }
-    } else if (this.el.classList.contains("rule-prop")) {
+    }
+    else if (this.el.classList.contains("rule-prop")) {
         if (newProp === null) {
             let p = renderStyle(" ", " ", this.el.querySelector(".rule-prop-check-box").ruleIndex);
             Methods.presert(p, this.el.parentNode, this.el.nextElementSibling);
@@ -1442,15 +1527,17 @@ MouseEventHandler.prototype.handle_late_click = function () {
                 Methods.removeNode(newProp);
             }
             newProp = null;
-
         }
     }
-
-    if (this.el.classList.contains("hi")) {
+    else if (this.el.classList.contains("hi")) {
         if (BRICK.typing) {
             HandleHightlightedText();
         }
     }
+    else if (this.el.id === "create-new-class-btn") {
+
+    }
+
 
 };
 
@@ -1491,39 +1578,37 @@ MouseEventHandler.prototype.append = function () {
 
 MouseEventHandler.prototype.handle_appendTool_drag = function (dragger, wnd) {
     let f = (ml, mt, wnd) => {
-        /*if (percX){
-            console.log(ml)
-            ml = `${100 * (ml) / boundary.el.clientWidth}`;
-            console.log(ml)
+        if (percX){
+            ml = `${100 * ml / parentWidth}`;
         }
         if (percY){
-            mt = `${100 * (mt) / boundary.el.clientHeight}`
-        }*/
+            mt = `${100 * mt / parentHeight}`
+        }
         /*
                 position
         */
         if (dragger.left_resize) {
             /*
-                        (ml >= 0) ? this.drag_style(wnd, "left", ml) : "";
+                        (ml >= 0) ? drag_style(wnd, "left", ml) : "";
             */
-            this.drag_style(wnd, "left", `${ml + unitX}`);
-            left_display.value = `${ml + unitX};`;
+            drag_style(wnd, "left", `${ml + unitX}`);
+            left_display.value = `${ml + unitX}`;
         } else if (dragger.top_resize) {
             /*
-                        (mt >= 0) ? this.drag_style(wnd, "top", mt) : "";
+                        (mt >= 0) ? drag_style(wnd, "top", mt) : "";
             */
-            this.drag_style(wnd, "top", `${mt + unitY}`);
-            top_display.value = `${mt + unitY};`;
+            drag_style(wnd, "top", `${mt + unitY}`);
+            top_display.value = `${mt + unitY}`;
         }
         /*
                 size
         */
         if (dragger.height_resize) {
-            this.drag_style(wnd, "height", `${mt + unitY}`);
-            height_display.value = `${mt + unitY};`;
+            drag_style(wnd, "height", `${mt + unitY}`);
+            height_display.value = `${mt + unitY}`;
         } else if (dragger.width_resize) {
-            this.drag_style(wnd, "width", `${ml + unitX}`);
-            width_display.value = `${ml + unitX};`;
+            drag_style(wnd, "width", `${ml + unitX}`);
+            width_display.value = `${ml + unitX}`;
         }
     };
     if (no) {
@@ -1545,9 +1630,9 @@ MouseEventHandler.prototype.preventRotation = function (t) {
 };
 
 MouseEventHandler.prototype.handle_rotate = function (dragger, wnd, check) {
-    ml = this.get_angle(dragger.angle, {
-        x: (mouse.moving.point.x - wnd.getBoundingClientRect().left) - center.x,
-        y: (mouse.moving.point.y - wnd.getBoundingClientRect().top) - center.y
+    ml = get_angle(dragger.angle, {
+        x: (mouse.moving.point.x - dragger.originalD.left) - center.x,
+        y: (mouse.moving.point.y - dragger.originalD.top) - center.y
     });
     if (no) {
 
@@ -1555,43 +1640,24 @@ MouseEventHandler.prototype.handle_rotate = function (dragger, wnd, check) {
         if (check) {
 
         } else {
-            if (dragger.height_resize === 1) {
+            if (dragger.rot_tool === 1) {
                 /*
                                 rotate y
                 */
-                Styling.edit_style(mouse.dragging.id, "transform", `rotateY(${ml - dragger.pl}deg)`, wnd.ruleIndex)
-            } else if (dragger.height_resize === 2) {
+                Styling.edit_style(mouse.dragging.id, "transform", `rotateY(${ml/* - dragger.angle.y*/}deg)`, wnd.ruleIndex)
+            } else if (dragger.rot_tool === 2) {
                 /*
                                 rotate z
                 */
-                Styling.edit_style(mouse.dragging.id, "transform", `rotateZ(${ml - dragger.pl}deg)`, wnd.ruleIndex)
-            } else if (dragger.height_resize === 0) {
+                Styling.edit_style(mouse.dragging.id, "transform", `rotateZ(${ml/* - dragger.angle.z*/}deg)`, wnd.ruleIndex)
+            } else if (dragger.rot_tool === 0) {
                 /*
                                 rotate x
                 */
-                Styling.edit_style(mouse.dragging.id, "transform", `rotateX(${ml - dragger.pl}deg)`, wnd.ruleIndex)
+                Styling.edit_style(mouse.dragging.id, "transform", `rotateX(${ml/* - dragger.angle.x*/}deg)`, wnd.ruleIndex)
             }
         }
     }
-};
-
-MouseEventHandler.prototype.get_angle = function (original, pt) {
-    if (pt.x >= 0 && pt.y <= 0) {
-        angle = Math.atan(Math.abs(pt.x / pt.y)) * RADIAN_COEFFICIENT;
-    } else if (pt.y >= 0 && pt.x >= 0) {
-        angle = 90 + Math.atan(Math.abs(pt.y / pt.x)) * RADIAN_COEFFICIENT;
-    } else if (pt.x <= 0 && pt.y >= 0) {
-        angle = 180 + Math.atan(Math.abs(pt.x / pt.y)) * RADIAN_COEFFICIENT;
-    } else if (pt.x <= 0 && pt.y <= 0) {
-        angle = 270 + Math.atan(Math.abs(pt.y / pt.x)) * RADIAN_COEFFICIENT;
-    }
-    /*if(original%360- (rotation_count<0?angle-360:angle) >= 1) {
-        rotation_count++;
-    }else if((original%360 < 0?original%360 + 360:original%360) - angle <= -1){
-        rotation_count --;
-    }
-    angle += rotation_count*360;*/
-    return angle;
 };
 
 MouseEventHandler.prototype.handle_inside_element_drag = function (dragger, wnd) {
@@ -1599,18 +1665,30 @@ MouseEventHandler.prototype.handle_inside_element_drag = function (dragger, wnd)
         if (dragger.check === null) {
             this.handle_rotate(dragger, wnd)
         } else {
+            if (percX){
+                ml = `${100 * ml / parentWidth}`;
+            }
+            if (percY){
+                mt = `${100 * mt / parentHeight}`;
+            }
             if (dragger.check) {
-                this.drag_style(wnd, "height", `${mt + unitY}`);
-                this.drag_style(wnd, "width", `${ml + unitX}`);
-                height_display.value = `${mt + unitY};`;
-                width_display.value = `${ml + unitX};`;
+                drag_style(wnd, "height", `${mt + unitY}`);
+                drag_style(wnd, "width", `${ml + unitX}`);
+                height_display.value = `${mt + unitY}`;
+                width_display.value = `${ml + unitX}`;
             } else {
-                /*(mt >= 0) ? this.drag_style(wnd, "top", mt) : "";
-                (ml >= 0) ? this.drag_style(wnd, "left", ml) : "";*/
-                this.drag_style(wnd, "top", `${mt + unitY}`);
-                this.drag_style(wnd, "left", `${ml + unitX}`);
+                /*(mt >= 0) ? drag_style(wnd, "top", mt) : "";
+                (ml >= 0) ? drag_style(wnd, "left", ml) : "";*/
+                drag_style(wnd, "top", `${mt + unitY}`);
+                drag_style(wnd, "left", `${ml + unitX}`);
                 top_display.value = `${mt + unitY}`;
                 left_display.value = `${ml + unitX}`;
+
+                /*drag_style(wnd, "top", `${mt}px`);
+                drag_style(wnd, "left", `${ml}px`);
+                top_display.value = percY?`${100 * mt / parentHeight + unitY}`:`${mt + unitY}`;
+                left_display.value = percX?`${100 * ml / parentWidth + unitX}`:`${ml + unitX}`;
+*/
             }
         }
     };
@@ -1629,12 +1707,9 @@ MouseEventHandler.prototype.handle_inside_element_drag = function (dragger, wnd)
     }
 };
 
-MouseEventHandler.prototype.drag_style = function (wnd, property, value) {
-    Styling.edit_style(mouse.dragging.id, property, value, wnd.ruleIndex)
-};
-
 MouseEventHandler.prototype.normal_drag = function () {
     if (mouse.dragging.drag_start) {
+        dragger = {};
         if (BRICK.typing) {
             isWindow = false;
             isInsideElement = false;
@@ -1642,11 +1717,13 @@ MouseEventHandler.prototype.normal_drag = function () {
             isRotationTool = false;
             isListItem = false;
             is_field = false;
+            isTTool = false;
         } else {
             isWindow = mouse.dragging.element.classList.contains("window_title");
             isInsideElement = mouse.dragging.element.classList.contains("hi");
             isAppendedTool = mouse.dragging.element.classList.contains("appendedTool");
             isRotationTool = mouse.dragging.element.classList.contains("rot-resize");
+            isTTool = mouse.dragging.element.classList.contains("t_tool");
             isListItem = mouse.dragging.element.classList.contains("layout_title");
             is_field = mouse.dragging.element.classList.contains("genie-paint-field");
         }
@@ -1669,10 +1746,16 @@ MouseEventHandler.prototype.normal_drag = function () {
             } else {
                 Resizers.drag_start();
             }
+        }  else if (isTTool) {
+            if (no) {
+                TraditionalTool.multiple_drag_start();
+            } else {
+                TraditionalTool.drag_start();
+            }
         } else if (isRotationTool) {
             wnd = mouse.dragging.element.parentNode.parentNode;
             mouse.dragging.id = `${wnd.id}`;
-            dragger.height_resize = mouse.dragging.element.id === "rotate_x" ? 1 : mouse.dragging.element.id === "rotate_y" ? 0 : mouse.dragging.element.id === "rotate_z" ? 2 : "";
+            dragger.rot_tool = mouse.dragging.element.id === "rotate_x" ? 1 : mouse.dragging.element.id === "rotate_y" ? 0 : mouse.dragging.element.id === "rotate_z" ? 2 : "";
             dragger.pt = {x: mouse.dragging.offset.x - center.x, y: mouse.dragging.offset.y - center.y};
             let str = (Styling.get_style(mouse.dragging.id, "transform", wnd.ruleIndex)).split(" ");
             dragger.angle = {x: 0, y: 0, z: 0};
@@ -1688,6 +1771,7 @@ MouseEventHandler.prototype.normal_drag = function () {
                     }
                 }
             }
+            dragger.originalD = wnd.getBoundingClientRect();
         }
     } else {
         if (!isListItem) {
@@ -1720,8 +1804,15 @@ MouseEventHandler.prototype.normal_drag = function () {
                             */
                             this.handle_appendTool_drag(dragger, wnd);
                         } else {
-                            Methods.changeClassProperty(`.${mouse.dragging.id}`, [wnd], "left", `${100 * (ml) / window.innerWidth}%`);
-                            Methods.changeClassProperty(`.${mouse.dragging.id}`, [wnd], "top", `${100 * (mt) / window.innerHeight}%`);
+                            /*
+                                                        traditional append tool
+                            */
+                            if (isTTool) {
+                                TraditionalTool.handle_traditional_appendTools();
+                            } else {
+                                Methods.changeClassProperty(`.${mouse.dragging.id}`, [wnd], "left", `${100 * (ml) / window.innerWidth}%`);
+                                Methods.changeClassProperty(`.${mouse.dragging.id}`, [wnd], "top", `${100 * (mt) / window.innerHeight}%`);
+                            }
                         }
                     }
                 }
@@ -1743,9 +1834,17 @@ MouseEventHandler.prototype.normal_drag = function () {
                         if (isAppendedTool) {
                             /*append tool*/
                             this.handle_appendTool_drag(dragger, wnd);
-                        } else {
-                            Methods.changeClassProperty(`.${mouse.dragging.id}`, [wnd], "left", `${100 * (ml) / window.innerWidth}%`);
-                            Methods.changeClassProperty(`.${mouse.dragging.id}`, [wnd], "top", `${100 * (mt) / window.innerHeight}%`);
+                        }else {
+                            if (isTTool){
+                                /*
+                                                        traditional append tool
+                            */
+                                TraditionalTool.handle_traditional_appendTools()
+                            }
+                            else {
+                                Methods.changeClassProperty(`.${mouse.dragging.id}`, [wnd], "left", `${100 * (ml) / window.innerWidth}%`);
+                                Methods.changeClassProperty(`.${mouse.dragging.id}`, [wnd], "top", `${100 * (mt) / window.innerHeight}%`);
+                            }
                         }
                     }
                 }

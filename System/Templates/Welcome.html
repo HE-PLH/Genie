@@ -5,10 +5,36 @@
     <style id="element">
 
     </style>
+    <style id="element-utilities">
+        .align-center{
+            align-items: center;
+            display: flex;
+            justify-content: center;
+        }
+
+        .align-center-left{
+            align-items: center;
+            display: flex;
+            justify-content: left;
+        }
+
+        .align-center-right{
+            align-items: center;
+            display: flex;
+            justify-content: right;
+        }
+
+        .align-top-right{
+            display: flex;
+            justify-content: right;
+        }
+
+    </style>
     <link rel="stylesheet" href="../lib/css/Genie.css">
     <link rel="stylesheet" href="../lib/css/styles.css">
     <link rel="stylesheet" href="../lib/css/element.css">
     <link rel="stylesheet" href="../lib/css/contextmenu.css">
+    <link rel="stylesheet" href="../sources/fonts/icomoon/icomoon.css">
 </head>
 <body>
 <div class="container" id="container">
@@ -51,19 +77,29 @@
     </div>
     <div class="genie-toolbar fill_width">
         <div title="click to adjust position" class="genie-toolbar-item fill_height align_center col" id="Q">
-            <img height="90%" width="90%" src="../sources/icons-x/icons/arrows-fullscreen.svg" alt=""/>
+            <svg viewBox="0 0 24 24" class="ic" width="90%" height="90%">
+                <use xlink:href="../sources/icons.svg#quad-pos-arrow"></use>
+            </svg>
         </div>
         <div title="click to resize" class="genie-toolbar-item fill_height align_center col" id="W">
-            <img height="90%" width="90%" src="../sources/icons-x/icons/arrows-fullscreen.svg" alt=""/>
+            <svg viewBox="0 0 24 24" class="ic" width="90%" height="90%">
+                <use xlink:href="../sources/icons.svg#quad-size-arrow"></use>
+            </svg>
         </div>
         <div title="click to rotate" class="genie-toolbar-item fill_height align_center col" id="E">
-            <img height="90%" width="90%" src="../sources/icons-x/icons/arrows-fullscreen.svg" alt=""/>
+            <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                <use xlink:href="../sources/icons.svg#success"></use>
+            </svg>
         </div>
         <div title="click to " class="genie-toolbar-item fill_height align_center col" id="R">
-            <img height="90%" width="90%" src="../sources/icons-x/icons/arrows-fullscreen.svg" alt=""/>
+            <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                <use xlink:href="../sources/icons.svg#done"></use>
+            </svg>
         </div>
-        <div title="click to " class="genie-toolbar-item fill_height align_center col" id="T">
-            <img height="90%" width="90%" src="../sources/icons-x/icons/type-bold.svg" alt=""/>
+        <div title="click to add traditional tool " class="genie-toolbar-item fill_height align_center col" id="T">
+            <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                <use xlink:href="../sources/svg_icons.svg#cat-home"></use>
+            </svg>
         </div>
         <div title="click to append element on mouse up" class="gti fill_height align_center col toolbar-item-color" id="A">A</div>
     </div>
@@ -75,20 +111,33 @@
     </div>
     <div class="genie-top fill_width">
         <div class="genie-compressed-layout fill_height col"></div>
-        <div draggable="true" class="separator fill-height fill_height"></div>
+        <div draggable="true" class="separator normal_drag normal_drag fill-height fill_height"></div>
         <div class="genie-paint-field fill_height col" id="genie-paint-field">
 
         </div>
-        <div draggable="true" class="separator fill-height fill_height"></div>
+        <div draggable="true" class="separator normal_drag fill-height fill_height"></div>
         <div id="genie-styles" class="genie-styles fill_height col">
             <div id="genie-styles-top" class="">
                 <div id="style-tab-title" class="style-tab tab align_center">styles</div>
                 <div id="class-tab-title" class="style-tab tab align_center">classes</div>
             </div>
-            <div id="genie-styles-main" class="fill_width"></div>
+            <div id="genie-styles-body" class="fill_width">
+                <div id="genie-styles-main" class="fill_width"></div>
+                <div id="genie-classes-main" class="fill_width">
+                    <div id="genie-new-style">
+                        <label>
+                            <input placeholder="new class rule" id="input-new-class"/>
+                            <button id="create-new-class-btn">create</button>
+                        </label>
+                    </div>
+                    <div id="genie-new-style-field">
+                        <div id="all-cls-pl"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div draggable="true" class="separator fill-width fill_width"></div>
+    <div class="separator normal_drag fill-width fill_width"></div>
     <div class="genie-bottom fill_width"></div>
 </div>
 
@@ -103,15 +152,6 @@
         this.events = new Events().default();
     }
     new  GenieApplication();
-    new SVG_OBJECT(`
-    <svg class="bi bi-alarm" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M10 17a6 6 0 100-12 6 6 0 000 12zm0 1a7 7 0 100-14 7 7 0 000 14z" clip-rule="evenodd"/>
-  <path fill-rule="evenodd" d="M10 6.5a.5.5 0 01.5.5v4a.5.5 0 01-.053.224l-1.5 3a.5.5 0 11-.894-.448L9.5 10.882V7a.5.5 0 01.5-.5z" clip-rule="evenodd"/>
-  <path d="M2.86 7.387A2.5 2.5 0 116.387 3.86 8.035 8.035 0 002.86 7.387zM13.613 3.86a2.5 2.5 0 113.527 3.527 8.035 8.035 0 00-3.527-3.527z"/>
-  <path fill-rule="evenodd" d="M13.646 16.146a.5.5 0 01.708 0l1 1a.5.5 0 01-.708.708l-1-1a.5.5 0 010-.708zm-7.292 0a.5.5 0 00-.708 0l-1 1a.5.5 0 00.708.708l1-1a.5.5 0 000-.708zM7.5 2.5A.5.5 0 018 2h4a.5.5 0 010 1H8a.5.5 0 01-.5-.5z" clip-rule="evenodd"/>
-  <path d="M9 3h2v2H9V3z"/>
-</svg>
-    `).toViewBox()
 </script>
 </body>
 </html>
