@@ -18,26 +18,53 @@ input{
 }
 
 .rule-props-cont{
+    padding-bottom: 15px;
     width: 100%;
     margin-bottom: 2px;
     display: flex;
     flex-direction: column;
     white-space: nowrap;
-    background-color: white;
     overflow: overlay;
 }
 
+.rule-props-cont:hover .rule-props-cont-del{
+    display: block;
+}
+
+.rule-props-cont-del{
+    position: absolute;
+    right: 20px;
+    width: 18px;
+    height: 18px;
+}
+
 #genie-styles-main .rule-props-cont{
-    border-top: 1px solid gray;
     border-bottom: 1px solid gray;
-    overflow-x: scroll;
+    overflow: overlay;
 }
 
-.rule-prop{
+.rule-prop, .c-l{
+    margin-left: 15px;
     white-space: nowrap;
+    position: relative;
 }
 
-.rule-prop:hover .rule-prop-delete{
+div.rule-prop div.arrow {
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    border: #19e3b1 0 solid;
+    position: absolute;
+    top: 2px;
+    left: -15px;
+    background: transparent url('../../sources/imgs/all_sprites.png') no-repeat;
+    background-position: -774px -336px
+}
+
+div.rule-prop div.collapsed { background-position: -774px -324px }
+div.rule-prop div.expanded { background-position: -774px -336px }
+
+.rule-prop:hover .rule-prop-delete, .rule-props-cont:hover .rule-props-cont-del{
     visibility: visible;
 }
 
@@ -62,26 +89,44 @@ input{
     font-family: "Segoe UI";
 }
 
-.rule-prop-delete .ic{
+.bl .ic{
     width: 16px;
     height: 16px;
     fill: #5e77dc;
     pointer-events: none;
 }
 
-.rule-prop-delete .ic:hover{
+.bl:hover .ic{
     fill: #0000dc;
+}
+
+.bl{
+    visibility: hidden;
+    cursor: pointer;
+    z-index: 1;
 }
 
 .rule-prop-delete{
     width: 20px;
     height: 100%;
-    visibility: hidden;
-    cursor: pointer;
 }
 .colon, .s-colon{
     width: 3px;
 }
 .s-colon{
 
+}
+
+.choose-cls-cont{
+    width: 100%;
+    display: flex;
+}
+
+.choose-cls{
+    width: 20px;
+}
+
+.cls-title{
+    width: fit-content;
+    height: fit-content;
 }

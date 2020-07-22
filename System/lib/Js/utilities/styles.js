@@ -1,16 +1,14 @@
 let top_display = null,left_display = null, width_display = null,height_display = null, newProp = null;
-function renderStyle(property, val, m, c) {
+function renderStyle(property, val, m, c, ind) {
     property = property.trim();
     val = val.trim();
     let el = createDomElement({name: "div", class: "rule-prop"});
-    let del = createDomElement({name: "span", class: "rule-prop-delete", appendTo: el});
+    let del = createDomElement({name: "span", class: "rule-prop-delete bl", appendTo: el});
     del.innerHTML = `<svg viewBox="0 0 24 24" class="ic" width="24px" height="24px">
                 <use xlink:href="../sources/svg_icons.svg#delete"></use>
             </svg>`;
     let cb = createDomElement({name: "input", class: "rule-prop-check-box", appendTo: el});
     cb.type = "checkbox";
-    cb.ruleIndex = m;
-    del.ruleIndex = m;
     cb.checked = true;
     let p = createDomElement({name: "input", class: "prop", appendTo: el, value: `${property}`});
     p.type = "text";
@@ -56,7 +54,9 @@ function get_all_styles(cont, cont_id, el) {
         if (rules) {
             rules = style_object(rules.cssText);
             let d = createDomElement({name: "div", class: "rule-props-cont"});
-            let e = createDomElement({name: "div", class: "rule-prop  el_prop", appendTo: d});
+            d.ruleIndex = el.ruleIndex;
+            let e = createDomElement({name: "div", class: "rule-prop carrying  el_prop", appendTo: d});
+            createDomElement({name: "div", class: "arrow expanded", prependTo: e});
             e.el = el;
             createDomElement({name: "input", class: "prop", appendTo: e, value: `${'#'+el.id + " {"}`}).type = "text";
             for (let i = 0, len = rules.length - 1; i < len; i++) {
@@ -64,7 +64,7 @@ function get_all_styles(cont, cont_id, el) {
                 d.appendChild(renderStyle(rule[0], rule[1], el.ruleIndex, c))
             }
             e = createDomElement({name: "div", class: "rule-prop  el_prop", appendTo: d});
-            createDomElement({name: "span", class: "prop", appendTo: e, innerHTML: '}'}).ruleIndex = el.ruleIndex;
+            createDomElement({name: "span", class: "prop c-l", appendTo: e, innerHTML: '}'}).ruleIndex = el.ruleIndex;
             cont.appendChild(d);
             el = el.parentNode;
             c = true;
@@ -74,7 +74,7 @@ function get_all_styles(cont, cont_id, el) {
 }
 
 function Styles(el){
-    this.styleParentId = "genie-styles-main";
+    this.styleParentId = "genie-styles-main-top";
     this.parentContainer = document.getElementById(`${this.styleParentId}`);
     this.container = null;
     this.element = el;
@@ -86,33 +86,31 @@ Styles.prototype.init = function () {
     get_all_styles(this.parentContainer, "genie-paint-field", this.element);
 };
 
-function allClsLoop(rules, container) {
-    let f = (rule, index)=>{
-        let title = rule.substring(0, rule.indexOf("{"));
-        rule = style_object(rule);
-        // console.log(rule);
-        let d = createDomElement({name: "div", class: "rule-props-cont"});
-        let e = createDomElement({name: "div", class: "rule-prop  el_prop", appendTo: d});
-        createDomElement({name: "input", class: "prop", appendTo: e, value: `${title + " {"}`}).type = "text";
-        //let ul = createDomElement({name: "ul", class: "el_prop"});
-        console.log(rule)
-        for (let i = 0, len = rule.length - 1; i < len; i++) {
-            let r = Methods.single_split(rule[i], ":");
-            d.appendChild(renderStyle(r[0], r[1], index, true));
-        }
-        return d;
-    };
-    for (let i in rules){
-        if (rules.hasOwnProperty(i)) {
-            container.appendChild(f(rules[i].cssText, i));
-        }
+function allClsLoop(rule, index) {
+    let title = rule.substring(0, rule.indexOf("{"));
+    rule = style_object(rule);
+    // console.log(rule);
+    let d = createDomElement({name: "div", class: "rule-props-cont"});
+    d.ruleIndex = index;
+    createDomElement({name: "div", class: "rule-props-cont-del bl", appendTo: d}).innerHTML = `<svg viewBox="0 0 24 24" class="ic" width="24px" height="24px">
+                <use xlink:href="../sources/svg_icons.svg#delete"></use>
+            </svg>`;
+    let e = createDomElement({name: "div", class: "rule-prop carrying el_prop", appendTo: d});
+    e.el = {ruleIndex: index, id: title.split(".")[1]};
+    createDomElement({name: "div", class: "arrow expanded", prependTo: e});
+    createDomElement({name: "input", class: "prop", appendTo: e, value: `${title + " {"}`}).type = "text";
+    //let ul = createDomElement({name: "ul", class: "el_prop"});
+    for (let i = 0, len = rule.length - 1; i < len; i++) {
+        let r = Methods.single_split(rule[i], ":");
+        d.appendChild(renderStyle(r[0], r[1], index, true, "rI"));
     }
-    return container;
+    createDomElement({name: "span", class: "prop c-l", appendTo: d, innerHTML: '}'}).rI = index;
+    return d;
 }
 
 function Classes() {
     this.allClassContainer = document.getElementById("all-cls-pl");
-    this.classSheet = document.getElementById("element-utilities");
+    this.classSheet = document.getElementById(`${classId}`);
 }
 
 Classes.prototype.init = function () {
@@ -121,11 +119,36 @@ Classes.prototype.init = function () {
     // get_all_styles(this.parentContainer, "genie-paint-field", this.element);
 };
 
-Classes.prototype.createNewClass = function () {
+Classes.prototype.createNewClass = function (title) {
+    this.container = document.querySelector(".styles");
+    let rules = `.${title.split(".")[1]}{}`, index = this.classSheet.sheet.cssRules.length;
+    this.container.appendChild(allClsLoop(rules, index));
+    this.classSheet.sheet.insertRule(`${rules}`, index);
+};
 
+Classes.prototype.getAllClasses = function () {
+    let rules = this.classSheet.sheet.cssRules;
+    let cont = document.getElementById("genie-all-cls-main");
+    cont.innerHTML = "";
+    let f = (text)=>{
+        let d = createDomElement({name: "div", class: "choose-cls-cont"});
+        let cb = createDomElement({name: "input", class: "choose-cls", appendTo: d});
+        cb.type = "checkbox";
+        createDomElement({name: "span", class: "cls-title", appendTo: d, innerHTML: text});
+        cont.appendChild(d)
+    };
+    Methods.apply(rules, (e)=>{f(e.selectorText);});
+    // console.log(rules);
 };
 
 Classes.prototype.loadAllClasses = function () {
-    this.allClassContainer.appendChild(allClsLoop(this.classSheet.sheet.cssRules, this.container));
+    let rules = this.classSheet.sheet.cssRules;
+    for (let i in rules){
+        if (rules.hasOwnProperty(i)) {
+            this.container.appendChild(allClsLoop(rules[i].cssText, i));
+        }
+    }
+    this.allClassContainer.appendChild(this.container);
 };
 new Classes().init();
+new Classes().getAllClasses();

@@ -12,6 +12,14 @@
             justify-content: center;
         }
 
+        .initial{
+            transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            border: 1px solid gray;
+            cursor:all-scroll;
+            background-color: white;
+            position: absolute;
+        }
+
         .align-center-left{
             align-items: center;
             display: flex;
@@ -102,6 +110,29 @@
             </svg>
         </div>
         <div title="click to append element on mouse up" class="gti fill_height align_center col toolbar-item-color" id="A">A</div>
+        <div id="convert2perc" class="content-btn fill_height align_center">Convert to %
+            <div id="m-option" class="zero-h">
+                <div class="choose-cls-cont">
+                    <input id="m-option-w" type="checkbox" class="choose-cls">
+                    <span class="cls-title">width</span>
+                </div>
+                <div class="choose-cls-cont">
+                    <input id="m-option-h" type="checkbox" class="choose-cls">
+                    <span class="cls-title">height</span>
+                </div>
+                <div class="choose-cls-cont">
+                    <input id="m-option-l" type="checkbox" class="choose-cls">
+                    <span class="cls-title">left</span>
+                </div>
+                <div class="choose-cls-cont">
+                    <input id="m-option-t" type="checkbox" class="choose-cls">
+                    <span class="cls-title">top</span>
+                </div>
+            </div>
+        </div>
+        <div id="generate" class="content-btn fill_height align_center">generate
+
+        </div>
     </div>
     <div id="genie-instant-toolbar" class="genie-instant-toolbar align_center fill_width" onmouseenter="displayInstantToolbar()" onmouseleave="slowRemoveInstantToolbar()">
         <div title="click to resize" class="gti fill_height align_center col toolbar-item-color" id="B">B</div>
@@ -111,21 +142,34 @@
     </div>
     <div class="genie-top fill_width">
         <div class="genie-compressed-layout fill_height col"></div>
-        <div draggable="true" class="separator normal_drag normal_drag fill-height fill_height"></div>
+        <div class="separator normal_drag normal_drag fill-height fill_height"></div>
         <div class="genie-paint-field fill_height col" id="genie-paint-field">
 
         </div>
-        <div draggable="true" class="separator normal_drag fill-height fill_height"></div>
+        <div class="separator normal_drag fill-height fill_height"></div>
         <div id="genie-styles" class="genie-styles fill_height col">
-            <div id="genie-styles-top" class="">
+            <div id="genie-styles-top" class="tab-top">
                 <div id="style-tab-title" class="style-tab tab align_center">styles</div>
                 <div id="class-tab-title" class="style-tab tab align_center">classes</div>
             </div>
-            <div id="genie-styles-body" class="fill_width">
-                <div id="genie-styles-main" class="fill_width"></div>
-                <div id="genie-classes-main" class="fill_width">
+            <div id="genie-styles-body" class="tab-body fill_width">
+                <div id="genie-styles-main" class="genie-style-mains fill_width">
+                    <div id="genie-styles-main-top" class="fill_width"></div>
+                    <div class="separator normal_drag fill-width fill_width"></div>
+                    <div id="genie-styles-main-class-pane" class="fill_width">
+                        <div id="genie-styles-main-class-pane-top" class="tab-top fill_width">
+                            <div id="all-cls-tab-title" class="style-tab tab align_center">all cls</div>
+                            <div id="selected-cls-tab-title" class="style-tab tab align_center">selected</div>
+                        </div>
+                        <div id="genie-styles-main-class-pane-body" class="tab-body">
+                            <div id="genie-all-cls-main" class="genie-style-mains fill_width"></div>
+                            <div id="genie-selected-cls" class="genie-style-mains fill_width"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="genie-classes-main" class="genie-style-mains fill_width">
                     <div id="genie-new-style">
-                        <label>
+                        <label id="special-create" class="">
                             <input placeholder="new class rule" id="input-new-class"/>
                             <button id="create-new-class-btn">create</button>
                         </label>
@@ -146,6 +190,7 @@
 <script src="../lib/Js/utilities/contextmenu.js"></script>
 <script src="../lib/Js/utilities/styles.js"></script>
 <script src="../lib/Js/utilities/svg_viewboxer.js"></script>
+<script src="../lib/Js/utilities/super_generate.js"></script>
 <script>
     function GenieApplication() {
         new Compressed_layout("genie-compressed-layout","container",boundary.el).init();

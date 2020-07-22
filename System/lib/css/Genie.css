@@ -112,6 +112,12 @@ div.compressed_layout ul li ul li ul li { font-size: 1em;  }
     font-weight: bolder;
     cursor: pointer;
 }
+.zero-h{
+    height: 0!important;
+}
+.full-h{
+    height: fit-content!important;
+}
 .link{
     height: 100%;
     width: 70%;
@@ -392,25 +398,54 @@ div.compressed_layout ul li ul li ul li { font-size: 1em;  }
     background: inherit;
 }
 
-#genie-styles-top{
+.tab-top{
     height: 5%;
+    min-height: 20px;
     display: flex;
+    border-bottom: 1px solid gray;
 }
-#genie-styles-body{
+.tab-body{
     background-color: inherit;
     height: 95%;
     width: 100%;
     position: relative;
+    padding-top: 5px;
 }
 
-#genie-styles-main, #genie-classes-main{
+.genie-style-mains{
     background-color: inherit;
-    height: 100%;
+    height: 90%;
     width: 100%;
     position: absolute;
     transition: all .3s;
-    overflow-y: scroll;
-    overflow-x: overlay;
+    overflow: overlay;
+}
+
+#genie-styles-main{
+    overflow: hidden;
+}
+
+#genie-all-cls-main{
+    visibility: visible;
+    opacity: 1;
+}
+
+#genie-selected-cls{
+    visibility: hidden;
+    opacity: 0;
+}
+
+#genie-styles-main-top{
+    background-color: white;
+    height: 50%;
+    overflow: overlay;
+}
+#genie-styles-main-class-pane{
+    height: 50%;
+}
+
+#genie-styles-main-class-pane-body{
+    overflow: overlay;
 }
 
 #genie-classes-main{
@@ -448,8 +483,7 @@ div.compressed_layout ul li ul li ul li { font-size: 1em;  }
     width: 100%;
     display: flex;
     padding: 5px 0 5px 5%;
-    border-top: 1px solid;
-    border-bottom: 1px solid;
+    border-bottom: 1px solid gray;
 }
 
 #input-new-class{
@@ -459,7 +493,7 @@ div.compressed_layout ul li ul li ul li { font-size: 1em;  }
 .style-tab{
     cursor: pointer;
     height: 100%;
-    width: 50px;
+    width: 60px;
     margin-left: 2px;
     border-radius: 10%;
     font-family: "Segoe UI";
@@ -476,4 +510,23 @@ div.compressed_layout ul li ul li ul li { font-size: 1em;  }
 
 .lightblue{
     background-color: lightblue;
+}
+
+.content-btn{
+    width: 100px;
+    display: flex;
+    float: left;
+    flex-direction: column;
+    position: relative;
+    margin-left: 5px;
+    background-color: lightblue;
+    font-weight: bold;
+    font-family: "segoe UI";
+}
+#m-option{
+    position: absolute;
+    top: 100%;
+    background-color: grey;
+    z-index: 1;
+    overflow: hidden;
 }

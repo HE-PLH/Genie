@@ -54,6 +54,7 @@ const CTRL = 17;
 const SHIFT = 16;
 const ALT = 18;
 const DEL = 46;
+const ENTER = 13;
 const D = 68;
 const Z = 90;
 const A = 65;
@@ -96,6 +97,9 @@ let deleted = [];
 let redone = [];
 let sequencedKeys = [];
 let g_timer = false;
+let styleId = "element";
+let classId = "element-utilities";
+let styleElement = document.getElementById(`${styleId}`);
 let orient = '';
 let seprator = {
     pw: 0,
@@ -311,6 +315,11 @@ let Methods = {
     trim: function (string) {
         return string.replace(/^\s+|\s+$/g, '');
     },
+    apply: function (array, f){
+        for (let i = 0, len = array.length; i<len; i++){
+            f(array[i]);
+        }
+    },
     removeNode: function (element) {
         element.parentNode.removeChild(element);
     },
@@ -368,6 +377,13 @@ let Methods = {
         while ((element = element.previousSibling) !== null){i++}
         return i;
     }*/
+    getDuplicates(arrays) {
+        return arrays.shift().filter(function (v) {
+            return arrays.every(function (a) {
+                return a.indexOf(v) !== -1;
+            })
+        });
+    }
 };
 
 let projectObject = `
@@ -479,6 +495,65 @@ function CreateWindow() {
     new Compressed_layout("window_body_left_bottom", "container", h).init();
 }
 
+
+function check_perc() {
+    if (focusedElements.length>0) {
+        let w = true;
+        let h = true;
+        let l = true;
+        let t = true;
+        let g = (e, str) => {
+            return Styling.get_style("", str, e.ruleIndex).indexOf("%") !== -1;
+        };
+        let r = (n, id) => {
+            id = document.getElementById(`${id}`);
+            id.checked = n;
+        };
+        Methods.apply(focusedElements, (e) => {
+            if (!g(e, "width")) {
+                w = false;
+            }
+            if (!g(e, "height")) {
+                h = false;
+            }
+            if (!g(e, "left")) {
+                l = false;
+            }
+            if (!g(e, "top")) {
+                t = false;
+            }
+        });
+        r(w, "m-option-w");
+        r(h, "m-option-h");
+        r(l, "m-option-l");
+        r(t, "m-option-t");
+    }
+}
+
+function presentCls() {
+    let lst = [];
+    if (focusedElements.length>0) {
+        Methods.apply(focusedElements, (e)=>{
+            let cls = e.className.split(" ");
+            let t = [];
+            for (let j = 0, l = cls.length; j < l; j++) {
+                if (!(Methods.find(systemClasses, cls[j]))) {
+                    t.push(cls[j]);
+                }
+            }
+            lst.push(t);
+        });
+        return Methods.getDuplicates(lst);
+    }else return lst;
+}
+
+function show_classes() {
+    let cont = document.getElementById("genie-selected-cls");
+    cont.innerHTML = "";
+    let lst = presentCls();
+    Methods.apply(lst, (e)=>{cont.appendChild(createDomElement({name: "div", class: "choose-cls-cont", innerHTML: e}));});
+}
+
 function setAttributesTo(attr, el1, el2) {
     function f(el1, el2) {
         for (let i in el1) {
@@ -514,9 +589,7 @@ function get_angle(original, pt) {
 }
 
 function removeEditable() {
-    for (let i = 0, len = focusedElements.length; i < len; i++) {
-        focusedElements[i].contentEditable = false;
-    }
+    Methods.apply(focusedElements, (e)=>{e.contentEditable = false;});
     typing = false;
     BRICK.typing = false;
 }
@@ -526,6 +599,11 @@ function drag_style (wnd, property, value) {
     Styling.edit_style(mouse.dragging.id, property, value, wnd.ruleIndex)
 }
 
+
+function contract_drop() {
+    let d = document.getElementById("m-option");
+    d.classList.contains("full-h")?(()=>{d.classList.remove("full-h");d.classList.add("zero-h")})():"";
+}
 
 function click(el, e) {
     /*inside element*/
@@ -573,7 +651,7 @@ function click(el, e) {
         */
         window.clearTimeout(timeOut);
         document.getElementById("genie-instant-toolbar").style.display = "none";
-
+        contract_drop();
         focusedElements = [];
     } else {
         /*focusedElements = [];*/
@@ -585,6 +663,11 @@ function click(el, e) {
 
 function isDraggable(el) {
     return el.classList.contains("normal_drag");
+}
+
+function new_class_instr() {
+    let title = document.getElementById("input-new-class").value||".new-cls";
+    new Classes().createNewClass(title)
 }
 
 function displayInstantToolbar() {
@@ -702,6 +785,12 @@ function createDomElement(args) {
     return el;
 }
 
+function checkSelectedCls() {
+    let lst = presentCls();
+    let ch = document.getElementById("genie-all-cls-main")["children"];
+    Methods.apply(ch, (e)=>{Methods.find(lst, e.querySelector("span").textContent.split(".")[1])? e.querySelector("input").checked = true:e.querySelector("input").checked = false;});
+}
+
 function clsName(classList) {
     for (let i = 0; i < systemClasses.length; i++) {
         Methods.remove(classList, systemClasses[i]);
@@ -715,24 +804,23 @@ function toolbarItems(el) {
 
 function hightlightAll() {
     let ell = [];
-    for (let i = 0, len = focusedElements.length; i < len; i++) {
-        if (focusedElements[i].classList.contains("hi")) {
-            ell.push(focusedElements[i].done.querySelector("input"));
-        }
-    }
+    Methods.apply(focusedElements, (e)=>{e.classList.contains("hi")? ell.push(e.done.querySelector("input")) :"";});
     highlightLayout(ell);
 }
 
 function getFocusedClasses(cls) {
     let lst = [], lst1 = [];
-    for (let i = 0; i < focusedElements.length; i++) {
-        if (focusedElements[i].classList.contains(`${cls}`)) {
-            lst.push(`${focusedElements[i].id}`);
-            lst1.push(focusedElements[i])
-        } else if (focusedElements[i].parentNode.creator) {
-            lst.push(`${focusedElements[i].parentNode.creator.id}`);
-            lst1.push(focusedElements[i].parentNode.creator)
+    Methods.apply(focusedElements, (e)=>{
+        if (e.classList.contains(`${cls}`)) {
+            lst.push(`${e.id}`);
+            lst1.push(e)
+        } else if (e.parentNode.creator) {
+            lst.push(`${e.parentNode.creator.id}`);
+            lst1.push(e.parentNode.creator)
         }
+    });
+    for (let i = 0; i < focusedElements.length; i++) {
+
     }
     return [lst, lst1];
 }
@@ -779,14 +867,14 @@ function addCurrentTool(el) {
             p.style.left = `${center.x - (flag ? flag : 40)}px`;
             p.style.top = `${center.y - (flag ? flag : 0)}px`;
         } else {
-            for (let i = 0, len = focusedElements.length; i < len; i++) {
-                if (focusedElements[i].classList.contains("hi")) {
-                    center = {x: focusedElements[i].clientWidth / 2, y: focusedElements[i].clientHeight / 2};
-                    focusedElements[i].appendChild(p);
+            Methods.apply(focusedElements, (e)=>{
+                if (e.classList.contains("hi")) {
+                    center = {x: e.clientWidth / 2, y: e.clientHeight / 2};
+                    e.appendChild(p);
                     p.style.left = `${center.x - (flag ? flag : 40)}px`;
                     p.style.top = `${center.y - (flag ? flag : 0)}px`;
                 }
-            }
+            });
         }
     }
 }
@@ -830,14 +918,14 @@ function handleCurrentResize(el) {
             /*if ctrl is down ,multi-select!*/
             if (keySequence.isSequenced([CTRL])) {
                 removeEditable();
-                Styling.edit_style("", "cursor", "all-scroll", el.ruleIndex);
+                el.style.cursor = "all-scroll";
                 focusedElements.push(el);
                 addCurrentTool(el);
             } else {
                 new Styles(el).init();
                 removeEditable();
                 removeCurrentTool();
-                Styling.edit_style("", "cursor", "all-scroll", el.ruleIndex);
+                el.style.cursor = "all-scroll";
                 addCurrentTool(el);
                 focusedElements = [];
                 focusedElements.push(el);
@@ -1005,6 +1093,9 @@ let keySequence = {
     DEL: () => {
         return keySequence.isSequenced([DEL]);
     },
+    ENTER: () => {
+        return keySequence.isSequenced([ENTER]);
+    },
     REDO: () => {
         return keySequence.isSequenced([CTRL, SHIFT, Z]);
     },
@@ -1053,13 +1144,7 @@ function KeyEventHandler(element, event) {
 
 KeyEventHandler.prototype.handleDelete = function () {
     let lst = [];
-    for (let i = 0, len = focusedElements.length; i < len; i++) {
-        if (focusedElements[i]) {
-            if (focusedElements[i].parentNode.classList.contains("list_item") || focusedElements[i].classList.contains("hi")) {
-                lst.push(focusedElements[i]);
-            }
-        }
-    }
+    Methods.apply(focusedElements, (e)=>{e?e.parentNode.classList.contains("list_item") || e.classList.contains("hi")? lst.push(e) :"" :"";});
     removeCurrentTool();
     this.delete(lst)
 };
@@ -1148,45 +1233,47 @@ KeyEventHandler.prototype.handleRedoDelete = function () {
 
 KeyEventHandler.prototype.handleDuplicate = function () {
     let lst = [];
-    for (let i = 0, len = focusedElements.length; i < len; i++) {
-        if (focusedElements[i].parentNode.classList.contains("list_item")) {
-            lst.push(focusedElements[i].parentNode);
-        } else if (focusedElements[i].classList.contains("hi")) {
-            lst.push(focusedElements[i]);
-        }
-    }
+    Methods.apply(focusedElements, (e)=>{e.parentNode.classList.contains("list_item")? lst.push(e.parentNode) :e.classList.contains("hi")? lst.push(e):"";});
     this.duplicate(lst);
 };
 
 KeyEventHandler.prototype.duplicate = function (elems) {
-    let elem, c, cc, len = elems.length, tag = "";
-    for (let i = 0; i < len; i++) {
-        elem = elems[i];
-        if (elem.classList.contains("hi")) {
-            removeCurrentTool(elem);
-            c = clone(elem);
-            Methods.presert(c[1], elem.done.parentNode, elem.done.nextElementSibling);
-            Methods.presert(c[0], elem.parentNode, elem.nextElementSibling);
+    let c;
+    Methods.apply(elems, (e)=>{
+        if (e.classList.contains("hi")) {
+            removeCurrentTool(e);
+            c = clone(e);
+            Methods.presert(c[1], e.done.parentNode, e.done.nextElementSibling);
+            Methods.presert(c[0], e.parentNode, e.nextElementSibling);
             focusedElements.push(c[0]);
             addCurrentTool(c[0]);
         } else {
             removeCurrentTool();
-            c = clone(elem.creator);
-            Methods.presert(c[0], elem.creator.parentNode, elem.creator.nextElementSibling);
-            Methods.presert(c[1], elem.parentNode, elem.nextElementSibling);
-            addCurrentTool(elem);
+            c = clone(e.creator);
+            Methods.presert(c[0], e.creator.parentNode, e.creator.nextElementSibling);
+            Methods.presert(c[1], e.parentNode, e.nextElementSibling);
+            addCurrentTool(e);
         }
-    }
+    });
+
     hightlightAll();
 };
 
 KeyEventHandler.prototype.handleKeys = function () {
     if (!BRICK.typing) {
         if (!typing) {
-            if (this.el.parentNode.classList.contains("rule-prop")) {
-                if (!this.el.parentNode.classList.contains("el_prop")) {
-                    if (KEY.isCharCode(this.key)) {
-                        Styling.commentRuleProperty(Methods.trim(this.el.parentNode.querySelector(".prop").value), Methods.trim(this.el.parentNode.querySelector(".val").value), this.el.parentNode.querySelector(".rule-prop-check-box").ruleIndex);
+            if (this.el.parentNode.classList.contains("rule-prop")||this.el.parentNode.id === "special-create") {
+                if (this.el.parentNode.id !== "special-create") {
+                    if (!this.el.parentNode.classList.contains("el_prop")) {
+                        if (KEY.isCharCode(this.key)) {
+                            let p = Methods.trim(this.el.parentNode.querySelector(".prop").value);
+                            let v = Methods.trim(this.el.parentNode.querySelector(".val").value);
+                            let cb = this.el.parentNode.parentElement;
+                            cb.ruleIndex !== undefined ? Styling.commentRuleProperty(p, v, cb.ruleIndex) : (() => {
+                                styleElement = document.getElementById(`${classId}`);
+                                Styling.commentRuleProperty(p, v, cb.rI);
+                            })();
+                        }
                     }
                 }
             } else if (keySequence.DEL()) {
@@ -1234,27 +1321,53 @@ KeyEventHandler.prototype.handle_key_up = function () {
     } else {
         if (this.el.classList.contains("hi")) {
             HandleHightlightedText();
-        } else if (this.el.classList.contains("layout_title")) {
+        }
+        else if (this.el.classList.contains("layout_title")) {
             this.el.value = this.el.value.split(" ").join("-");
             let el = this.el.parentNode.creator;
             if (this.el.value.length > 0) {
-                Styling.changeClass(el, `#${this.el.value}`);
+                Styling.changeClass(el, `#${this.el.value.split("#")[1]}`, false);
             }
-        } else if (this.el.classList.contains("prop")) {
+        }
+        else if (this.el.classList.contains("prop")) {
             if (KEY.isCharCode(this.key)) {
                 if (this.el.parentNode.classList.contains("el_prop")) {
                     let e = this.el.parentNode.el, v = Methods.removeSpaces(this.el.value.split("{")[0]);
-                    Styling.changeClass(e, v);
-                    e.done.querySelector("input").value = v;
+                    if (e.tagName!==undefined){
+                        Styling.changeClass(e, v, false);
+                        e.done.querySelector("input").value = v;
+                    }else {
+                        styleElement = document.getElementById(`${classId}`);
+                        Styling.changeClass(e, v, true);
+                        styleElement = document.getElementById(`${styleId}`);
+                    }
                 } else {
-                    let val = this.el.parentNode.querySelector(".val");
-                    Styling.UncommentRuleProperty(Methods.trim(this.el.value), Methods.trim(val.value), this.el.parentNode.querySelector(".rule-prop-check-box").ruleIndex);
+                    let p = Methods.trim(this.el.value);
+                    let v = Methods.trim(this.el.parentNode.querySelector(".val").value);
+                    let cb = this.el.parentNode.parentElement;
+                    cb.ruleIndex!==undefined? Styling.UncommentRuleProperty(p, v, cb.ruleIndex):(()=>{
+                        Styling.UncommentRuleProperty(p, v, cb.rI);
+                        styleElement = document.getElementById(`${styleId}`);
+                    })();
                 }
                 this.el.style.width = (this.el.value.length + 1) * 6 + "px";
             }
-        } else if (this.el.classList.contains("val")) {
+        }
+        else if (this.el.id === "input-new-class") {
+            if(keySequence.ENTER()){
+                new_class_instr();
+            }
+        }
+        else if (this.el.classList.contains("val")) {
             if (KEY.isCharCode(this.key)) {
-                Styling.edit_style("", Methods.removeSpaces(this.el.parentNode.querySelector(".prop").value.split(":")[0]), Methods.trim(this.el.value.split(";")[0]), this.el.parentNode.querySelector(".rule-prop-check-box").ruleIndex);
+                let p = Methods.removeSpaces(this.el.parentNode.querySelector(".prop").value.split(":")[0]);
+                let v = Methods.trim(this.el.value.split(";")[0]);
+                let cb = this.el.parentNode.parentElement;
+                cb.ruleIndex!==undefined? Styling.edit_style("", p, v, cb.ruleIndex):(()=>{
+                    styleElement = document.getElementById(`${classId}`);
+                    Styling.edit_style("", p, v, cb.rI);
+                    styleElement = document.getElementById(`${styleId}`);
+                })();
                 this.el.style.width = (this.el.value.length + 1) * 6 + "px";
             }
         }
@@ -1415,7 +1528,7 @@ MouseEventHandler.prototype.dblclick = function () {
         }*/
         BRICK.typing = true;
         this.el.contentEditable = true;
-        Styling.edit_style("", "cursor", "text", this.el.ruleIndex)
+        this.el.style.cursor = "text";
     }else {
         if (this.el.classList.contains("editable")) {
             if (!Methods.find(currentBeingTyped, this.el)) {
@@ -1459,7 +1572,16 @@ MouseEventHandler.prototype.handle_late_click = function () {
                 if compressed layout list_item has other list_items
         */
         Methods.toogle.classes(this.el, "expanded", "collapsed");
-        Methods.toogle.display(this.el.parentNode.querySelector("ul"));
+        let ul = this.el.parentNode.querySelector("ul");
+        ul?Methods.toogle.display(this.el.parentNode.querySelector("ul")): (() => {
+            this.el.parentNode.parentNode.querySelectorAll(".rule-prop").forEach( (e) => {
+                if (!e.classList.contains("el_prop")) {
+                    Methods.toogle.display(e);
+                }
+            });
+            let r = this.el.parentNode.parentNode.querySelector("span.c-l");
+            r?Methods.toogle.display(r):"";
+        })();
     }
     else if (this.el.classList.contains("cancel") || this.el.classList.contains("window_close")) {
         document.querySelector(".window").style.display = "none";
@@ -1475,43 +1597,90 @@ MouseEventHandler.prototype.handle_late_click = function () {
         reloadCurrentTool();
     }
     else if (this.el.classList.contains("style-tab")) {
-        if (this.el.id === "style-tab-title"){
-            let a = document.getElementById("genie-styles-main");
-            let b = document.getElementById("genie-classes-main");
+        let f = (id1, id2)=>{
+            let a = document.getElementById(`${id1}`);
+            let b = document.getElementById(`${id2}`);
             a.style.opacity = "1";
             b.style.opacity = "0";
             a.style.visibility = "visible";
             b.style.visibility = "hidden";
-        }
-        else if (this.el.id === "class-tab-title"){
-            let a = document.getElementById("genie-styles-main");
-            let b = document.getElementById("genie-classes-main");
-            a.style.opacity = "0";
-            b.style.opacity = "1";
-            a.style.visibility = "hidden";
-            b.style.visibility = "visible";
+        };
+        switch (this.el.id) {
+            case "style-tab-title":
+                f("genie-styles-main", "genie-classes-main");
+                new Classes().getAllClasses();
+                break;
+            case "class-tab-title":
+                f("genie-classes-main", "genie-styles-main");
+                break;
+            case "all-cls-tab-title":
+                f("genie-all-cls-main", "genie-selected-cls");
+                break;
+            case "selected-cls-tab-title":
+                f("genie-selected-cls", "genie-all-cls-main");
+                show_classes();
+                break;
         }
         Methods.changeClassProperty(".style-tab", [this.el], "backgroundColor", "lightblue", "inherit");
         Methods.changeClassProperty(".style-tab", [this.el], "border-bottom", "1px solid rgba(11, 23, 64, 0.96)", "0");
     }
     else if (this.el.classList.contains("rule-prop-delete")) {
         let p = this.el.parentNode;
-        Styling.commentRuleProperty(p.querySelector(".prop").value, p.querySelector(".val").value, this.el.ruleIndex);
+        let index = p.parentElement.ruleIndex!==undefined?p.parentElement.ruleIndex:p.parentElement.rI;
+        Styling.commentRuleProperty(p.querySelector(".prop").value, p.querySelector(".val").value, index);
         Methods.removeNode(p);
 
     }
+    else if (this.el.classList.contains("rule-props-cont-del")) {
+        let p = this.el.parentNode;
+        styleElement = document.getElementById(`${classId}`);
+        Styling.deleteRule(p.rI);
+        Methods.removeNode(p);
+        styleElement = document.getElementById(`${styleId}`);
+    }
     else if (this.el.classList.contains("rule-prop-check-box")) {
         let p = this.el.parentNode;
-        if (this.el.checked) {
-            Styling.UncommentRuleProperty(Methods.trim(p.querySelector(".prop").value), p.querySelector(".val").value, this.el.ruleIndex);
+        if (!this.el.checked) {
+            let index;
+            if (p.parentElement.ruleIndex !== undefined) {
+                index = p.parentElement.ruleIndex;
+                styleElement = document.getElementById(`${styleId}`);
+            } else {
+                index = p.parentElement.rI;
+                styleElement = document.getElementById(`${classId}`);
+            }
+            Styling.commentRuleProperty(Methods.trim(p.querySelector(".prop").value), p.querySelector(".val").value, index);
+            styleElement = document.getElementById(`${styleId}`);
         } else {
-            Styling.commentRuleProperty(Methods.trim(p.querySelector(".prop").value), p.querySelector(".val").value, this.el.ruleIndex);
+            let index;
+            if (p.parentElement.ruleIndex !== undefined) {
+                index = p.parentElement.ruleIndex;
+                styleElement = document.getElementById(`${styleId}`);
+            } else {
+                index = p.parentElement.rI;
+                styleElement = document.getElementById(`${classId}`);
+            }
+            Styling.UncommentRuleProperty(Methods.trim(p.querySelector(".prop").value), p.querySelector(".val").value, index);
+            styleElement = document.getElementById(`${styleId}`);
         }
     }
-    else if (this.el.classList.contains("rule-prop")) {
+    else if (this.el.classList.contains("rule-prop")||this.el.classList.contains("c-l")) {
         if (newProp === null) {
-            let p = renderStyle(" ", " ", this.el.querySelector(".rule-prop-check-box").ruleIndex);
-            Methods.presert(p, this.el.parentNode, this.el.nextElementSibling);
+            let cb = this.el.querySelector(".rule-prop-check-box");
+            let p;
+            if (cb !== null) {
+                p = cb.parentNode.parentElement.rI ? renderStyle(" ", " ", cb.parentNode.parentElement.rI, true, "rI") : renderStyle(" ", " ", cb.parentNode.parentElement.ruleIndex);
+                Methods.presert(p, this.el.parentNode, this.el.nextElementSibling);
+            } else {
+                cb = this.el;
+                if(cb.tagName ==="SPAN"){
+                    cb = this.el.rI;
+                }else{
+                    cb = cb.parentNode.parentElement.ruleIndex;
+                }
+                p = renderStyle(" ", " ", cb, true, "rI");
+                Methods.presert(p, this.el.parentNode, this.el);
+            }
             p.querySelector(".prop").select();
             newProp = p;
         } else {
@@ -1533,12 +1702,114 @@ MouseEventHandler.prototype.handle_late_click = function () {
         if (BRICK.typing) {
             HandleHightlightedText();
         }
+        checkSelectedCls();
+        contract_drop();
     }
     else if (this.el.id === "create-new-class-btn") {
-
+        new_class_instr();
     }
-
-
+    else if (this.el.id === "input-new-class") {
+        typing = false;
+        BRICK.typing = false;
+    }
+    else if (this.el.id === "generate") {
+        new Generate().init();
+    }
+    else if (this.el.id === "convert2perc") {
+        check_perc();
+        Methods.toogle.classes(document.getElementById("m-option"), "zero-h", "full-h");
+    }
+    else if (this.el.parentNode.classList.contains("choose-cls-cont")) {
+        focusedElements.length>0?(()=> {
+            let sp = this.el.parentNode.querySelector("span");
+            let cb = this.el.parentNode.querySelector("input");
+            let txt = sp.textContent;
+            txt = txt.indexOf(".")!==-1?txt.split(".")[1]:txt;
+            if (this.el.tagName !== "INPUT") {
+                cb.checked = !cb.checked;
+            }
+            if (this.el.parentNode.parentElement.id === "m-option"){
+                if (cb.checked) {
+                    Methods.apply(focusedElements, (e)=>{
+                        console.log(txt);
+                        let a, b;
+                        if (txt === "top"||txt === "left") {
+                            let d = ff(e, e.id, false);
+                            if (txt === "left") {
+                                a = `${d[0] * 100 / e.parentElement.clientWidth}%`;
+                                if (!percX) {
+                                    Styling.edit_style("", "left", a, e.ruleIndex);
+                                    left_display.value = a;
+                                }
+                            } else {
+                                b = `${d[1] * 100 / e.parentElement.clientHeight}%`;
+                                if (!percY) {
+                                    Styling.edit_style("", "top", b, e.ruleIndex);
+                                    top_display.value = b;
+                                }
+                            }
+                        }else {
+                            let d = ff(e, e.id, true);
+                            if (txt === "width") {
+                                a = `${d[0] * 100 / e.parentElement.clientWidth}%`;
+                                if (!percX) {
+                                    Styling.edit_style("", "width", a,e.ruleIndex);
+                                    width_display.value = a;
+                                }
+                            } else {
+                                b = `${d[1] * 100 / e.parentElement.clientHeight}%`;
+                                if (!percY) {
+                                    Styling.edit_style("", "height", b,e.ruleIndex);
+                                    height_display.value = b;
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    Methods.apply(focusedElements, (e)=>{
+                        let a, b;
+                        if (txt === "top"||txt === "left") {
+                            let d = ff(e, e.id, false);
+                            if (txt === "left") {
+                                a = `${d[0]}px`;
+                                if (percX) {
+                                    Styling.edit_style("", "left", a, e.ruleIndex);
+                                    left_display.value = a;
+                                }
+                            } else {
+                                b = `${d[1]}px`;
+                                if (percY) {
+                                    Styling.edit_style("", "top", b, e.ruleIndex);
+                                    top_display.value = b;
+                                }
+                            }
+                        }else {
+                            let d = ff(e, e.id, true);
+                            if (txt === "width") {
+                                a = `${d[0]}px`;
+                                if (percX) {
+                                    Styling.edit_style("", "width", a,e.ruleIndex);
+                                    width_display.value = a;
+                                }
+                            } else {
+                                b = `${d[1]}px`;
+                                if (percY) {
+                                    Styling.edit_style("", "height", b,e.ruleIndex);
+                                    height_display.value = b;
+                                }
+                            }
+                        }
+                    });
+                }
+            }else {
+                if (cb.checked) {
+                    Methods.apply(focusedElements, (e)=>{!e.classList.contains(txt) ? e.classList.add(txt) : "";});
+                } else {
+                    Methods.apply(focusedElements, (e)=>{e.classList.contains(txt) ? e.classList.remove(txt) : "";});
+                }
+            }
+        })():"";
+    }
 };
 
 MouseEventHandler.prototype.hover = function () {
@@ -1856,17 +2127,12 @@ MouseEventHandler.prototype.normal_drag = function () {
 };
 
 MouseEventHandler.prototype.drag = function () {
-    if (BRICK.typing) {
+    if (BRICK.typing||typing) {
         mouse.dragging.draggable = false;
         /*mouse.dragging.element.draggable = false;*/
     } else {
         mouse.dragging.draggable = true;
-        /*mouse.dragging.element.draggable = true;*/
-        this.element.preventDefault();
     }
-    /*
-        this.element.preventDefault();
-    */
     if (mouse.dragging.draggable === true) {
         mouse.dragging.offset = {
             x: mouse.moving.point.x - mouse.clicking.point.x,
@@ -1973,5 +2239,4 @@ function rqst() {
  ==== 7. ELEMENTS
  ***************************************
 */
-
 

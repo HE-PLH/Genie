@@ -9,12 +9,13 @@ let boundary = {
 
 let Elements = {};
 let ruleIndex = 1;
-let styleId = "element";
-let styleElement = document.getElementById(`${styleId}`);
 
 let Styling = {
-    changeRule: (rule, index) => {
+    deleteRule: (index) => {
         styleElement.sheet.deleteRule(index);
+    },
+    changeRule: (rule, index) => {
+        Styling.deleteRule(index);
         styleElement.sheet.insertRule(rule, index);
     },
     commentRuleProperty : (property, value,index) => {
@@ -39,7 +40,6 @@ let Styling = {
     init_style : (rules) => {
         let styleSheet = styleElement.sheet;
         ruleIndex = styleSheet.cssRules.length;
-        //ruleIndex = styleSheet.cssRules.length;
         rules = rules.split("}");
         for (let st = -1; st < rules.length; st++) {
             if (rules.hasOwnProperty(st) && rules[st] !== "") {
@@ -50,16 +50,8 @@ let Styling = {
     },
     edit_style : (cls,property,value,ruleI) => {
         let rules = styleElement.sheet.cssRules || styleElement.rules;
-        if (ruleIndex !== undefined) {
-            rules[ruleI].style[property] = value;
-            return rules[ruleI];
-        } else {
-            for (let i = 0; i < rules.length; i++) {
-                if (rules[i].selectorText === cls) {
-                    rules[i].style[property] = value;
-                }
-            }
-        }
+        rules[ruleI].style[property] = value;
+        return rules[ruleI];
     },
     get_style : (cls,property,index,get_all) => {
         let rules = styleElement.sheet.cssRules || styleElement.rules;
@@ -77,10 +69,11 @@ let Styling = {
             }
         }
     },
-    changeClass(el, newId) {
+    changeClass(el, newId, is_class) {
+        let sep = is_class?".":"#";
         let c = Styling.get_style(el.id, null, el.ruleIndex, true).cssText.split("{");
-        Styling.changeRule(Methods.replace(c[0].split(" "), `#${el.id}`, `${newId}`).join(" ") + "{" + c[1], el.ruleIndex);
-        el.id =`${newId.split("#")[1]}`;
+        Styling.changeRule(Methods.replace(c[0].split(" "), `${sep+el.id}`, `${newId}`).join(" ") + "{" + c[1], el.ruleIndex);
+        el.id =`${newId.split(sep)[1]}`;
     }
 };
 
@@ -476,7 +469,7 @@ let Resizers = {
 
 function initiateStyle(parentPath, id,custom) {
     Styling.init_style(`
-        div#${parentPath||"genie-paint-field"} #${id}{${custom||"transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); border: 1px solid gray;cursor:all-scroll;left:0;top:0;position:absolute; width: 100px; height: 50px; background-color: white; }"}`
+        #${id}{${custom||"left:0;top:0;width: 100px; height: 50px;}"}`
     );
 }
 
@@ -505,7 +498,7 @@ G.prototype.create = function(tag_name, parent_path,parent){
     this.tagName = tag_name||"div";
     parent = parent.classList.contains("hi")?parent:null;
     this.parent = parent||document.getElementById(`${this.parentPath}`);
-    this.target = createDomElement({name: `${this.tagName}`,appendTo:this.parent, id: `${this.id}`, class: `hi normal_drag`,innerHTML:"hi there", contentEditable: false});
+    this.target = createDomElement({name: `${this.tagName}`,appendTo:this.parent, id: `${this.id}`, class: `hi normal_drag initial`,innerHTML:"hi there", contentEditable: false});
     initiateStyle(this.parentPath,this.id);
     this.target.ruleIndex = ruleIndex;
     //this.bindings();
