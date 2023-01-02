@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .test-cont{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 100%;
+            height: 100%;
+        }
+        .item .ic{
+            width:64px;
+            height: 64px;
+        }
+        .item{
+            width: 100px;
+            height: 100px;
+        }
+        .box-outer {
+  width: 20rem;
+  height: 6rem;
+  position: relative;
+}
+.arrow-left {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  top: 1.5rem;
+  left: 0rem;
+  z-index: 1;
+  background-color: yellow;
+  border: 1px solid black;
+}
+.arrow-right {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  top: 1.5rem;
+  right: 10rem;
+  z-index: 1;
+  background-color: yellow;
+  border: 1px solid black;
+}
+.box-inner {
+  width: 10rem;
+  height: 6rem;
+  position: absolute;
+  white-space: nowrap;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+.thumb {
+  height: 5rem;
+  width: 2rem;
+  background-color: green;
+  border: 1px solid black;
+  display: inline-block;
+}
+    </style>
+</head>
+<body>
+<div class="test-cont">
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#add-cart"></use>
+    </svg>
+    add-cart
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
+    </svg>
+    arrow-back
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#arrow-down"></use>
+    </svg>
+    arrow-down
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#arrow-forward"></use>
+    </svg>
+    arrow-forward
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#arrow-left"></use>
+    </svg>
+    arrow-left
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#arrow-right"></use>
+    </svg>
+    arrow-right
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#block"></use>
+    </svg>
+    block
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#box-arrow"></use>
+    </svg>
+    box-arrow
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-airplane"></use>
+    </svg>
+    cat-airplane
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-appliance"></use>
+    </svg>
+    cat-appliance
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-appliance_"></use>
+    </svg>
+    cat-appliance_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-baby"></use>
+    </svg>
+    cat-baby
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-baby_"></use>
+    </svg>
+    cat-baby_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-beauty"></use>
+    </svg>
+    cat-beauty
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-beer-wine-and-spirits"></use>
+    </svg>
+    cat-beer-wine-and-spirits
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-beer-wine-and-spirits_"></use>
+    </svg>
+    cat-beer-wine-and-spirits_
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-beverages"></use>
+    </svg>
+    cat-beverages
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-beverages_"></use>
+    </svg>
+    cat-beverages_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-books"></use>
+    </svg>
+    cat-books
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-camera"></use>
+    </svg>
+    cat-camera
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-car"></use>
+    </svg>
+    cat-car
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-car_"></use>
+    </svg>
+    cat-car_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-cart"></use>
+    </svg>
+    cat-cart
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-computer-accessories"></use>
+    </svg>
+    cat-computer-accessories
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-computer-accessories_"></use>
+    </svg>
+    cat-computer-accessories_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-computing"></use>
+    </svg>
+    cat-computing
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-computing_"></use>
+    </svg>
+    cat-computing_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-data-storage"></use>
+    </svg>
+    cat-data-storage
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-data-storage_"></use>
+    </svg>
+    cat-data-storage_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-deals"></use>
+    </svg>
+    cat-deals
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-fashion"></use>
+    </svg>
+    cat-fashion
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-fashion_"></use>
+    </svg>
+    cat-fashion_
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-fitness"></use>
+    </svg>
+    cat-fitness
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-fitness_"></use>
+    </svg>
+    cat-fitness_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-games"></use>
+    </svg>
+    cat-games
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-garden"></use>
+    </svg>
+    cat-garden
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-groceries"></use>
+    </svg>
+    cat-groceries
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-grooming"></use>
+    </svg>
+    cat-grooming
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-hair-care"></use>
+    </svg>
+    cat-hair-care
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-health"></use>
+    </svg>
+    cat-health
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-health_"></use>
+    </svg>
+    cat-health_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-home"></use>
+    </svg>
+    cat-home
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-home-audio"></use>
+    </svg>
+    cat-home-audio
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-home-audio_"></use>
+    </svg>
+    cat-home-audio_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-industrial-scientific"></use>
+    </svg>
+    cat-industrial-scientific
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-industrial-scientific_"></use>
+    </svg>
+    cat-industrial-scientific_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-jewel"></use>
+    </svg>
+    cat-jewel
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-kitchen-dinning"></use>
+    </svg>
+    cat-kitchen-dinning
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-kitchen-dinning_"></use>
+    </svg>
+    cat-kitchen-dinning_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-livestock"></use>
+    </svg>
+    cat-livestock
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-mall"></use>
+    </svg>
+    cat-mall
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-men-clothing"></use>
+    </svg>
+    cat-men-clothing
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-men-clothing_"></use>
+    </svg>
+    cat-men-clothing_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-men-shoes"></use>
+    </svg>
+    cat-men-shoes
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-men-shoes_"></use>
+    </svg>
+    cat-men-shoes_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-mobile"></use>
+    </svg>
+    cat-mobile
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-mobile-accessories"></use>
+    </svg>
+    cat-mobile-accessories
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-musical-instrument"></use>
+    </svg>
+    cat-musical-instrument
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-musical-instrument_"></use>
+    </svg>
+    cat-musical-instrument_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-othercategories"></use>
+    </svg>
+    cat-othercategories
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-othercategories_"></use>
+    </svg>
+    cat-othercategories_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-pet-supplies"></use>
+    </svg>
+    cat-pet-supplies
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-printers"></use>
+    </svg>
+    cat-printers
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-safety"></use>
+    </svg>
+    cat-safety
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-sale"></use>
+    </svg>
+    cat-sale
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-services"></use>
+    </svg>
+    cat-services
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-services_"></use>
+    </svg>
+    cat-services_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-sunglasses"></use>
+    </svg>
+    cat-sunglasses
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-sunglasses_"></use>
+    </svg>
+    cat-sunglasses_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-tablet"></use>
+    </svg>
+    cat-tablet
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-tablet_"></use>
+    </svg>
+    cat-tablet_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-temptations"></use>
+    </svg>
+    cat-temptations
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-temptations_"></use>
+    </svg>
+    cat-temptations_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-toys"></use>
+    </svg>
+    cat-toys
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-toys_"></use>
+    </svg>
+    cat-toys_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-tv"></use>
+    </svg>
+    cat-tv
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-tv_"></use>
+    </svg>
+    cat-tv_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-watch"></use>
+    </svg>
+    cat-watch
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-women-bag"></use>
+    </svg>
+    cat-women-bag
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-women-bag_"></use>
+    </svg>
+    cat-women-bag_
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-women-clothing"></use>
+    </svg>
+    cat-women-clothing
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-women-clothing_"></use>
+    </svg>
+    cat-women-clothing_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-women-shoes"></use>
+    </svg>
+    cat-women-shoes
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#cat-women-shoes_"></use>
+    </svg>
+    cat-women-shoes_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#categories"></use>
+    </svg>
+    categories
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#check"></use>
+    </svg>
+    check
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#check-circle"></use>
+    </svg>
+    check-circle
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#check-verified"></use>
+    </svg>
+    check-verified
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#close"></use>
+    </svg>
+    close
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#close-circle"></use>
+    </svg>
+    close-circle
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#coupon"></use>
+    </svg>
+    coupon
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#credit"></use>
+    </svg>
+    credit
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#delete"></use>
+    </svg>
+    delete
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#download-app"></use>
+    </svg>
+    download-app
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#download-app_b" cx="50" cy="50" r="50"></use>
+    </svg>
+
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#download-app_a" width="134%" height="134%" x="-17%" y="-13"></use>
+    </svg>
+    download-app_a" width="134%" height="134%" x="-17%" y="-13
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#edit"></use>
+    </svg>
+    edit
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#email"></use>
+    </svg>
+    email
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#error"></use>
+    </svg>
+    error
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#facebook"></use>
+    </svg>
+    facebook
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#favorite-border"></use>
+    </svg>
+    favorite-border
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#favorite-border_"></use>
+    </svg>
+    favorite-border_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#feedback-balloon"></use>
+    </svg>
+    feedback-balloon
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#file"></use>
+    </svg>
+    file
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#first-page"></use>
+    </svg>
+    first-page
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#help-outline"></use>
+    </svg>
+    help-outline
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#info"></use>
+    </svg>
+    info
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#insurance"></use>
+    </svg>
+    insurance
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#jumia-pay"></use>
+    </svg>
+    jumia-pay
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#last-page"></use>
+    </svg>
+    last-page
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#list"></use>
+    </svg>
+    list
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#menu"></use>
+    </svg>
+    menu
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#orders"></use>
+    </svg>
+    orders
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#orders_"></use>
+    </svg>
+    orders_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#paper-plane"></use>
+    </svg>
+    paper-plane
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#perm-identity"></use>
+    </svg>
+    perm-identity
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#plane-outline"></use>
+    </svg>
+    plane-outline
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#promos"></use>
+    </svg>
+    promos
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#reorder"></use>
+    </svg>
+    reorder
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#reorder_"></use>
+    </svg>
+    reorder_
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#restore"></use>
+    </svg>
+    restore
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#return-order"></use>
+    </svg>
+    return-order
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#reviews"></use>
+    </svg>
+    reviews
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#saved-items"></use>
+    </svg>
+    saved-items
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#saved-items-filled"></use>
+    </svg>
+    saved-items-filled
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#search"></use>
+    </svg>
+    search
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#shop-bag"></use>
+    </svg>
+    shop-bag
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#shopping-cart"></use>
+    </svg>
+    shopping-cart
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#soc-facebook"></use>
+    </svg>
+    soc-facebook
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#soc-facebook_"></use>
+    </svg>
+    soc-facebook_
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#soc-instagram"></use>
+    </svg>
+    soc-instagram
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#soc-jumia"></use>
+    </svg>
+    soc-jumia
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#soc-linkedin"></use>
+    </svg>
+    soc-linkedin
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#soc-pinterest"></use>
+    </svg>
+    soc-pinterest
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#soc-twitter"></use>
+    </svg>
+    soc-twitter
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#soc-youtube"></use>
+    </svg>
+    soc-youtube
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#star"></use>
+    </svg>
+    star
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#star-shield"></use>
+    </svg>
+    star-shield
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#track-order"></use>
+    </svg>
+    track-order
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#truck"></use>
+    </svg>
+    truck
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#truck-rtl"></use>
+    </svg>
+    truck-rtl
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#visibility"></use>
+    </svg>
+    visibility
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#visibility-off"></use>
+    </svg>
+    visibility-off
+</div>
+<div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#vouchers"></use>
+    </svg>
+    vouchers
+</div><div class="item">
+    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+        <use xlink:href="../sources/svg_icons.svg#warning"></use>
+    </svg>
+    warning
+</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<div class="box-outer">
+  <a class="arrow-left arrow">L</a>
+  <a class="arrow-right arrow">R</a>
+  <div class="box-inner">
+    <div class="thumb"></div>
+    <div class="thumb"></div>
+    <div class="thumb"></div>
+    <div class="thumb"></div>
+    <div class="thumb"></div>
+    <div class="thumb"></div>
+    <div class="thumb"></div>
+    <div class="thumb"></div>
+    <div class="thumb"></div>
+    <div class="thumb"></div>
+    <div class="thumb"></div>
+  </div>
+</div>
+
+<script>
+var box = $(".box-inner"), x;
+$(".arrow").click(function() {
+  if ($(this).hasClass("arrow-right")) {
+    x = ((box.width() / 2)) + box.scrollLeft();
+    box.animate({
+      scrollLeft: x,
+    })
+  } else {
+    x = ((box.width() / 2)) - box.scrollLeft();
+    box.animate({
+      scrollLeft: -x,
+    })
+  }
+})
+
+</script>
+</body>
+</html>

@@ -1,14 +1,19 @@
-let currentResize = "Q", center = {x:0, y:0};
+let currentResize = "Q", center = {x: 0, y: 0};
 let parentWidth = 0, parentHeight = 0;
-let virtual_appender = createDomElement({name:"div"});
+let virtual_appender = createDomElement({name: "div"});
 let boundary = {
     el: document.getElementById("genie-paint-field"),
     x: 0,
     y: 0
-},ml = 0,mt = 0,mw = 0,mh = 0, unitX ="", unitY ="", percX =false, percY =false;
+}, ml = 0, mt = 0, mw = 0, mh = 0, unitX = "", unitY = "", percX = false, percY = false;
 
 let Elements = {};
 let ruleIndex = 1;
+let transformScaleX;
+let transformScaleY;
+let child_top;
+let child_left;
+let pathValues;
 
 let Styling = {
     deleteRule: (index) => {
@@ -18,47 +23,48 @@ let Styling = {
         Styling.deleteRule(index);
         styleElement.sheet.insertRule(rule, index);
     },
-    commentRuleProperty : (property, value,index) => {
+    commentRuleProperty: (property, value, index) => {
         property = property.split(":")[0];
         if (property.match(/\b/g)) {
-            let t = Styling.get_style("","", index, true).cssText;
+            let t = Styling.get_style("", "", index, true).cssText;
             value = value.split(";")[0];
             let r = t.replace(new RegExp(`\\b(?:${property}\\s*?:\\s*([^;>]*?)(?=[;">}]))`), `/*${property}:${value}*/`);
             Styling.changeRule(r, index);
-        }
-        else{
+        } else {
             console.log("empty")
         }
     },
-    UncommentRuleProperty : (property, value,index) => {
+    UncommentRuleProperty: (property, value, index) => {
         property = property.split(":")[0];
         value = value.split(";")[0];
         if (!(property === "" || value === "")) {
             Styling.edit_style("", property, value, index)
         }
     },
-    init_style : (rules) => {
+    init_style: (rules) => {
         let styleSheet = styleElement.sheet;
         ruleIndex = styleSheet.cssRules.length;
         rules = rules.split("}");
         for (let st = -1; st < rules.length; st++) {
             if (rules.hasOwnProperty(st) && rules[st] !== "") {
+                console.log(rules[st])
                 styleSheet.insertRule(`${rules[st]}`, ruleIndex);
             }
         }
 
     },
-    edit_style : (cls,property,value,ruleI) => {
+    edit_style: (cls, property, value, ruleI) => {
         let rules = styleElement.sheet.cssRules || styleElement.rules;
         rules[ruleI].style[property] = value;
         return rules[ruleI];
     },
-    get_style : (cls,property,index,get_all) => {
+    get_style: (cls, property, index, get_all) => {
         let rules = styleElement.sheet.cssRules || styleElement.rules;
         if (ruleIndex !== null) {
             if (get_all) {
                 return rules[index];
             } else {
+                // console.log(rules[index])
                 return rules[index].style[property];
             }
         } else {
@@ -70,15 +76,37 @@ let Styling = {
         }
     },
     changeClass(el, newId, is_class) {
-        let sep = is_class?".":"#";
+        let sep = is_class ? "." : "#";
         let c = Styling.get_style(el.id, null, el.ruleIndex, true).cssText.split("{");
-        Styling.changeRule(Methods.replace(c[0].split(" "), `${sep+el.id}`, `${newId}`).join(" ") + "{" + c[1], el.ruleIndex);
-        el.id =`${newId.split(sep)[1]}`;
+        Styling.changeRule(Methods.replace(c[0].split(" "), `${sep + el.id}`, `${newId}`).join(" ") + "{" + c[1], el.ruleIndex);
+        el.id = `${newId.split(sep)[1]}`;
     }
 };
 
-function ff(el, id, s){
-    let l = "", t = "" ,a, b, c, d;
+
+function getTransform({originalTransform, originalX, originalY, newX, newY}) {
+    if (originalX === newX) {
+        //Return scalex 1
+    }
+    if (originalY === newY) {
+        //Return scaley 1
+    }
+    let theta_s_x, theta_s_y;
+
+    if (newX) {
+        theta_s_x = newX / originalX;
+    }
+
+    if (newY) {
+        theta_s_y = newY / originalY;
+    }
+    return {x: theta_s_x, theta_s_y}
+
+}
+
+
+function ff(el, id, s) {
+    let l = "", t = "", a, b, c, d;
     if (s) {
         l = "width";
         t = "height";
@@ -96,19 +124,19 @@ function ff(el, id, s){
     percY = unitY === "%";/*
     left_display.style.width = (a.length + 1) * 6 + "px";
     top_display.style.width = (b.length + 1) * 6 + "px";*/
-    if (percX){
+    if (percX) {
         parentWidth = el.parentElement.clientWidth;
-        a = parseFloat(parseFloat(a)*parseFloat(parentWidth/100));
+        a = parseFloat(parseFloat(a) * parseFloat(parentWidth / 100));
     }
-    if (percY){
+    if (percY) {
         parentHeight = el.parentElement.clientHeight;
-        b = parseFloat(parseFloat(b)*parseFloat(parentHeight/100));
+        b = parseFloat(parseFloat(b) * parseFloat(parentHeight / 100));
     }
     return [parseFloat(a), parseFloat(b)];
 }
 
 let BRICK = {
-    multiple_drag_start: function (){
+    multiple_drag_start: function () {
         let r = getFocusedClasses("hi");
         mouse.dragging.id = r[0];
         mouse.dragging.position = [];
@@ -116,7 +144,7 @@ let BRICK = {
         dragger.pl = [];
         dragger.angle = [];
         wnd = r[1];
-        for (let i = 0, len =mouse.dragging.id.length;i< len;i++) {
+        for (let i = 0, len = mouse.dragging.id.length; i < len; i++) {
             Styling.edit_style(mouse.dragging.id[i], "position", "absolute", wnd[i].ruleIndex);
             switch (currentResize) {
                 case "Q":
@@ -161,6 +189,7 @@ let BRICK = {
     drag_start: function () {
         mouse.dragging.id = `${mouse.dragging.element.id}`;
         wnd = mouse.dragging.element;
+        dragger.clip_drag = wnd.classList.contains("clip-parent");
         // mouse.dragging.position = Styling.get_style(mouse.dragging.id, "position", wnd.ruleIndex);
         // Styling.edit_style(mouse.dragging.id, "position", "absolute", wnd.ruleIndex);
         switch (currentResize) {
@@ -175,6 +204,13 @@ let BRICK = {
                 dragger.pl = w[0];
                 dragger.pt = w[1];
                 dragger.check = true;
+                dragger.originalD = wnd.getBoundingClientRect();
+                if (wnd.classList.contains("clip-parent")) {
+                    clip_child = (wnd.querySelector("._clippath"))
+                    let temp_scale = getAllGroups(/scaleX\((\d.*)\)\s+scaleY\((\d.*)\)/g, Styling.get_style(clip_child.id, "transform", clip_child.ruleIndex));
+                    transformScaleX = parseFloat(temp_scale[0][1]);
+                    transformScaleY = parseFloat(temp_scale[0][2]);
+                }
                 break;
             case "T":
                 let b = ff(wnd, mouse.dragging.id);
@@ -199,7 +235,7 @@ let BRICK = {
                     }
                 }
                 dragger.check = null;
-            break;
+                break;
         }
 
     },
@@ -208,9 +244,9 @@ let BRICK = {
         if (dragger.angle) {
             let str = Styling.get_style(el.id, "transform", el.ruleIndex).split(" ");
             let t = "";
-            for (let i in str){
+            for (let i in str) {
                 if (str.hasOwnProperty(i)) {
-                    t += " "+str[i].toString().replace(new RegExp("[(]"),"(-");
+                    t += " " + str[i].toString().replace(new RegExp("[(]"), "(-");
                 }
             }
             /*document.getElementById("size-resize").style.transform = t;
@@ -225,131 +261,259 @@ let BRICK = {
 
 let TraditionalTool = {
     methods: {
-        t_top_left: (ml, mt,  sw, sh, wnd)=>{
-            mw =  sw - mouse.dragging.offset.x;
-            mh =  sh - mouse.dragging.offset.y;
-            if (percX){
+        t_top_left: (ml, mt, sw, sh, wnd) => {
+            mw = sw - mouse.dragging.offset.x;
+            mh = sh - mouse.dragging.offset.y;
+            if (percX) {
                 ml = `${100 * ml / parentWidth}`;
                 mw = `${100 * mw / parentWidth}`;
             }
-            if (percY){
+            if (percY) {
                 mt = `${100 * mt / parentHeight}`;
                 mh = `${100 * mh / parentHeight}`;
             }
-            if (mw>0) {
+            let flag = true;
+            if (mw > 0) {
                 drag_style(wnd, "left", `${ml + unitX}`);
                 drag_style(wnd, "width", `${mw + unitX}`);
+            } else {
+                flag = false;
             }
-            if (mh>0){
+            if (mh > 0) {
                 drag_style(wnd, "top", `${mt + unitY}`);
                 drag_style(wnd, "height", `${mh + unitY}`);
+            } else {
+                flag = false
             }
+            if (flag) {
+                Resizers.drag_clip_all(clip_child, wnd, "both_w_h", mw, mh, unitX, unitY);
+            }
+
+
             height_display.value = `${mh + unitY}`;
             width_display.value = `${mw + unitX}`;
             top_display.value = `${mt + unitY}`;
             left_display.value = `${ml + unitX}`;
         },
-        t_top: (ml, mt,  sw, sh, wnd)=>{
-            mh =  sh - mouse.dragging.offset.y;
-            if (percY){
+
+        t_top_left_top: (ml, mt, sw, sh, wnd) => {
+            mh = sh - mouse.dragging.offset.y;
+            if (percY) {
                 mt = `${100 * mt / parentHeight}`;
                 mh = `${100 * mh / parentHeight}`;
             }
-            if (mh>0){
-                drag_style(wnd,"top", `${mt + unitY}`);
-                drag_style(wnd,"height", `${mh + unitY}`);
-            }
-            height_display.value = `${mh + unitY}`;
-            top_display.value = `${mt + unitY}`;
-        },
-        t_top_right: (ml, mt,  sw, sh, wnd)=>{
-            mh =  sh - mouse.dragging.offset.y;
-            mw =  sw + mouse.dragging.offset.x;
-            if (percX){
-                mw = `${100 * mw / parentWidth}`;
-            }
-            if (percY){
-                mt = `${100 * mt / parentHeight}`;
-                mh = `${100 * mh / parentHeight}`;
-            }
-            if (mh>0) {
+            if (mh > 0) {
                 drag_style(wnd, "top", `${mt + unitY}`);
                 drag_style(wnd, "height", `${mh + unitY}`);
             }
-            if (mw>0) {
+            height_display.value = `${mh + unitY}`;
+            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            top_display.value = `${mt + unitY}`;
+        },
+        t_top: (ml, mt, sw, sh, wnd) => {
+            mh = sh - mouse.dragging.offset.y;
+            if (percY) {
+                mt = `${100 * mt / parentHeight}`;
+                mh = `${100 * mh / parentHeight}`;
+            }
+            if (mh > 0) {
+                drag_style(wnd, "top", `${mt + unitY}`);
+                drag_style(wnd, "height", `${mh + unitY}`);
+            }
+            height_display.value = `${mh + unitY}`;
+            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            top_display.value = `${mt + unitY}`;
+        },
+        t_top_right_top: (ml, mt, sw, sh, wnd) => {
+            mh = sh - mouse.dragging.offset.y;
+            if (percY) {
+                mt = `${100 * mt / parentHeight}`;
+                mh = `${100 * mh / parentHeight}`;
+            }
+            if (mh > 0) {
+                drag_style(wnd, "top", `${mt + unitY}`);
+                drag_style(wnd, "height", `${mh + unitY}`);
+            }
+            height_display.value = `${mh + unitY}`;
+            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            top_display.value = `${mt + unitY}`;
+        },
+        t_top_right: (ml, mt, sw, sh, wnd) => {
+            mh = sh - mouse.dragging.offset.y;
+            mw = sw + mouse.dragging.offset.x;
+            if (percX) {
+                mw = `${100 * mw / parentWidth}`;
+            }
+            if (percY) {
+                mt = `${100 * mt / parentHeight}`;
+                mh = `${100 * mh / parentHeight}`;
+            }
+            let flag = true;
+            if (mh > 0) {
+                drag_style(wnd, "top", `${mt + unitY}`);
+                drag_style(wnd, "height", `${mh + unitY}`);
+            } else {
+                flag = false;
+            }
+            if (mw > 0) {
                 drag_style(wnd, "width", `${mw + unitX}`);
                 drag_style(wnd, "width", `${mw + unitX}`);
+            } else {
+                flag = false;
+            }
+            if (flag) {
+                Resizers.drag_clip_all(clip_child, wnd, "both_w_h", mw, mh, unitX, unitY);
             }
             height_display.value = `${mh + unitY}`;
             width_display.value = `${mw + unitX}`;
             top_display.value = `${mt + unitY}`;
         },
-        t_right: (ml, mt,  sw, sh, wnd)=>{
-            mw =  sw + mouse.dragging.offset.x;
-            if (percX){
+        t_top_right_top_right: (ml, mt, sw, sh, wnd) => {
+            mw = sw + mouse.dragging.offset.x;
+            if (percX) {
                 mw = `${100 * mw / parentWidth}`;
             }
-            drag_style(wnd,"width", `${mw + unitX}`);
+            drag_style(wnd, "width", `${mw + unitX}`);
+            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
             width_display.value = `${mw + unitX}`;
         },
-        t_bottom_right: (ml, mt,  sw, sh, wnd)=>{
-            mw =  sw + mouse.dragging.offset.x;
-            mh =  sh + mouse.dragging.offset.y;
-            if (percX){
+        t_right: (ml, mt, sw, sh, wnd) => {
+            mw = sw + mouse.dragging.offset.x;
+            if (percX) {
                 mw = `${100 * mw / parentWidth}`;
             }
-            if (percY){
-                mh = `${100 * mh / parentHeight}`;
+            drag_style(wnd, "width", `${mw + unitX}`);
+            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
+            width_display.value = `${mw + unitX}`;
+
+        },
+        t_bottom_right_right: (ml, mt, sw, sh, wnd) => {
+            mw = sw + mouse.dragging.offset.x;
+            if (percX) {
+                mw = `${100 * mw / parentWidth}`;
             }
-            drag_style(wnd,"width", `${mw + unitX}`);
-            drag_style(wnd,"height", `${mh + unitY}`);
-            height_display.value = `${mh + unitY}`;
+            drag_style(wnd, "width", `${mw + unitX}`);
+            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
             width_display.value = `${mw + unitX}`;
         },
-        t_bottom: (ml, mt,  sw, sh, wnd)=>{
-            mh =  sh + mouse.dragging.offset.y;
-            if (percY){
+        t_bottom_right: (ml, mt, sw, sh, wnd) => {
+            mw = sw + mouse.dragging.offset.x;
+            mh = sh + mouse.dragging.offset.y;
+            if (percX) {
+                mw = `${100 * mw / parentWidth}`;
+            }
+            if (percY) {
                 mh = `${100 * mh / parentHeight}`;
             }
-            drag_style(wnd,"height", `${mh + unitY}`);
+            drag_style(wnd, "width", `${mw + unitX}`);
+            drag_style(wnd, "height", `${mh + unitY}`);
+            height_display.value = `${mh + unitY}`;
+            width_display.value = `${mw + unitX}`;
+
+            Resizers.drag_clip_all(clip_child, wnd, "both_w_h", mw, mh, unitX, unitY);
+
+        },
+        t_bottom_bottom_right: (ml, mt, sw, sh, wnd) => {
+            mh = sh + mouse.dragging.offset.y;
+            if (percY) {
+                mh = `${100 * mh / parentHeight}`;
+            }
+            drag_style(wnd, "height", `${mh + unitY}`);
+            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
             height_display.value = `${mh + unitY}`;
         },
-        t_bottom_left: (ml, mt,  sw, sh, wnd)=>{
-            mw =  sw - mouse.dragging.offset.x;
-            mh =  sh + mouse.dragging.offset.y;
-            if (percX){
+        t_bottom: (ml, mt, sw, sh, wnd) => {
+            mh = sh + mouse.dragging.offset.y;
+            if (percY) {
+                mh = `${100 * mh / parentHeight}`;
+            }
+            drag_style(wnd, "height", `${mh + unitY}`);
+            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            height_display.value = `${mh + unitY}`;
+        },
+        t_bottom_left_bottom: (ml, mt, sw, sh, wnd) => {
+            mh = sh + mouse.dragging.offset.y;
+            if (percY) {
+                mh = `${100 * mh / parentHeight}`;
+            }
+            drag_style(wnd, "height", `${mh + unitY}`);
+            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            height_display.value = `${mh + unitY}`;
+        },
+        t_bottom_left: (ml, mt, sw, sh, wnd) => {
+            mw = sw - mouse.dragging.offset.x;
+            mh = sh + mouse.dragging.offset.y;
+            if (percX) {
                 ml = `${100 * ml / parentWidth}`;
                 mw = `${100 * mw / parentWidth}`;
             }
-            if (percY){
+            if (percY) {
                 mh = `${100 * mh / parentHeight}`;
             }
-            if (mw>0){
-                drag_style(wnd,"left", `${ml + unitX}`);
-                drag_style(wnd,"width", `${mw + unitX}`);
+            let flag = true;
+            if (mw > 0) {
+                drag_style(wnd, "left", `${ml + unitX}`);
+                drag_style(wnd, "width", `${mw + unitX}`);
+            } else {
+                flag = false;
             }
-            if (mh>0) {
+            if (mh > 0) {
                 drag_style(wnd, "height", `${mh + unitY}`);
+            } else {
+                flag = false;
+            }
+
+            if (flag) {
+                Resizers.drag_clip_all(clip_child, wnd, "both_w_h", mw, mh, unitX, unitY);
             }
 
             height_display.value = `${mh + unitY}`;
             width_display.value = `${mw + unitX}`;
             left_display.value = `${ml + unitX}`;
         },
-        t_left: (ml, mt,  sw, sh, wnd)=>{
-            mw =  sw - mouse.dragging.offset.x;
-            if (percX){
+        t_left_bottom_left: (ml, mt, sw, sh, wnd) => {
+            mw = sw - mouse.dragging.offset.x;
+            if (percX) {
                 ml = `${100 * ml / parentWidth}`;
                 mw = `${100 * mw / parentWidth}`;
             }
-            if (mw>0) {
+            if (mw > 0) {
                 drag_style(wnd, "left", `${ml + unitX}`);
                 drag_style(wnd, "width", `${mw + unitX}`);
             }
             width_display.value = `${mw + unitX}`;
+            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
             left_display.value = `${ml + unitX}`;
         },
-        t_rot: (ml, mt,  sw, sh, wnd)=>{
+        t_left: (ml, mt, sw, sh, wnd) => {
+            mw = sw - mouse.dragging.offset.x;
+            if (percX) {
+                ml = `${100 * ml / parentWidth}`;
+                mw = `${100 * mw / parentWidth}`;
+            }
+            if (mw > 0) {
+                drag_style(wnd, "left", `${ml + unitX}`);
+                drag_style(wnd, "width", `${mw + unitX}`);
+            }
+            width_display.value = `${mw + unitX}`;
+            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
+            left_display.value = `${ml + unitX}`;
+        },
+        t_left_top: (ml, mt, sw, sh, wnd) => {
+            mw = sw - mouse.dragging.offset.x;
+            if (percX) {
+                ml = `${100 * ml / parentWidth}`;
+                mw = `${100 * mw / parentWidth}`;
+            }
+            if (mw > 0) {
+                drag_style(wnd, "left", `${ml + unitX}`);
+                drag_style(wnd, "width", `${mw + unitX}`);
+            }
+            width_display.value = `${mw + unitX}`;
+            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
+            left_display.value = `${ml + unitX}`;
+        },
+        t_rot: (ml, mt, sw, sh, wnd) => {
             //rotate
             ml = get_angle(dragger.angle, {
                 x: (mouse.moving.point.x - dragger.originalD.left) - center.x,
@@ -358,7 +522,7 @@ let TraditionalTool = {
             Styling.edit_style(mouse.dragging.id, "transform", `rotateZ(${ml}deg)`, wnd.ruleIndex)
         },
     },
-    drag_start : ()=>{
+    drag_start: () => {
         mouse.dragging.id = `${mouse.dragging.element.parentNode.parentElement.id}`;
         wnd = mouse.dragging.element.parentNode.parentElement;
         dragger.method = mouse.dragging.element.id;
@@ -368,11 +532,21 @@ let TraditionalTool = {
         let w = ff(wnd, mouse.dragging.id, true);
         dragger.sw = w[0];
         dragger.sh = w[1];
-        let t = ((Styling.get_style(mouse.dragging.id, "transform", wnd.ruleIndex)).match(new RegExp("[Z][(].+[)]"))[0]);
-        dragger.angle = (parseFloat(t.substring(2,t.length-1)));
+
         dragger.originalD = wnd.getBoundingClientRect();
+
+        if ((dragger.clip_drag = wnd.classList.contains("clip-parent"))) {
+            mouse.dragging.clipdrag = true;
+            clip_child = (wnd.querySelector("._clippath"))
+            let temp_scale = getAllGroups(/scaleX\((\d.*)\)\s+scaleY\((\d.*)\)/g, Styling.get_style(clip_child.id, "transform", clip_child.ruleIndex));
+            transformScaleX = parseFloat(temp_scale[0][1]);
+            transformScaleY = parseFloat(temp_scale[0][2]);
+        }
+        /*let t = ((Styling.get_style(mouse.dragging.id, "transform", wnd.ruleIndex)).match(new RegExp("[Z][(].+[)]"))[0]);
+        dragger.angle = (parseFloat(t.substring(2, t.length - 1)));
+        dragger.originalD = wnd.getBoundingClientRect();*/
     },
-    multiple_drag_start : ()=>{
+    multiple_drag_start: () => {
         let r = getFocusedClasses("hi");
         mouse.dragging.id = r[0];
         mouse.dragging.position = [];
@@ -382,7 +556,7 @@ let TraditionalTool = {
         dragger.sw = [];
         dragger.sh = [];
         wnd = r[1];
-        for (let i = 0, len = mouse.dragging.id.length;i< len;i++){
+        for (let i = 0, len = mouse.dragging.id.length; i < len; i++) {
             let a = ff(wnd[i], mouse.dragging.id[i]);
             dragger.pl.push(a[0]);
             dragger.pt.push(a[1]);
@@ -392,7 +566,7 @@ let TraditionalTool = {
             dragger.sh.push(w[i][1]);
         }
     },
-    handle_traditional_appendTools : () => {
+    handle_traditional_appendTools: () => {
         if (no) {
             /*
                     multiple
@@ -410,10 +584,86 @@ let TraditionalTool = {
     }
 };
 
+function buildPathTable(t) {
+    console.log(t.split(/[[ \w]{10 }]/g));
+}
+
+const PATH_COMMANDS = {
+    M: ["x", "y"],
+    m: ["dx", "dy"],
+    L: ["x", "y"],
+    l: ["dx", "dy"],
+    C: ["x1", "y1", "x2", "y2", "x", "y"],
+    c: ["dx1", "dy1", "dx2", "dy2", "dx", "dy"],
+    H: ["x"],
+    h: ["dx"],
+    V: ["y"],
+    v: ["dy"],
+
+    Z: [],
+
+    S: ["x2", "y2", "x", "y"],
+    s: ["dx2", "dy2", "dx", "dy"],
+    Q: ["x1", "y1", "x", "y"],
+    q: ["dx1", "dy1", "dx", "dy"],
+    T: ["x", "y"],
+    t: ["dx", "dy"],
+    A: ["rx", "ry", "rotation", "large-arc", "sweep", "x", "y"],
+    a: ["rx", "ry", "rotation", "large-arc", "sweep", "dx", "dy"]
+};
+
+function fromPathToArray(path) {
+    const items = path.replace(/[\n\r]/g, '').replace(/-/g, ' -').replace(/(\d*\.)(\d+)(?=\.)/g, '$1$2 ').trim().split(/\s*,|\s+/);
+
+    const segments = [];
+    let currentCommand = '';
+    let currentElement = {};
+    while (items.length > 0) {
+        let it = items.shift();
+        if (PATH_COMMANDS.hasOwnProperty(it)) {
+            currentCommand = it;
+        } else {
+            items.unshift(it);
+        }
+        currentElement = {type: currentCommand};
+        PATH_COMMANDS[currentCommand].forEach((prop) => {
+            it = items.shift();
+            currentElement[prop] = it;
+        });
+        if (currentCommand === 'M') {
+            currentCommand = 'L';
+        } else if (currentCommand === 'm') {
+            currentCommand = 'l';
+        }
+        segments.push(currentElement);
+    }
+
+    console.log(segments)
+    return segments
+}
+
+function getAllGroups(regexp, str) {
+    return Array.from(str.matchAll(regexp), m => m);
+}
+
 let Resizers = {
-    drag_start : ()=>{
+    drag_start: () => {
+
         //mouse.dragging.element.style.transform = "rotate(0deg)";
         wnd = mouse.dragging.element.parentElement.parentElement;
+        dragger.originalD = wnd.getBoundingClientRect();
+        // wnd.classList.add("noselect");
+        if ((dragger.clip_drag = wnd.classList.contains("clip-parent"))) {
+            clip_child = (wnd.querySelector("._clippath"));
+            let temp_scale = getAllGroups(/scaleX\((\d.*)\)\s+scaleY\((\d.*)\)/g,
+                Styling.get_style(clip_child.id, "transform", clip_child.ruleIndex));
+            transformScaleX = parseFloat(temp_scale[0][1]);
+            transformScaleY = parseFloat(temp_scale[0][2]);
+            child_top = Styling.get_style(clip_child.id, "top", clip_child.ruleIndex);
+            child_left = Styling.get_style(clip_child.id, "left", clip_child.ruleIndex);
+            // console.log(transformScaleX, transformScaleY)
+
+        }
         mouse.dragging.id = `${wnd.id}`;
         if (mouse.dragging.element.classList.contains("size")) {
             dragger.height_resize = mouse.dragging.element.id === "height_resize";
@@ -422,18 +672,17 @@ let Resizers = {
             dragger.pl = w[0];
             dragger.pt = w[1];
             dragger.check = true;
-        }
-        else if (mouse.dragging.element.classList.contains("position")){
+        } else if (mouse.dragging.element.classList.contains("position")) {
             dragger.top_resize = mouse.dragging.element.id === "top_resize";
             dragger.left_resize = mouse.dragging.element.id === "left_resize";
             let a = ff(wnd, mouse.dragging.id);
             dragger.pl = a[0];
             dragger.pt = a[1];
         }
-        let t = ((Styling.get_style(mouse.dragging.id, "transform", wnd.ruleIndex)).match(new RegExp("[Z][(].+[)]"))[0]);
-        dragger.angle = parseFloat(t.substring(2,t.length-1));
+        // let t = ((Styling.get_style(mouse.dragging.id, "transform", wnd.ruleIndex)).match(new RegExp("[Z][(].+[)]"))[0]);
+        // dragger.angle = parseFloat(t.substring(2,t.length-1));
     },
-    multiple_drag_start : ()=>{
+    multiple_drag_start: () => {
         let r = getFocusedClasses("hi");
         mouse.dragging.id = r[0];
         mouse.dragging.position = [];
@@ -447,7 +696,7 @@ let Resizers = {
         dragger.left_resize = mouse.dragging.element.id === "left_resize";
         let size = mouse.dragging.element.classList.contains("size");
         let position = mouse.dragging.element.classList.contains("position");
-        for (let i = 0, len = mouse.dragging.id.length;i< len;i++){
+        for (let i = 0, len = mouse.dragging.id.length; i < len; i++) {
             //mouse.dragging.element.style.transform = "rotate(0deg)";
             // wnd.push(mouse.dragging.element.parentElement.parentElement);
             if (size) {
@@ -455,51 +704,308 @@ let Resizers = {
                 dragger.pl.push(w[0]);
                 dragger.pt.push(w[1]);
                 dragger.check = true;
-            }
-            else if (position){
+            } else if (position) {
                 let a = ff(wnd[i], mouse.dragging.id[i]);
                 dragger.pl.push(a[0]);
                 dragger.pt.push(a[1]);
             }
             let t = ((Styling.get_style(mouse.dragging.id[i], "transform", wnd[i].ruleIndex)).match(new RegExp("[Z][(].+[)]"))[0]);
-            dragger.angle.push(parseFloat(t.substring(2,t.length-1)));
+            dragger.angle.push(parseFloat(t.substring(2, t.length - 1)));
+        }
+    },
+    drag_clip(clip_child, wnd, direction, change, unitsOfChange) {
+        if (dragger.clip_drag) {
+            let str = "";
+            switch (direction) {
+                case "top":
+                    // console.log("top");
+                    // console.log(change / dragger.originalD.top)
+
+                    break;
+                case "height":
+                    // console.log("height");
+
+                    let theta_s_y = change / clip_child.y;
+
+                    if (theta_s_y > 0) {
+                        let theta_t = theta_s_y * ((change - clip_child.y) / 2);
+                        if (theta_s_y < 1) {
+                            Styling.edit_style(clip_child.id, "height", `${clip_child.y}px`, clip_child.ruleIndex)
+                            Styling.edit_style(clip_child.id, "transform", `scaleX(${transformScaleX}) scaleY(${theta_s_y})`, clip_child.ruleIndex)
+                            Styling.edit_style(clip_child.id, "top", `${(theta_s_y - 1) * clip_child.y / 2}px`, clip_child.ruleIndex)
+                        } else {
+                            Styling.edit_style(clip_child.id, "transform", `scaleX(${transformScaleX}) scaleY(${theta_s_y})`, clip_child.ruleIndex)
+                            Styling.edit_style(clip_child.id, "top", `${theta_t}px`, clip_child.ruleIndex)
+                        }
+                    }
+                    break;
+                case "left":
+                    // console.log("left");
+                    break;
+                case "width":
+                    // console.log("width");
+                    let theta_s_x = change / clip_child.x;
+                    if (theta_s_x > 0) {
+                        let theta_l = theta_s_x * ((change - clip_child.x) / 2);
+                        if (theta_s_x < 1) {
+                            Styling.edit_style(clip_child.id, "width", `${clip_child.x}px`, clip_child.ruleIndex)
+                            Styling.edit_style(clip_child.id, "transform", `scaleX(${theta_s_x}) scaleY(${transformScaleY})`, clip_child.ruleIndex)
+                            Styling.edit_style(clip_child.id, "left", `${(theta_s_x - 1) * clip_child.x / 2}px`, clip_child.ruleIndex)
+                        } else {
+                            Styling.edit_style(clip_child.id, "transform", `scaleX(${theta_s_x}) scaleY(${transformScaleY})`, clip_child.ruleIndex)
+                            Styling.edit_style(clip_child.id, "left", `${theta_l}px`, clip_child.ruleIndex)
+                        }
+                    }
+                    break;
+            }
+        }
+    },
+    drag_clip_all(clip_child, wnd, direction, changeX, changeY, unitsOfChangeX, unitsOfChangeY) {
+        if (dragger.clip_drag) {
+            let str = "";
+            switch (direction) {
+                case "both_w_h":
+                    let theta_s_x = changeX / clip_child.x;
+                    let theta_l = theta_s_x * ((changeX - clip_child.x) / 2);
+                    let theta_s_y = changeY / clip_child.y;
+                    let theta_t = theta_s_y * ((changeY - clip_child.y) / 2);
+                    if (theta_s_y > 0 && theta_s_x > 0) {
+                        Styling.edit_style(clip_child.id, "transform", `scaleX(${theta_s_x}) scaleY(${theta_s_y})`, clip_child.ruleIndex)
+                        if (theta_s_x >= 1 && theta_s_y >= 1) {
+                            Styling.edit_style(clip_child.id, "left", `${theta_l}px`, clip_child.ruleIndex)
+                            Styling.edit_style(clip_child.id, "top", `${theta_t}px`, clip_child.ruleIndex)
+                        } else {
+                            if (theta_s_x >= 1) {
+                                Styling.edit_style(clip_child.id, "left", `${theta_s_x * ((theta_s_x - 1) * clip_child.x / 2)}px`, clip_child.ruleIndex)
+                            } else {
+                                Styling.edit_style(clip_child.id, "left", `${(theta_s_x - 1) * clip_child.x / 2}px`, clip_child.ruleIndex)
+                            }
+
+                            if (theta_s_y >= 1) {
+                                Styling.edit_style(clip_child.id, "top", `${theta_s_y * ((theta_s_y - 1) * clip_child.y / 2)}px`, clip_child.ruleIndex)
+                            } else {
+                                Styling.edit_style(clip_child.id, "top", `${(theta_s_y - 1) * clip_child.y / 2}px`, clip_child.ruleIndex)
+                            }
+
+                            Styling.edit_style(clip_child.id, "width", `${clip_child.x}px`, clip_child.ruleIndex)
+                            Styling.edit_style(clip_child.id, "height", `${clip_child.y}px`, clip_child.ruleIndex)
+                        }
+                    }
+                    break;
+            }
         }
     }
 };
 
-function initiateStyle(parentPath, id,custom) {
+function initiateStyle(parentPath, id, custom) {
+    console.log(custom)
     Styling.init_style(`
-        #${id}{${custom||"left:0;top:0;width: 100px; height: 50px;}"}`
+        #${id}{${custom || "left:0;top:0;width: 64px; height: 64px;}"}`
     );
 }
 
 
-function G(id) {
+function G(id, params) {
     this.tagName = "div";
-    this.id = id||"div";
-    this.target =  document.getElementById(`.${this.id}`);
+    this.id = id || "div";
+    this.clipped = params ? params.clipped : null;
+    this.clip_path = params ? params.clipPath : null;
+    this.appended_img = params ? params.appended_img : null;
+    this.framed = params ? params.framed : null;
+    this.target = document.getElementById(`.${this.id}`);
     this.parentPath = null;
     this.parent = null;
 }
 
-G.prototype.bindings = function(){
-    this.target.addEventListener("mouseenter",function (e) {
+G.prototype.bindings = function () {
+    this.target.addEventListener("mouseenter", function (e) {
         mouse.hover.status = true;
         new MouseEventHandler(e);
         mouse.hover.status = false;
     });
-    this.target.addEventListener("mouseleave",function (e) {
+    this.target.addEventListener("mouseleave", function (e) {
         mouse.hover.status = false;
     })
 };
 
-G.prototype.create = function(tag_name, parent_path,parent){
-    this.parentPath = parent_path||"genie-paint-field";
-    this.tagName = tag_name||"div";
-    parent = parent.classList.contains("hi")?parent:null;
-    this.parent = parent||document.getElementById(`${this.parentPath}`);
-    this.target = createDomElement({name: `${this.tagName}`,appendTo:this.parent, id: `${this.id}`, class: `hi normal_drag initial`,innerHTML:"hi there", contentEditable: false});
-    initiateStyle(this.parentPath,this.id);
+function getImgSize(imgSrc, _img, f) {
+    const img = new Image();
+    img.onload = function () {
+        f({x: this.width, y: this.height});
+    }
+    img.src = imgSrc;
+
+}
+
+function getViewBox(clip_path) {
+    let s = fromPathToArray(clip_path);
+    let y_large = 0;
+    let x_large = 0;
+    for (let i = 0; i < s.length; i++) {
+        for (let j in s[i]) {
+            if (j !== "type") {
+
+                if (j.indexOf("x") > -1) {
+                    if (parseFloat(s[i][j]) > x_large) {
+                        x_large = parseFloat(s[i][j])
+                    }
+                } else {
+                    if (j.indexOf("y") > -1) {
+                        if (parseFloat(s[i][j]) > y_large) {
+                            y_large = parseFloat(s[i][j])
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+    return {x: x_large, y: y_large}
+}
+
+G.prototype.create = function (tag_name, parent_path, parent) {
+    this.parentPath = parent_path || "genie-paint-field";
+    this.tagName = tag_name || "div";
+
+    parent = parent ? parent.classList.contains("hi") ? parent : null : null;
+    this.parent = parent || document.getElementById(`${this.parentPath}`);
+
+    if (this.clipped) {
+        this.childId = `poly${Math.floor(Math.random() * 10000)}`;
+        this.target = createDomElement({
+            name: `div`,
+            appendTo: this.parent,
+            id: `${this.id}`,
+            class: `hi normal_drag initial clip-parent element-mother`,
+            innerHTML: ``,
+            contentEditable: false,
+        });
+
+        this.child = createDomElement({
+            name: `div`,
+            appendTo: this.target,
+            id: `${this.childId}`,
+            class: `hi initial _clippath`,
+            innerHTML: ``,
+            contentEditable: false,
+        });
+
+        let temp = (getViewBox(this.clip_path));
+
+        this.child.x = temp.x;
+        this.child.y = temp.y;
+
+        initiateStyle(this.parentPath, this.childId, `
+        clip-path: ${`path("${this.clip_path}")`}
+        ;transform: scaleX(1) scaleY(1);top:0;left:0;
+        width: 100%;
+        height: 100%;
+        min-width: 100%;
+        min-height: 100%;
+        border: 0;
+        `);
+        this.child.ruleIndex = ruleIndex;
+        initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${temp.x}px; height: ${temp.y}px;border: 0`);
+    } else {
+        if (this.framed) {
+            this.childId = `poly${Math.floor(Math.random() * 10000)}`;
+            this.target = createDomElement({
+                name: `div`,
+                appendTo: this.parent,
+                id: `${this.id}`,
+                class: `hi normal_drag initial clip-parent element-mother`,
+                innerHTML: ``,
+                contentEditable: false,
+            });
+
+            this.child = createDomElement({
+                name: `div`,
+                appendTo: this.target,
+                id: `${this.childId}`,
+                class: `hi initial _clippath`,
+                innerHTML: ``,
+                contentEditable: false,
+            });
+
+            let temp = (getViewBox(this.framed));
+
+            this.child.x = temp.x;
+            this.child.y = temp.y;
+
+            initiateStyle(this.parentPath, this.childId, `
+        clip-path: ${`path("${this.framed}")`};
+        width: ${temp.x}px;
+        height: ${temp.x}px;
+        border: 0;
+        transform: scaleX(.1) scaleY(.31);top:0;left:0;
+        `);
+            this.child.ruleIndex = ruleIndex;
+            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${temp.x}px; height: ${temp.y}px;border: 0;`);
+        } else if (this.appended_img) {
+            this.childId = `poly${Math.floor(Math.random() * 10000)}`;
+
+            this.target = createDomElement({
+                name: `div`,
+                appendTo: this.parent,
+                id: `${this.id}`,
+                class: `hi normal_drag initial element-mother`,
+                innerHTML: ``,
+                contentEditable: false,
+            });
+            this.child = createDomElement({
+                name: `img`,
+                appendTo: this.target,
+                id: `${this.id}`,
+                class: `element-daughter`,
+                innerHTML: ``,
+                contentEditable: false,
+            });
+            this.child.setAttribute("alt", this.tagName)
+            this.child.setAttribute("src", this.appended_img)
+
+            let temp = {x: 50, y: 50};
+            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${temp.x}px; height: ${temp.y}px;background-color: transparent;border:0`);
+
+            getImgSize(this.appended_img, this.child, (t) => {
+                let ratio = (t.x / t.y) || 1;
+                Styling.edit_style(this.id, "width", `${temp.x * ratio}px`, ruleIndex)
+            })
+        } else {
+            switch (this.tagName) {
+                case "poly1":
+                    this.target = createDomElement({
+                        name: `div`,
+                        appendTo: this.parent,
+                        id: `${this.id}`,
+                        class: `hi normal_drag initial clip-parent`,
+                        innerHTML: `<div id='poly${Math.floor(Math.random() * 10000)}' class="hi star initial _clippath"></div>`,
+                        contentEditable: false,
+                    });
+                    /*let tmp = createDomElement({
+                        name: `div`,
+                        appendTo: this.target,
+                        id: `${this.id}`,
+                        class: `hi initial _clippath`,
+                        innerHTML: "",
+                        contentEditable: false
+                    });*/
+                    break;
+                default:
+                    this.target = createDomElement({
+                        name: `${this.tagName}`,
+                        appendTo: this.parent,
+                        id: `${this.id}`,
+                        class: `hi normal_drag initial`,
+                        innerHTML: "hi there",
+                        contentEditable: false
+                    });
+                    break;
+            }
+            initiateStyle(this.parentPath, this.id);
+        }
+    }
+
+
     this.target.ruleIndex = ruleIndex;
     //this.bindings();
     reload_compressed_layout();

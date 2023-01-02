@@ -2,40 +2,43 @@
 <html lang="en">
 <head>
     <title>Genie Web Dev Engine</title>
+
     <style id="element">
 
     </style>
+    <link rel="stylesheet" type="text/css" href="../lib/css/nav.css">
     <style id="element-utilities">
-        .align-center{
+        .align-center {
             align-items: center;
             display: flex;
             justify-content: center;
         }
 
-        .initial{
+        .initial {
             transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
             border: 1px solid gray;
-            cursor:all-scroll;
+            cursor: all-scroll;
             background-color: white;
             position: absolute;
         }
 
-        .align-center-left{
+        .align-center-left {
             align-items: center;
             display: flex;
             justify-content: left;
         }
 
-        .align-center-right{
+        .align-center-right {
             align-items: center;
             display: flex;
             justify-content: right;
         }
 
-        .align-top-right{
+        .align-top-right {
             display: flex;
             justify-content: right;
         }
+
 
     </style>
     <link rel="stylesheet" href="../lib/css/Genie.css">
@@ -45,6 +48,7 @@
     <link rel="stylesheet" href="../sources/fonts/icomoon/icomoon.css">
 </head>
 <body>
+
 <div class="container" id="container">
     <div class="genie-top-nav fill_width">
         <div class="home top_item align_center">
@@ -109,7 +113,9 @@
                 <use xlink:href="../sources/svg_icons.svg#cat-home"></use>
             </svg>
         </div>
-        <div title="click to append element on mouse up" class="gti fill_height align_center col toolbar-item-color" id="A">A</div>
+        <div title="click to append element on mouse up" class="gti fill_height align_center col toolbar-item-color"
+             id="A">A
+        </div>
         <div id="convert2perc" class="content-btn fill_height align_center">Convert to %
             <div id="m-option" class="zero-h">
                 <div class="choose-cls-cont">
@@ -134,14 +140,95 @@
 
         </div>
     </div>
-    <div id="genie-instant-toolbar" class="genie-instant-toolbar align_center fill_width" onmouseenter="displayInstantToolbar()" onmouseleave="slowRemoveInstantToolbar()">
+    <div id="genie-instant-toolbar" class="genie-instant-toolbar align_center fill_width"
+         onmouseenter="displayInstantToolbar()" onmouseleave="slowRemoveInstantToolbar()">
         <div title="click to resize" class="gti fill_height align_center col toolbar-item-color" id="B">B</div>
         <div title="click to rotate" class="gti fill_height align_center col toolbar-item-color" id="I">I</div>
         <div title="click to " class="gti fill_height align_center col toolbar-item-color" id="Color">Color</div>
-        <div title="click to " class="gti fill_height align_center col toolbar-item-color" id="Background">Background</div>
+        <div title="click to " class="gti fill_height align_center col toolbar-item-color" id="Background">Background
+        </div>
     </div>
     <div class="genie-top fill_width">
-        <div class="genie-compressed-layout fill_height col"></div>
+        <div class="genie-left-nav">
+            <div class="genie-left-nav-item">
+                <div>
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#cat-appliance"></use>
+                    </svg>
+                </div>
+
+                <span>
+                    Design
+                </span>
+            </div>
+            <div class="genie-left-nav-item">
+                <div>
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#categories"></use>
+                    </svg>
+                </div>
+
+                <span>
+                    Elements
+                </span>
+            </div>
+            <div class="genie-left-nav-item">
+                <div>
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#cat-books"></use>
+                    </svg>
+                </div>
+
+                <span>
+                    Uploads
+                </span>
+            </div>
+            <div class="genie-left-nav-item">
+                <div>
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#cat-home-audio"></use>
+                    </svg>
+                </div>
+
+                <span>
+                    Text
+                </span>
+            </div>
+            <div class="genie-left-nav-item">
+                <div>
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#cat-othercategories"></use>
+                    </svg>
+                </div>
+
+                <span>
+                    Projects
+                </span>
+            </div>
+            <div class="genie-left-nav-item">
+                <div>
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#coupon"></use>
+                    </svg>
+                </div>
+
+                <span>
+                    Apps
+                </span>
+            </div>
+        </div>
+        <div class="genie-sec-layout-cont fill_height col">
+
+            <div class="genie-compressed-layout fill_height col">
+
+            </div>
+            <div class="my-collapse">
+                <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                    <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
+                </svg>
+            </div>
+        </div>
+
         <div class="separator normal_drag normal_drag fill-height fill_height"></div>
         <div class="genie-paint-field fill_height col" id="genie-paint-field">
 
@@ -149,10 +236,10 @@
         <div class="separator normal_drag fill-height fill_height"></div>
         <div id="genie-styles" class="genie-styles fill_height col">
             <div id="genie-styles-top" class="tab-top">
-                <div id="style-tab-title" class="style-tab tab align_center">styles</div>
-                <div id="class-tab-title" class="style-tab tab align_center">classes</div>
+                <div id="style-tab-title" class="tab-btn tab align_center">styles</div>
+                <div id="class-tab-title" class="tab-btn tab align_center">classes</div>
             </div>
-            <div id="genie-styles-body" class="tab-body fill_width">
+            <div id="genie-styles-body" class="tab-body tab-main-body fill_width">
                 <div id="genie-styles-main" class="genie-style-mains fill_width">
                     <div id="genie-styles-main-top" class="fill_width"></div>
                     <div class="separator normal_drag fill-width fill_width"></div>
@@ -161,7 +248,7 @@
                             <div id="all-cls-tab-title" class="style-tab tab align_center">all cls</div>
                             <div id="selected-cls-tab-title" class="style-tab tab align_center">selected</div>
                         </div>
-                        <div id="genie-styles-main-class-pane-body" class="tab-body">
+                        <div id="genie-styles-main-class-pane-body tab-main-body" class="tab-body">
                             <div id="genie-all-cls-main" class="genie-style-mains fill_width"></div>
                             <div id="genie-selected-cls" class="genie-style-mains fill_width"></div>
                         </div>
@@ -185,18 +272,23 @@
     <div class="genie-bottom fill_width"></div>
 </div>
 
+<script src="../lib/Js/utilities/constantMarkups.js"></script>
 <script src="../lib/Js/utilities/utilities.js"></script>
 <script src="../lib/Js/utilities/element.js"></script>
 <script src="../lib/Js/utilities/contextmenu.js"></script>
 <script src="../lib/Js/utilities/styles.js"></script>
+<script src="../lib/Js/utilities/clip-objects.js"></script>
 <script src="../lib/Js/utilities/svg_viewboxer.js"></script>
 <script src="../lib/Js/utilities/super_generate.js"></script>
 <script>
     function GenieApplication() {
-        new Compressed_layout("genie-compressed-layout","container",boundary.el).init();
+        new Compressed_layout("genie-compressed-layout", "container", boundary.el).init();
         this.events = new Events().default();
     }
-    new  GenieApplication();
+
+    new GenieApplication();
+
 </script>
 </body>
 </html>
+

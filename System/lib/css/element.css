@@ -10,8 +10,8 @@ code { font-size: 1em; font-weight: normal; font-style: normal; background: #f0f
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, video { display: block; }
 iframe { border: none; } caption,th { text-align: left; } table { border-collapse: collapse; border-spacing: 0; }
 img, img a, img a:hover { border: 0; max-width: 100%; }
-::-moz-selection { background: #999; color: #fff; text-shadow: none; }
-::selection { background: #999; color: #fff; text-shadow: none; }
+::-moz-selection { background: transparent; color: #fff; text-shadow: none; }
+::selection { background: transparent; color: #fff; text-shadow: none; }
 .clear:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }.clear { display: inline-table; clear: both; }
 /* Hides from IE-mac \*/ * html .clear { height: 1%; } .clear { display: block; } /* End hide from IE-mac */
 .left { float: left !important; } .right { float: right !important; }
@@ -27,6 +27,13 @@ img, img a, img a:hover { border: 0; max-width: 100%; }
 ***************************************
 */
 
+
+:root{
+    --blue: #2e6e9b;
+    --toolsize:10px;
+    --negativetoolsize: -10px;
+    --trot: -45px;
+}
 
 .verticalAppendedTool{
     width: 10px;
@@ -178,74 +185,141 @@ img, img a, img a:hover { border: 0; max-width: 100%; }
 }
 
 #traditional rect{
-    height: 5px;
-    width: 5px;
-    /*border-radius: 50%;*/
+    height: var(--toolsize);
+    width: var(--toolsize);
+    border-radius: 50%;
     background-color: red;
     position: absolute;
 }
 
 #t_top_left{
-    top: -5px;
-    left: -5px;
+    top: var(--negativetoolsize);
+    left: var(--negativetoolsize);
     cursor: nw-resize;
 }
+#t_top_left_top{
+    top: calc(var(--negativetoolsize) + var(--toolsize)/4);
+    left: calc(var(--negativetoolsize)/2 + var(--toolsize)/2);
+    height: calc(var(--toolsize)/4)!important;
+    width: calc(50% - var(--toolsize)/2)!important;
+    cursor: n-resize;
+    background-color: red!important;
+}
 #t_top{
-    top: -5px;
-    left: 50%;
+    top: var(--negativetoolsize);
+    left: calc(50%  - var(--toolsize)/2);
     float: left;
     cursor: n-resize;
 }
 #t_top_right{
-    top: -5px;
-    right: -5px;
+    top: var(--negativetoolsize);
+    right: var(--negativetoolsize);
     float: right;
     cursor: ne-resize;
 }
+#t_top_right_top{
+    top: calc(var(--negativetoolsize) + var(--toolsize)/4);
+    right: 0;
+    height: calc(var(--toolsize)/4)!important;
+    width: calc(50% - var(--toolsize)/2)!important;
+    cursor: n-resize;
+    background-color: red!important;
+}
 #t_right{
-    top: 50%;
-    right: -5px;
+    top: calc(50%  - var(--toolsize)/2);
+    right: var(--negativetoolsize);
     float: right;
     cursor: e-resize;
 }
+#t_top_right_top_right{
+    top: 0;
+    right: calc(var(--negativetoolsize)*0.67);;
+    height: calc(50% - var(--toolsize)/2)!important;
+    width: calc(var(--toolsize)/3)!important;
+    cursor: e-resize;
+    background-color: red!important;
+}
+
+#t_bottom_right_right{
+    bottom: 0;
+    right: calc(var(--negativetoolsize)*0.67);
+    height: calc(50% - var(--toolsize)/2)!important;
+    width: calc(var(--toolsize)/3)!important;
+    cursor: e-resize;
+    background-color: red!important;
+}
 #t_bottom_right{
-    bottom: -5px;
-    right: -5px;
+    bottom: var(--negativetoolsize);
+    right: var(--negativetoolsize);
     float: right;
     cursor: se-resize;
 }
+
+#t_bottom_bottom_right{
+    bottom: calc(var(--negativetoolsize)*0.67);
+    right: 0;
+    height: calc(var(--toolsize)/3)!important;
+    width: calc(50% - var(--toolsize)/2)!important;
+    cursor: s-resize;
+    background-color: red!important;
+}
 #t_bottom{
-    bottom: -5px;
-    left: 50%;
+    bottom: var(--negativetoolsize);
+    left: calc(50%  - var(--toolsize)/2);
     cursor: s-resize;
 }
+#t_bottom_left_bottom{
+    bottom: calc(var(--negativetoolsize)*0.67);
+    left: 0;
+    height: calc(var(--toolsize)/3)!important;
+    width: calc(50% - var(--toolsize)/2)!important;
+    cursor: s-resize;
+    background-color: red!important;
+}
 #t_bottom_left{
-    left: -5px;
-    bottom: -5px;
+    left: var(--negativetoolsize);
+    bottom: var(--negativetoolsize);
     float: left;
     cursor: sw-resize;
 }
+#t_left_bottom_left{
+    bottom: 0;
+    left: calc(var(--negativetoolsize)*0.67);
+    height: calc(50% - var(--toolsize)/2)!important;
+    width: calc(var(--toolsize)/3)!important;
+    cursor: w-resize;
+    background-color: red!important;
+}
 #t_left{
-    top: 50%;
-    left: -5px;
+    top: calc(50%  - var(--toolsize)/2);
+    left: var(--negativetoolsize);
     float: left;
     cursor: w-resize;
 }
+#t_left_top{
+    top: 0;
+    left: calc(var(--negativetoolsize)*0.67);
+    height: calc(50% - var(--toolsize)/2)!important;
+    width: calc(var(--toolsize)/3)!important;
+    cursor: w-resize;
+    background-color: red!important;
+}
 
 #t_rot{
-    left: 50%;
-    top:-30px;
+    left: calc(50%  - var(--toolsize)/2);
+    top: calc(2 * var(--negativetoolsize) - 15px);
     cursor:grabbing
 }
 
 #t_rot_neck{
-    left: 2px;
-    bottom:-23px;
-    height:25px;
+    left: calc(var(--toolsize)*0.4);
+    bottom:calc(2 * var(--negativetoolsize) );
+    height:calc(2 * var(--toolsize));
     width: 0;
     border:none;
-    border-left:dashed 2px #5a5a5a;
+    border-left:solid red 2px;
     pointer-events: none;
+
 }
 
 b, i, font{

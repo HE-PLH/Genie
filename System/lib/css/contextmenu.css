@@ -1,5 +1,5 @@
 
-div.contextmenu { position: absolute; display: none}
+div.contextmenu { position: absolute; display: none;z-index: 1002}
 div.contextmenu ul { list-style-type: none; margin: 0 0 8px 0; position: absolute; padding-inline-start: 0;height: 100%;width:fit-content}
 div.contextmenu ul li { text-align: left; z-index: 50; width: 125px; height: 30px; font-size: 1em; word-wrap: break-word; margin: 0 0 0 0; line-height: 1.3em; position: relative; }
 div.contextmenu ul li.list_item { font-family: "Segoe UI"; background-color: #363636;color: #e2e2e2;}

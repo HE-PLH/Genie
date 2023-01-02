@@ -1,48 +1,4 @@
-/*tools*/
-let RotationalTool = `<div id="rot-resize-cont" class="rot-resize-cont align_center normal_drag _tool rot">
-    <div id="rotate_z" class="rot-resize normal_drag"></div>
-    <div id="rotate_x" class="rot-resize normal_drag"></div>
-    <div id="rotate_y" class="rot-resize normal_drag"></div>
-    </div>`;
-let PositionTool = `
-    <div id="position-resize" class="position-resize _tool">
-        <div id="top_resize" class="appendedTool normal_drag verticalAppendedTool position">
-            <div class="point tool" id="top_resize_point" style="border-bottom-color: lightblue"></div>
-            <div class="point_tail tool" id="top_resize_point_tail" style="border-bottom-color: lightblue"></div>
-        </div>
-        <div id="left_resize" class="appendedTool normal_drag horizontalAppendedTool position">
-            <div class="point tool" id="left_resize_point" style="border-right-color: lightblue"></div>
-            <div class="point_tail tool" id="left_resize_point_tail" style="border-right-color: lightblue"></div>
-        </div>
-    </div>
-`;
-let SizeTool = `
-    <div id="size-resize" class="size-resize _tool">
-        <div id="height_resize" class="appendedTool normal_drag verticalAppendedTool size">
-            <div class="point tool" id="height_resize_point" style="border-bottom-color: lightblue"></div>
-            <div class="point_tail tool" id="height_resize_point_tail" style="border-bottom-color: lightblue"></div>
-        </div>
-        <div id="width_resize" class="appendedTool normal_drag horizontalAppendedTool size">
-            <div class="point tool" id="width_resize_point" style="border-right-color: lightblue"></div>
-            <div class="point_tail tool" id="width_resize_point_tail" style="border-right-color: lightblue"></div>
-        </div>
-    </div>
-`;
-let traditionalTool = `
-    <g id="traditional" class="traditional _tool">
-        <rect id="t_top_left" class="t_tool normal_drag "></rect>
-        <rect id="t_top" class=" t_tool normal_drag "></rect>
-        <rect id="t_top_right" class=" t_tool normal_drag "></rect>
-        <rect id="t_right" class=" t_tool normal_drag "></rect>
-        <rect id="t_bottom_right" class=" t_tool normal_drag "></rect>              
-        <rect id="t_bottom" class=" t_tool normal_drag "></rect>              
-        <rect id="t_bottom_left" class=" t_tool normal_drag "></rect>
-        <rect id="t_left" class=" t_tool normal_drag "></rect>
-        <rect id="t_rot" class=" t_tool normal_drag ">
-            <path id="t_rot_neck" style="position:absolute;"></path>
-        </rect>
-    </g>
-`;
+
 
 
 /*
@@ -71,7 +27,7 @@ const RADIAN_COEFFICIENT = 180 / Math.PI;
  ==== 7. GLOBAL VARIABLES
 ***************************************
 */
-let wnd, isWindow, isInsideElement, isAppendedTool, isListItem, isTTool, isRotationTool, no = 0, is_field;
+let wnd, clip_child, isWindow, isInsideElement, isAppendedTool, isListItem, isTTool, isRotationTool, no = 0, is_field;
 let appendingGL = false;
 let timeOut;
 let my_icons = {
@@ -99,6 +55,13 @@ let sequencedKeys = [];
 let g_timer = false;
 let styleId = "element";
 let classId = "element-utilities";
+let colors = {
+    primary: "#5e77dc",
+    white: "#fff",
+    dark: "#000",
+    lightDark: "#2f2e2e",
+    lighterDark: "#2f2e2e",
+}
 let styleElement = document.getElementById(`${styleId}`);
 let orient = '';
 let seprator = {
@@ -286,18 +249,18 @@ let Methods = {
         return [lst, lst1];
     },
     isInViewPort: function (el, bound) {
-        if (bound){
+        if (bound) {
             let rect = el.getBoundingClientRect();
             return rect.top >= 0 && rect.left >= 0 &&
-                rect.bottom <= bound.clientHeight&&
+                rect.bottom <= bound.clientHeight &&
                 rect.right <= bound.clientWidth;
-        }else {
+        } else {
             let rect = el.getBoundingClientRect();
             return rect.top >= 0 && rect.left >= 0 &&
                 rect.bottom <= window.innerHeight || document.documentElement.clientHeight &&
                 rect.right <= window.innerWidth || document.documentElement.clientWidth;
         }
-        },
+    },
     remove_duplicates: function (arr) {
         return arr.filter((t = {}, a => !(t[a] = a in t)));
     },
@@ -315,8 +278,8 @@ let Methods = {
     trim: function (string) {
         return string.replace(/^\s+|\s+$/g, '');
     },
-    apply: function (array, f){
-        for (let i = 0, len = array.length; i<len; i++){
+    apply: function (array, f) {
+        for (let i = 0, len = array.length; i < len; i++) {
             f(array[i]);
         }
     },
@@ -334,8 +297,9 @@ let Methods = {
             console.log("shit, a parent on a child?")
         }
     },
-    changeClassProperty: function (cls, elements, property, newValue, oldValue) {
-        document.querySelectorAll(`${cls}`).forEach(function (el) {
+    changeClassProperty: function (cls, elements, property, newValue, oldValue, parent) {
+
+        (parent || document).querySelectorAll(`${cls}`).forEach(function (el) {
             Methods.find(elements, el) ? el.style[`${property}`] = newValue : el.style[`${property}`] = oldValue || el.style[`${property}`];
         })
     },
@@ -383,106 +347,15 @@ let Methods = {
                 return a.indexOf(v) !== -1;
             })
         });
+    },
+    getChildIndex(el) {
+        return [...el.parentNode.children].indexOf(el)
+        // return undefined;
     }
 };
 
-let projectObject = `
-<div class="project" title="Genie">
-    <div class="lib">
-        <div class="css"><div class="Genie.css">Hi there css</div></div>
-        <div class="Js">
-            <div class="external">nothing</div>
-            <div class="utilities">
-                <div class="utilities.js">Hi there utilities.js</div>
-                <div class="Genie.js">Hi there Genie.js</div>
-            </div>      
-        </div>
-       
-    </div>
-</div>
-`;
 
-let ctxmenu = `
-<div class="do" title="done">
-    <div class="lib">
-        <div class="css"><div class="Genie.css">Hi there css</div></div>
-        <div class="Js">
-            <div class="external">nothing</div>
-            <div class="utilities">
-                <div class="utilities.js">Hi there utilities.js</div>
-                <div class="Genie.js">Hi there Genie.js</div>
-            </div>      
-        </div>
-    </div>
-</div>
-<div class="create" title="github">
-    <div class="headings" title="done">
-            <div class="h1" title="done"></div>
-            <div class="h2" title="done"></div>
-            <div class="h3" title="done"></div>
-            <div class="h4" title="done"></div>
-            <div class="h5" title="done"></div>
-            <div class="h6" title="done"></div>
-            <div class="address" title="done"></div>
-     </div>
-    <div class="block elements" title="done">
-        <div class="div" title="done"></div>
-        <div class="p" title="done"></div>       
-        <div class="hr" title="done"></div>
-        <div class="pagination" title="done">
-            <div class="nav" title="done"></div>
-            <div class="article" title="done"></div>
-            <div class="article" title="done"></div>
-        </div>
-        <div class="lists" title="done">
-            <div class="ol" title="done"></div>
-            <div class="ul" title="done"></div>
-            <div class="li" title="done"></div>
-        </div>
-        <div class="pre" title="done"></div>
-        <div class="blockquote" title="done"></div>
-        <div class="form" title="done"></div>
-        <div class="table" title="done"></div>
-    </div>
-    <div class="inline elements" title="twitter">
-        <div class="text elements" title="done">
-            <div class="phrase markup" title="done">
-                <div class="em" title="done"></div>
-                <div class="strong" title="done"></div>
-                <div class="den" title="done"></div>
-                <div class="code" title="done"></div>
-                <div class="samp" title="done"></div>
-                <div class="kbd" title="done"></div>
-                <div class="var" title="done"></div>
-                <div class="site" title="done"></div>
-            </div>
-            <div class="font markup" title="done">
-                <div class="tt" title="done"></div>
-                <div class="i" title="done"></div>
-                <div class="b" title="done"></div>
-                <div class="u" title="done"></div>
-                <div class="strike" title="done"></div>
-                <div class="big" title="done"></div>
-                <div class="small" title="done"></div>
-                <div class="sub" title="done"></div>
-                <div class="sup" title="done"></div>
-            </div>
-            <div class="special elements" title="done">
-                <div class="a" title="done"></div>
-                <div class="img" title="done"></div>
-                <div class="applet" title="done"></div>
-                <div class="font" title="done"></div>
-                <div class="basefont" title="done"></div>
-                <div class="br" title="done"></div>
-                <div class="script" title="done"></div>
-                <div class="map" title="done"></div>
-            </div>
-        </div>
-        <div class="a" title="done"></div>
-        <div class="img" title="done"></div>
-    </div>
-</div>
-`;
+
 
 /*
 ***************************************
@@ -497,7 +370,7 @@ function CreateWindow() {
 
 
 function check_perc() {
-    if (focusedElements.length>0) {
+    if (focusedElements.length > 0) {
         let w = true;
         let h = true;
         let l = true;
@@ -532,8 +405,8 @@ function check_perc() {
 
 function presentCls() {
     let lst = [];
-    if (focusedElements.length>0) {
-        Methods.apply(focusedElements, (e)=>{
+    if (focusedElements.length > 0) {
+        Methods.apply(focusedElements, (e) => {
             let cls = e.className.split(" ");
             let t = [];
             for (let j = 0, l = cls.length; j < l; j++) {
@@ -544,14 +417,16 @@ function presentCls() {
             lst.push(t);
         });
         return Methods.getDuplicates(lst);
-    }else return lst;
+    } else return lst;
 }
 
 function show_classes() {
     let cont = document.getElementById("genie-selected-cls");
     cont.innerHTML = "";
     let lst = presentCls();
-    Methods.apply(lst, (e)=>{cont.appendChild(createDomElement({name: "div", class: "choose-cls-cont", innerHTML: e}));});
+    Methods.apply(lst, (e) => {
+        cont.appendChild(createDomElement({name: "div", class: "choose-cls-cont", innerHTML: e}));
+    });
 }
 
 function setAttributesTo(attr, el1, el2) {
@@ -569,6 +444,7 @@ function setAttributesTo(attr, el1, el2) {
     el1[`${attr}`] = el2;
     f(el1.querySelector("ul") ? el1.querySelector("ul")["children"] : "", el2["children"]);
 }
+
 function get_angle(original, pt) {
     if (pt.x >= 0 && pt.y <= 0) {
         angle = Math.atan(Math.abs(pt.x / pt.y)) * RADIAN_COEFFICIENT;
@@ -589,20 +465,25 @@ function get_angle(original, pt) {
 }
 
 function removeEditable() {
-    Methods.apply(focusedElements, (e)=>{e.contentEditable = false;});
+    Methods.apply(focusedElements, (e) => {
+        e.contentEditable = false;
+    });
     typing = false;
     BRICK.typing = false;
 }
 
 
-function drag_style (wnd, property, value) {
+function drag_style(wnd, property, value) {
     Styling.edit_style(mouse.dragging.id, property, value, wnd.ruleIndex)
 }
 
 
 function contract_drop() {
     let d = document.getElementById("m-option");
-    d.classList.contains("full-h")?(()=>{d.classList.remove("full-h");d.classList.add("zero-h")})():"";
+    d.classList.contains("full-h") ? (() => {
+        d.classList.remove("full-h");
+        d.classList.add("zero-h")
+    })() : "";
 }
 
 function click(el, e) {
@@ -625,10 +506,10 @@ function click(el, e) {
         let txt = el.id;
         if (txt === "A") {
             appendingGL = !appendingGL;
-            Methods.toogle.classes(el, "toolbar-item-color", "lightblue");
+            Methods.toogle.classes(el, "toolbar-item-color", colors.primary);
         } else {
-            document.getElementById("I").classList.remove("lightblue");
-            document.getElementById("B").classList.remove("lightblue");
+            document.getElementById("I").classList.remove(colors.primary);
+            document.getElementById("B").classList.remove(colors.primary);
             HandleHightlightedText();
             instantChanges[txt.toString()](highlightObj);
             window.clearTimeout(timeOut);
@@ -636,7 +517,7 @@ function click(el, e) {
                 document.getElementById("genie-instant-toolbar").style.display = "none";
             }, 3000);
         }
-        /*Methods.toogle.classes(this.el, "toolbar-item-color", "lightblue");*/
+        /*Methods.toogle.classes(this.el, "toolbar-item-color", colors.primary);*/
     } else
         /*
                 toolbar items
@@ -666,7 +547,7 @@ function isDraggable(el) {
 }
 
 function new_class_instr() {
-    let title = document.getElementById("input-new-class").value||".new-cls";
+    let title = document.getElementById("input-new-class").value || ".new-cls";
     new Classes().createNewClass(title)
 }
 
@@ -683,7 +564,7 @@ function slowRemoveInstantToolbar() {
 }
 
 function highlightLayout(el) {
-    Methods.changeClassProperty(".compressed_layout li .layout_title", el || focusedElements, "background", "lightblue", "white");
+    Methods.changeClassProperty(".compressed_layout li .layout_title", el || focusedElements, "background", colors.primary, "white");
 }
 
 function HandleHightlightedText() {
@@ -720,19 +601,19 @@ function checkIfBoldOrItalic() {
     if (bold || italic) {
         if (bold) {
             a.classList.remove("toolbar-item-color");
-            a.classList.add("lightblue");
+            a.classList.add(colors.primary);
         }
         if (italic) {
             b.classList.remove("toolbar-item-color");
-            b.classList.add("lightblue");
+            b.classList.add(colors.primary);
         }
     } else {
         if (!bold) {
-            a.classList.remove("lightblue");
+            a.classList.remove(colors.primary);
             a.classList.add("toolbar-item-color");
         }
         if (!italic) {
-            b.classList.remove("lightblue");
+            b.classList.remove(colors.primary);
             b.classList.add("toolbar-item-color");
         }
     }
@@ -788,7 +669,9 @@ function createDomElement(args) {
 function checkSelectedCls() {
     let lst = presentCls();
     let ch = document.getElementById("genie-all-cls-main")["children"];
-    Methods.apply(ch, (e)=>{Methods.find(lst, e.querySelector("span").textContent.split(".")[1])? e.querySelector("input").checked = true:e.querySelector("input").checked = false;});
+    Methods.apply(ch, (e) => {
+        Methods.find(lst, e.querySelector("span").textContent.split(".")[1]) ? e.querySelector("input").checked = true : e.querySelector("input").checked = false;
+    });
 }
 
 function clsName(classList) {
@@ -799,18 +682,41 @@ function clsName(classList) {
 }
 
 function toolbarItems(el) {
-    Methods.changeClassProperty(".genie-toolbar-item", [el], "backgroundColor", "lightblue", "#f3f3f3");
+    Methods.changeClassProperty(".genie-toolbar-item", [el], "backgroundColor", colors.primary, "#f3f3f3");
 }
 
 function hightlightAll() {
     let ell = [];
-    Methods.apply(focusedElements, (e)=>{e.classList.contains("hi")? ell.push(e.done.querySelector("input")) :"";});
+    Methods.apply(focusedElements, (e) => {
+        e.classList.contains("hi") ? ell.push(e.done.querySelector("input")) : "";
+    });
     highlightLayout(ell);
+}
+
+function executeClip(_element, is_tile_img, is_frame) {
+    let temp1 = document.querySelector(".genie-paint-field");
+        let tag = _element.getAttribute("alt");
+        let path = is_tile_img?graphicsObject[tag]:is_frame?frames[tag]:clipObject[tag];
+        tag = tag.replace(/\.webp/g, "");
+        tag = tag.replace(/\.svg/g, "");
+        tag = tag.replace(/\.jpg/g, "");
+        Elements[tag] === undefined ? Elements[tag] = 0 : Elements[tag]++;
+
+
+        if (is_tile_img){
+            let e = new G(`${tag + "-" + Elements[tag].toString()}`, {appended_img: path}).create(tag, null, lastContextMenuPt);
+        }
+        else if (is_frame){
+            let e = new G(`${tag + "-" + Elements[tag].toString()}`, {framed:path}).create(tag, null, lastContextMenuPt);
+        }else{
+            let e = new G(`${tag + "-" + Elements[tag].toString()}`, {clipped: true, clipPath:path}).create(tag, null, lastContextMenuPt);
+        }
+        console.log(e)
 }
 
 function getFocusedClasses(cls) {
     let lst = [], lst1 = [];
-    Methods.apply(focusedElements, (e)=>{
+    Methods.apply(focusedElements, (e) => {
         if (e.classList.contains(`${cls}`)) {
             lst.push(`${e.id}`);
             lst1.push(e)
@@ -867,7 +773,7 @@ function addCurrentTool(el) {
             p.style.left = `${center.x - (flag ? flag : 40)}px`;
             p.style.top = `${center.y - (flag ? flag : 0)}px`;
         } else {
-            Methods.apply(focusedElements, (e)=>{
+            Methods.apply(focusedElements, (e) => {
                 if (e.classList.contains("hi")) {
                     center = {x: e.clientWidth / 2, y: e.clientHeight / 2};
                     e.appendChild(p);
@@ -915,22 +821,22 @@ function handleCurrentResize(el) {
             }
         }
     } else {
-            /*if ctrl is down ,multi-select!*/
-            if (keySequence.isSequenced([CTRL])) {
-                removeEditable();
-                el.style.cursor = "all-scroll";
-                focusedElements.push(el);
-                addCurrentTool(el);
-            } else {
-                new Styles(el).init();
-                removeEditable();
-                removeCurrentTool();
-                el.style.cursor = "all-scroll";
-                addCurrentTool(el);
-                focusedElements = [];
-                focusedElements.push(el);
+        /*if ctrl is down ,multi-select!*/
+        if (keySequence.isSequenced([CTRL])) {
+            removeEditable();
+            el.style.cursor = "all-scroll";
+            focusedElements.push(el);
+            addCurrentTool(el);
+        } else {
+            new Styles(el).init();
+            removeEditable();
+            removeCurrentTool();
+            el.style.cursor = "all-scroll";
+            addCurrentTool(el);
+            focusedElements = [];
+            focusedElements.push(el);
 
-            }
+        }
 
     }
 }
@@ -1144,7 +1050,9 @@ function KeyEventHandler(element, event) {
 
 KeyEventHandler.prototype.handleDelete = function () {
     let lst = [];
-    Methods.apply(focusedElements, (e)=>{e?e.parentNode.classList.contains("list_item") || e.classList.contains("hi")? lst.push(e) :"" :"";});
+    Methods.apply(focusedElements, (e) => {
+        e ? e.parentNode.classList.contains("list_item") || e.classList.contains("hi") ? lst.push(e) : "" : "";
+    });
     removeCurrentTool();
     this.delete(lst)
 };
@@ -1233,13 +1141,15 @@ KeyEventHandler.prototype.handleRedoDelete = function () {
 
 KeyEventHandler.prototype.handleDuplicate = function () {
     let lst = [];
-    Methods.apply(focusedElements, (e)=>{e.parentNode.classList.contains("list_item")? lst.push(e.parentNode) :e.classList.contains("hi")? lst.push(e):"";});
+    Methods.apply(focusedElements, (e) => {
+        e.parentNode.classList.contains("list_item") ? lst.push(e.parentNode) : e.classList.contains("hi") ? lst.push(e) : "";
+    });
     this.duplicate(lst);
 };
 
 KeyEventHandler.prototype.duplicate = function (elems) {
     let c;
-    Methods.apply(elems, (e)=>{
+    Methods.apply(elems, (e) => {
         if (e.classList.contains("hi")) {
             removeCurrentTool(e);
             c = clone(e);
@@ -1262,7 +1172,7 @@ KeyEventHandler.prototype.duplicate = function (elems) {
 KeyEventHandler.prototype.handleKeys = function () {
     if (!BRICK.typing) {
         if (!typing) {
-            if (this.el.parentNode.classList.contains("rule-prop")||this.el.parentNode.id === "special-create") {
+            if (this.el.parentNode.classList.contains("rule-prop") || this.el.parentNode.id === "special-create") {
                 if (this.el.parentNode.id !== "special-create") {
                     if (!this.el.parentNode.classList.contains("el_prop")) {
                         if (KEY.isCharCode(this.key)) {
@@ -1321,22 +1231,20 @@ KeyEventHandler.prototype.handle_key_up = function () {
     } else {
         if (this.el.classList.contains("hi")) {
             HandleHightlightedText();
-        }
-        else if (this.el.classList.contains("layout_title")) {
+        } else if (this.el.classList.contains("layout_title")) {
             this.el.value = this.el.value.split(" ").join("-");
             let el = this.el.parentNode.creator;
             if (this.el.value.length > 0) {
                 Styling.changeClass(el, `#${this.el.value.split("#")[1]}`, false);
             }
-        }
-        else if (this.el.classList.contains("prop")) {
+        } else if (this.el.classList.contains("prop")) {
             if (KEY.isCharCode(this.key)) {
                 if (this.el.parentNode.classList.contains("el_prop")) {
                     let e = this.el.parentNode.el, v = Methods.removeSpaces(this.el.value.split("{")[0]);
-                    if (e.tagName!==undefined){
+                    if (e.tagName !== undefined) {
                         Styling.changeClass(e, v, false);
                         e.done.querySelector("input").value = v;
-                    }else {
+                    } else {
                         styleElement = document.getElementById(`${classId}`);
                         Styling.changeClass(e, v, true);
                         styleElement = document.getElementById(`${styleId}`);
@@ -1345,25 +1253,23 @@ KeyEventHandler.prototype.handle_key_up = function () {
                     let p = Methods.trim(this.el.value);
                     let v = Methods.trim(this.el.parentNode.querySelector(".val").value);
                     let cb = this.el.parentNode.parentElement;
-                    cb.ruleIndex!==undefined? Styling.UncommentRuleProperty(p, v, cb.ruleIndex):(()=>{
+                    cb.ruleIndex !== undefined ? Styling.UncommentRuleProperty(p, v, cb.ruleIndex) : (() => {
                         Styling.UncommentRuleProperty(p, v, cb.rI);
                         styleElement = document.getElementById(`${styleId}`);
                     })();
                 }
                 this.el.style.width = (this.el.value.length + 1) * 6 + "px";
             }
-        }
-        else if (this.el.id === "input-new-class") {
-            if(keySequence.ENTER()){
+        } else if (this.el.id === "input-new-class") {
+            if (keySequence.ENTER()) {
                 new_class_instr();
             }
-        }
-        else if (this.el.classList.contains("val")) {
+        } else if (this.el.classList.contains("val")) {
             if (KEY.isCharCode(this.key)) {
                 let p = Methods.removeSpaces(this.el.parentNode.querySelector(".prop").value.split(":")[0]);
                 let v = Methods.trim(this.el.value.split(";")[0]);
                 let cb = this.el.parentNode.parentElement;
-                cb.ruleIndex!==undefined? Styling.edit_style("", p, v, cb.ruleIndex):(()=>{
+                cb.ruleIndex !== undefined ? Styling.edit_style("", p, v, cb.ruleIndex) : (() => {
                     styleElement = document.getElementById(`${classId}`);
                     Styling.edit_style("", p, v, cb.rI);
                     styleElement = document.getElementById(`${styleId}`);
@@ -1484,7 +1390,6 @@ MouseEventHandler.prototype.mouse_down = function () {
         } else {
             mouse.dragging.draggable = false;
         }
-
     } else {
         mouse.dragging.drag_start = false;
     }
@@ -1529,7 +1434,7 @@ MouseEventHandler.prototype.dblclick = function () {
         BRICK.typing = true;
         this.el.contentEditable = true;
         this.el.style.cursor = "text";
-    }else {
+    } else {
         if (this.el.classList.contains("editable")) {
             if (!Methods.find(currentBeingTyped, this.el)) {
                 Methods.edit.allow(this.el);
@@ -1566,79 +1471,58 @@ MouseEventHandler.prototype.handle_late_click = function () {
             removeCurrentTool();
             addCurrentTool(e);
         }
-    }
-    else if (this.el.classList.contains("arrow") && this.el.parentNode.classList.contains("carrying")) {
+    } else if (this.el.classList.contains("arrow") && this.el.parentNode.classList.contains("carrying")) {
         /*
                 if compressed layout list_item has other list_items
         */
         Methods.toogle.classes(this.el, "expanded", "collapsed");
         let ul = this.el.parentNode.querySelector("ul");
-        ul?Methods.toogle.display(this.el.parentNode.querySelector("ul")): (() => {
-            this.el.parentNode.parentNode.querySelectorAll(".rule-prop").forEach( (e) => {
+        ul ? Methods.toogle.display(this.el.parentNode.querySelector("ul")) : (() => {
+            this.el.parentNode.parentNode.querySelectorAll(".rule-prop").forEach((e) => {
                 if (!e.classList.contains("el_prop")) {
                     Methods.toogle.display(e);
                 }
             });
             let r = this.el.parentNode.parentNode.querySelector("span.c-l");
-            r?Methods.toogle.display(r):"";
+            r ? Methods.toogle.display(r) : "";
         })();
-    }
-    else if (this.el.classList.contains("cancel") || this.el.classList.contains("window_close")) {
+    } else if (this.el.classList.contains("cancel") || this.el.classList.contains("window_close")) {
         document.querySelector(".window").style.display = "none";
-    }
-    else if (this.el.classList.contains("code_display")) {
+    } else if (this.el.classList.contains("code_display")) {
         let cd = document.querySelector(".code_display");
         cd.readOnly = false;
         cd.style.cursor = "auto";
-    }
-    else if (this.el.classList.contains("genie-toolbar-item")) {
+    } else if (this.el.classList.contains("genie-toolbar-item")) {
         toolbarItems(this.el);
         currentResize = this.el.id;
         reloadCurrentTool();
-    }
-    else if (this.el.classList.contains("style-tab")) {
-        let f = (id1, id2)=>{
-            let a = document.getElementById(`${id1}`);
-            let b = document.getElementById(`${id2}`);
-            a.style.opacity = "1";
-            b.style.opacity = "0";
-            a.style.visibility = "visible";
-            b.style.visibility = "hidden";
-        };
-        switch (this.el.id) {
-            case "style-tab-title":
-                f("genie-styles-main", "genie-classes-main");
-                new Classes().getAllClasses();
-                break;
-            case "class-tab-title":
-                f("genie-classes-main", "genie-styles-main");
-                break;
-            case "all-cls-tab-title":
-                f("genie-all-cls-main", "genie-selected-cls");
-                break;
-            case "selected-cls-tab-title":
-                f("genie-selected-cls", "genie-all-cls-main");
-                show_classes();
-                break;
+    } else if (this.el.classList.contains("tab-btn")) {
+        let len = this.el.parentElement.childElementCount;
+        let targetList = this.el.parentElement.children;
+
+        let bodyList = this.el.parentElement.parentElement.querySelector(".tab-main-body").children;
+        let index = Methods.getChildIndex(this.el);
+
+        for (let i = 0; i < len; i++) {
+            targetList[i].classList.remove("tab-active");
+            bodyList[i].classList.remove("tab-body-active");
         }
-        Methods.changeClassProperty(".style-tab", [this.el], "backgroundColor", "lightblue", "inherit");
-        Methods.changeClassProperty(".style-tab", [this.el], "border-bottom", "1px solid rgba(11, 23, 64, 0.96)", "0");
-    }
-    else if (this.el.classList.contains("rule-prop-delete")) {
+        targetList[index].classList.add("tab-active");
+        bodyList[index].classList.add("tab-body-active");
+
+    } else if (this.el.classList.contains("rule-prop-delete")) {
         let p = this.el.parentNode;
-        let index = p.parentElement.ruleIndex!==undefined?p.parentElement.ruleIndex:p.parentElement.rI;
+        let index = p.parentElement.ruleIndex !== undefined ? p.parentElement.ruleIndex : p.parentElement.rI;
         Styling.commentRuleProperty(p.querySelector(".prop").value, p.querySelector(".val").value, index);
         Methods.removeNode(p);
 
-    }
-    else if (this.el.classList.contains("rule-props-cont-del")) {
+    } else if (this.el.classList.contains("rule-props-cont-del")) {
         let p = this.el.parentNode;
         styleElement = document.getElementById(`${classId}`);
         Styling.deleteRule(p.rI);
         Methods.removeNode(p);
         styleElement = document.getElementById(`${styleId}`);
-    }
-    else if (this.el.classList.contains("rule-prop-check-box")) {
+    } else if (this.el.classList.contains("rule-prop-check-box")) {
         let p = this.el.parentNode;
         if (!this.el.checked) {
             let index;
@@ -1663,8 +1547,7 @@ MouseEventHandler.prototype.handle_late_click = function () {
             Styling.UncommentRuleProperty(Methods.trim(p.querySelector(".prop").value), p.querySelector(".val").value, index);
             styleElement = document.getElementById(`${styleId}`);
         }
-    }
-    else if (this.el.classList.contains("rule-prop")||this.el.classList.contains("c-l")) {
+    } else if (this.el.classList.contains("rule-prop") || this.el.classList.contains("c-l")) {
         if (newProp === null) {
             let cb = this.el.querySelector(".rule-prop-check-box");
             let p;
@@ -1673,9 +1556,9 @@ MouseEventHandler.prototype.handle_late_click = function () {
                 Methods.presert(p, this.el.parentNode, this.el.nextElementSibling);
             } else {
                 cb = this.el;
-                if(cb.tagName ==="SPAN"){
+                if (cb.tagName === "SPAN") {
                     cb = this.el.rI;
-                }else{
+                } else {
                     cb = cb.parentNode.parentElement.ruleIndex;
                 }
                 p = renderStyle(" ", " ", cb, true, "rI");
@@ -1697,43 +1580,82 @@ MouseEventHandler.prototype.handle_late_click = function () {
             }
             newProp = null;
         }
-    }
-    else if (this.el.classList.contains("hi")) {
+    } else if (this.el.classList.contains("hi")) {
         if (BRICK.typing) {
             HandleHightlightedText();
         }
         checkSelectedCls();
         contract_drop();
+    } else if (this.el.classList.contains("my-collapse")) {
+        console.log("hello")
+        // Methods.removeNode(this.el.parentElement);
+        let temp_w = this.el.parentNode.getBoundingClientRect().width;
+        let tmp = document.querySelector(".genie-paint-field");
+        let temp1 = this.el.parentElement.nextElementSibling;
+        tmp.style.width = tmp.getBoundingClientRect().width + temp_w + temp1.getBoundingClientRect().width + "px";
+        temp1.style.width = 0;
+        this.el.style.width = 0;
+        console.log(temp_w, tmp)
+        this.el.parentNode.style["width"] = 0;
+
+    } else if (this.el.classList.contains("genie-left-nav-item")) {
+        let tmp = document.querySelector(".genie-paint-field");
+        let temp1 = document.querySelector(".genie-sec-layout-cont");
+        let temp2 = document.querySelector(".my-collapse");
+        let temp3 = document.querySelector(".separator");
+        temp1.style.width = "300px";
+        tmp.style.width = "calc(70% - 300px)";
+        temp2?temp2.style.width = "30px":"";
+        temp3.style.width = "15px";
+        temp1.innerHTML = select_layouts[this.el.querySelector("span").innerText]
+    } else if (this.el.classList.contains("arrow-right")) {
+        let parent = this.el.parentElement.querySelector(".box-inner");
+        x = ((parent.getBoundingClientRect().width / 2)) + parent.scrollLeft;
+        console.log(x)
+        parent.scrollLeft = x;
+
     }
-    else if (this.el.id === "create-new-class-btn") {
+    else if (this.el.classList.contains("arrow-left")) {
+        let parent = this.el.parentElement.querySelector(".box-inner");
+        x = ((parent.getBoundingClientRect().width / 2)) - parent.scrollLeft;
+        console.log(x)
+        parent.scrollLeft = -x;
+
+    }else if (this.el.classList.contains("see-all")) {
+        let temp1 = document.querySelector(".genie-sec-layout-cont");
+        temp1.innerHTML = designElements[this.el.parentElement.children[0].innerText]
+        console.log("here")
+    }else if (this.el.classList.contains("tab-img")) {
+        executeClip(this.el)
+    }else if (this.el.classList.contains("tile-img")) {
+        executeClip(this.el, true)
+    }else if (this.el.classList.contains("frame-tile-img")) {
+        executeClip(this.el, false, true)
+    } else if (this.el.id === "create-new-class-btn") {
         new_class_instr();
-    }
-    else if (this.el.id === "input-new-class") {
+    } else if (this.el.id === "input-new-class") {
         typing = false;
         BRICK.typing = false;
-    }
-    else if (this.el.id === "generate") {
+    } else if (this.el.id === "generate") {
         new Generate().init();
-    }
-    else if (this.el.id === "convert2perc") {
+    } else if (this.el.id === "convert2perc") {
         check_perc();
         Methods.toogle.classes(document.getElementById("m-option"), "zero-h", "full-h");
-    }
-    else if (this.el.parentNode.classList.contains("choose-cls-cont")) {
-        focusedElements.length>0?(()=> {
+    } else if (this.el.parentNode.classList.contains("choose-cls-cont")) {
+        focusedElements.length > 0 ? (() => {
             let sp = this.el.parentNode.querySelector("span");
             let cb = this.el.parentNode.querySelector("input");
             let txt = sp.textContent;
-            txt = txt.indexOf(".")!==-1?txt.split(".")[1]:txt;
+            txt = txt.indexOf(".") !== -1 ? txt.split(".")[1] : txt;
             if (this.el.tagName !== "INPUT") {
                 cb.checked = !cb.checked;
             }
-            if (this.el.parentNode.parentElement.id === "m-option"){
+            if (this.el.parentNode.parentElement.id === "m-option") {
                 if (cb.checked) {
-                    Methods.apply(focusedElements, (e)=>{
+                    Methods.apply(focusedElements, (e) => {
                         console.log(txt);
                         let a, b;
-                        if (txt === "top"||txt === "left") {
+                        if (txt === "top" || txt === "left") {
                             let d = ff(e, e.id, false);
                             if (txt === "left") {
                                 a = `${d[0] * 100 / e.parentElement.clientWidth}%`;
@@ -1748,27 +1670,27 @@ MouseEventHandler.prototype.handle_late_click = function () {
                                     top_display.value = b;
                                 }
                             }
-                        }else {
+                        } else {
                             let d = ff(e, e.id, true);
                             if (txt === "width") {
                                 a = `${d[0] * 100 / e.parentElement.clientWidth}%`;
                                 if (!percX) {
-                                    Styling.edit_style("", "width", a,e.ruleIndex);
+                                    Styling.edit_style("", "width", a, e.ruleIndex);
                                     width_display.value = a;
                                 }
                             } else {
                                 b = `${d[1] * 100 / e.parentElement.clientHeight}%`;
                                 if (!percY) {
-                                    Styling.edit_style("", "height", b,e.ruleIndex);
+                                    Styling.edit_style("", "height", b, e.ruleIndex);
                                     height_display.value = b;
                                 }
                             }
                         }
                     });
                 } else {
-                    Methods.apply(focusedElements, (e)=>{
+                    Methods.apply(focusedElements, (e) => {
                         let a, b;
-                        if (txt === "top"||txt === "left") {
+                        if (txt === "top" || txt === "left") {
                             let d = ff(e, e.id, false);
                             if (txt === "left") {
                                 a = `${d[0]}px`;
@@ -1783,32 +1705,36 @@ MouseEventHandler.prototype.handle_late_click = function () {
                                     top_display.value = b;
                                 }
                             }
-                        }else {
+                        } else {
                             let d = ff(e, e.id, true);
                             if (txt === "width") {
                                 a = `${d[0]}px`;
                                 if (percX) {
-                                    Styling.edit_style("", "width", a,e.ruleIndex);
+                                    Styling.edit_style("", "width", a, e.ruleIndex);
                                     width_display.value = a;
                                 }
                             } else {
                                 b = `${d[1]}px`;
                                 if (percY) {
-                                    Styling.edit_style("", "height", b,e.ruleIndex);
+                                    Styling.edit_style("", "height", b, e.ruleIndex);
                                     height_display.value = b;
                                 }
                             }
                         }
                     });
                 }
-            }else {
+            } else {
                 if (cb.checked) {
-                    Methods.apply(focusedElements, (e)=>{!e.classList.contains(txt) ? e.classList.add(txt) : "";});
+                    Methods.apply(focusedElements, (e) => {
+                        !e.classList.contains(txt) ? e.classList.add(txt) : "";
+                    });
                 } else {
-                    Methods.apply(focusedElements, (e)=>{e.classList.contains(txt) ? e.classList.remove(txt) : "";});
+                    Methods.apply(focusedElements, (e) => {
+                        e.classList.contains(txt) ? e.classList.remove(txt) : "";
+                    });
                 }
             }
-        })():"";
+        })() : "";
     }
 };
 
@@ -1849,10 +1775,10 @@ MouseEventHandler.prototype.append = function () {
 
 MouseEventHandler.prototype.handle_appendTool_drag = function (dragger, wnd) {
     let f = (ml, mt, wnd) => {
-        if (percX){
+        if (percX) {
             ml = `${100 * ml / parentWidth}`;
         }
-        if (percY){
+        if (percY) {
             mt = `${100 * mt / parentHeight}`
         }
         /*
@@ -1863,12 +1789,14 @@ MouseEventHandler.prototype.handle_appendTool_drag = function (dragger, wnd) {
                         (ml >= 0) ? drag_style(wnd, "left", ml) : "";
             */
             drag_style(wnd, "left", `${ml + unitX}`);
+            Resizers.drag_clip(clip_child, wnd, "left", ml, unitX)
             left_display.value = `${ml + unitX}`;
         } else if (dragger.top_resize) {
             /*
                         (mt >= 0) ? drag_style(wnd, "top", mt) : "";
             */
             drag_style(wnd, "top", `${mt + unitY}`);
+            Resizers.drag_clip(clip_child, wnd, "top", mt, unitY)
             top_display.value = `${mt + unitY}`;
         }
         /*
@@ -1876,9 +1804,11 @@ MouseEventHandler.prototype.handle_appendTool_drag = function (dragger, wnd) {
         */
         if (dragger.height_resize) {
             drag_style(wnd, "height", `${mt + unitY}`);
+            Resizers.drag_clip(clip_child, wnd, "height", mt, unitY);
             height_display.value = `${mt + unitY}`;
         } else if (dragger.width_resize) {
             drag_style(wnd, "width", `${ml + unitX}`);
+            Resizers.drag_clip(clip_child, wnd, "width", ml, unitX);
             width_display.value = `${ml + unitX}`;
         }
     };
@@ -1936,15 +1866,17 @@ MouseEventHandler.prototype.handle_inside_element_drag = function (dragger, wnd)
         if (dragger.check === null) {
             this.handle_rotate(dragger, wnd)
         } else {
-            if (percX){
+            if (percX) {
                 ml = `${100 * ml / parentWidth}`;
             }
-            if (percY){
+            if (percY) {
                 mt = `${100 * mt / parentHeight}`;
             }
             if (dragger.check) {
                 drag_style(wnd, "height", `${mt + unitY}`);
                 drag_style(wnd, "width", `${ml + unitX}`);
+                Resizers.drag_clip_all(clip_child, wnd, "both_w_h", ml, mt, unitX, unitY);
+                // Resizers.drag_clip(clip_child, wnd, "width", ml, unitX);
                 height_display.value = `${mt + unitY}`;
                 width_display.value = `${ml + unitX}`;
             } else {
@@ -2017,7 +1949,7 @@ MouseEventHandler.prototype.normal_drag = function () {
             } else {
                 Resizers.drag_start();
             }
-        }  else if (isTTool) {
+        } else if (isTTool) {
             if (no) {
                 TraditionalTool.multiple_drag_start();
             } else {
@@ -2105,14 +2037,13 @@ MouseEventHandler.prototype.normal_drag = function () {
                         if (isAppendedTool) {
                             /*append tool*/
                             this.handle_appendTool_drag(dragger, wnd);
-                        }else {
-                            if (isTTool){
+                        } else {
+                            if (isTTool) {
                                 /*
                                                         traditional append tool
                             */
                                 TraditionalTool.handle_traditional_appendTools()
-                            }
-                            else {
+                            } else {
                                 Methods.changeClassProperty(`.${mouse.dragging.id}`, [wnd], "left", `${100 * (ml) / window.innerWidth}%`);
                                 Methods.changeClassProperty(`.${mouse.dragging.id}`, [wnd], "top", `${100 * (mt) / window.innerHeight}%`);
                             }
@@ -2127,7 +2058,7 @@ MouseEventHandler.prototype.normal_drag = function () {
 };
 
 MouseEventHandler.prototype.drag = function () {
-    if (BRICK.typing||typing) {
+    if (BRICK.typing || typing) {
         mouse.dragging.draggable = false;
         /*mouse.dragging.element.draggable = false;*/
     } else {
@@ -2239,4 +2170,9 @@ function rqst() {
  ==== 7. ELEMENTS
  ***************************************
 */
+
+
+/*
+* <div class="D-ZUcw" style="margin: -4px 0px;"><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rCvqVTU/1/0/402w-idrkZVCwXGI.png" alt="Square" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId597" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAFEHK3BpiA/1/0/404w-GnDnCo80hlg.png" alt="Rounded Square" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId598" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rEUSxdE/1/0/804w-t8rBv8DGtyU.png" alt="Circle" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId599" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rIzwGHQ/2/0/404w-aTx5hIJ54sQ.png" alt="Triangle Up" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId600" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lvBcr8Q/2/0/404w-bYy6pq3utRc.png" alt="Triangle Down" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId601" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rI8iZ1c/1/0/404w-b9rzdI-7r_Y.png" alt="Diamond" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId602" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rEE7Fs8/1/0/404w-XIk1i4yB4YM.png" alt="Pentagon" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId603" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rOrmA5A/1/0/348w-H-c_Fu_D-KI.png" alt="Hexagon Vertical" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId604" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rID8RM4/1/0/404w-b4TXCBMgkp8.png" alt="Hexagon Horizontal" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId605" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rOgunQY/1/0/404w-LY-wOntoeVo.png" alt="Octagon" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId606" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7ljCsz84/1/0/404w-SUviByp4S-4.png" alt="4-Pointed Star" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId607" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rFLytUE/1/0/404w-mSWZsrd2CkU.png" alt="5-Pointed Star" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId608" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7liqzgb0/1/0/356w-do76m3qcurw.png" alt="6-Pointed Star" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId609" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rNROzv0/1/0/404w-DbF2Ill2VaY.png" alt="8-Pointed Star" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId610" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rAZX3-o/1/0/804w-N933_KraONA.png" alt="Star Burst 1" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId611" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE1BySBc-s/5/0/404w-52ZCCFfaZsI.png" alt="Star Burst 2" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId612" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7ljtDqvw/1/0/404w-db4mDMb3Dmk.png" alt="8-Pointed Star Inflated" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId613" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lqCUXwk/1/0/404w-lUHS__vwMpY.png" alt="Star Burst 3" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId614" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7ln6Nwjc/2/0/404w-9JFf0XOzdYY.png" alt="Star Burst 4" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId615" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rLV4tqQ/1/0/404w-5CFChL99nO4.png" alt="Arrow Right" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId616" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rPRXHUk/1/0/404w-3nv0IV8oDfg.png" alt="Arrow Left" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId617" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rBCEgeo/1/0/404w-4_kO1lsaCTU.png" alt="Arrow Up" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId618" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rMwt7Ls/1/0/404w-B3sw56NllxY.png" alt="Arrow Down" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId619" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rEyI1_8/1/0/404w-uDYW6ss_n8E.png" alt="Arrow Horizontal" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId620" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lo5Zk0o/4/0/404w-Ik40x6a8ZnA.png" alt="Arrow Block Right" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId621" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lkjnmfM/2/0/404w-52OvVa8KUwE.png" alt="Arrow Block 2 Right" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId622" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lkhGbzc/2/0/404w-YRRJ_hQHrqM.png" alt="Arrow Block Concave" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId623" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7l0GoGOs/2/0/404w-EGr6F73nd_c.png" alt="Arrow Block Convex" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId624" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lxJL7as/3/0/404w-M3upwblHJEM.png" alt="Pill" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId625" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rJYYx5o/1/0/406w-vgX30FzXj9w.png" alt="Square Speech Bubble" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId626" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7l3J68zY/2/0/406w-y5R2WyjVkxU.png" alt="Round Speech Bubble" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId627" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rCGifNk/1/0/406w-jIn1YVXNkGQ.png" alt="Heart" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId628" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7l-OAKeA/2/0/402w-IB_xyqsB0BA.png" alt="Cross" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId629" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lwzETcE/3/0/406w-73gMnSQib0c.png" alt="Cloud" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId630" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rMUQlAk/1/0/318w-NU4Ix7q5guY.png" alt="Banner 2" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId631" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rKLKA8k/2/0/370w-2qM1B0CNpl8.png" alt="Banner 3" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId632" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rPGN4_0/1/0/402w-Lf-b5Cf2_To.png" alt="Banner 4" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId633" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rMr1Z9U/1/0/404w-w0v9KBJ_LgQ.png" alt="Banner 5" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId634" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rB52ro4/1/0/404w-DH_NmyNb32Y.png" alt="Banner 7" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId635" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rA4YV1w/1/0/404w-CkjFtNwKxpE.png" alt="Parallelogram Right" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId636" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rLfn4pI/1/0/404w-d4-zFl7NXFU.png" alt="Parallelogram Left" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId637" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rN-rL1w/1/0/404w-JLR2uB4dw98.png" alt="Trapezoid Up" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId638" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rMNDpuI/1/0/404w-XQe1fYw0hG4.png" alt="Trapezoid Down" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId639" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7l8a7Pp4/2/0/332w-SsxwjKxgmG8.png" alt="Arch Down" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId640" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7l3ea-00/2/0/332w-Pgn1uS1cfow.png" alt="Arch Up" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId641" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div></div>
+* */
 
