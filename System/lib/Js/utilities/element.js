@@ -58,6 +58,13 @@ let Styling = {
         rules[ruleI].style[property] = value;
         return rules[ruleI];
     },
+    edit_styles: (cls, propValueObject, ruleI) => {
+        let rules = styleElement.sheet.cssRules || styleElement.rules;
+        for (let item in propValueObject) {
+            rules[ruleI].style[item] = propValueObject[item];
+        }
+        return rules[ruleI];
+    },
     get_style: (cls, property, index, get_all) => {
         let rules = styleElement.sheet.cssRules || styleElement.rules;
         if (ruleIndex !== null) {
@@ -85,23 +92,45 @@ let Styling = {
 
 
 function getTransform({originalTransform, originalX, originalY, newX, newY}) {
-    if (originalX === newX) {
+    /*if (originalX === newX) {
         //Return scalex 1
     }
     if (originalY === newY) {
         //Return scaley 1
-    }
-    let theta_s_x, theta_s_y;
+    }*/
+    let theta_s_x = newX / originalX;
+    let theta_l = theta_s_x * ((newX - originalY) / 2);
+    let theta_s_y = newY / originalY;
+    let theta_t = theta_s_y * ((newY - originalY) / 2);
 
-    if (newX) {
-        theta_s_x = newX / originalX;
+    let transformX, transformY, left, top, width, height;
+
+    if (theta_s_y > 0 && theta_s_x > 0) {
+        transformX = theta_s_x;
+        transformY = theta_s_y;
+        if (theta_s_x >= 1 && theta_s_y >= 1) {
+            left = theta_l;
+            top = theta_t;
+            width = originalX*theta_s_x;
+            height = originalY*theta_s_y;
+        } else {
+            if (theta_s_x >= 1) {
+                left = theta_s_x * ((theta_s_x - 1) * originalX / 2);
+            } else {
+                left = ((theta_s_x - 1) * originalX / 2)
+            }
+
+            if (theta_s_y >= 1) {
+                top = theta_s_y * ((theta_s_y - 1) * originalY / 2);
+            } else {
+                top = (theta_s_y - 1) * originalY / 2
+            }
+            width = originalX;
+            height = originalY;
+        }
     }
 
-    if (newY) {
-        theta_s_y = newY / originalY;
-    }
-    return {x: theta_s_x, theta_s_y}
-
+    return {transformX, transformY, left, top, width, height}
 }
 
 
@@ -728,14 +757,18 @@ let Resizers = {
                     let theta_s_y = change / clip_child.y;
 
                     if (theta_s_y > 0) {
-                        let theta_t = theta_s_y * ((change - clip_child.y) / 2);
-                        if (theta_s_y < 1) {
-                            Styling.edit_style(clip_child.id, "height", `${clip_child.y}px`, clip_child.ruleIndex)
-                            Styling.edit_style(clip_child.id, "transform", `scaleX(${transformScaleX}) scaleY(${theta_s_y})`, clip_child.ruleIndex)
-                            Styling.edit_style(clip_child.id, "top", `${(theta_s_y - 1) * clip_child.y / 2}px`, clip_child.ruleIndex)
+                        if (theta_s_y >= 1) {
+                            Styling.edit_styles(clip_child.id, {
+                                "transform": `scaleX(${transformScaleX}) scaleY(${theta_s_y})`,
+                                "top": `${theta_s_y * ((change - clip_child.y) / 2)}px`,
+                                "height": `${clip_child.y * theta_s_y}px`
+                            }, clip_child.ruleIndex)
                         } else {
-                            Styling.edit_style(clip_child.id, "transform", `scaleX(${transformScaleX}) scaleY(${theta_s_y})`, clip_child.ruleIndex)
-                            Styling.edit_style(clip_child.id, "top", `${theta_t}px`, clip_child.ruleIndex)
+                            Styling.edit_styles(clip_child.id, {
+                                "transform": `scaleX(${transformScaleX}) scaleY(${theta_s_y})`,
+                                "top": `${(theta_s_y - 1) * clip_child.y / 2}px`,
+                                "height": `${clip_child.y}px`
+                            }, clip_child.ruleIndex)
                         }
                     }
                     break;
@@ -747,13 +780,18 @@ let Resizers = {
                     let theta_s_x = change / clip_child.x;
                     if (theta_s_x > 0) {
                         let theta_l = theta_s_x * ((change - clip_child.x) / 2);
-                        if (theta_s_x < 1) {
-                            Styling.edit_style(clip_child.id, "width", `${clip_child.x}px`, clip_child.ruleIndex)
-                            Styling.edit_style(clip_child.id, "transform", `scaleX(${theta_s_x}) scaleY(${transformScaleY})`, clip_child.ruleIndex)
-                            Styling.edit_style(clip_child.id, "left", `${(theta_s_x - 1) * clip_child.x / 2}px`, clip_child.ruleIndex)
+                        if (theta_s_x >= 1) {
+                            Styling.edit_styles(clip_child.id, {
+                                "transform": `scaleX(${theta_s_x}) scaleY(${transformScaleY})`,
+                                "left": `${theta_s_x * ((change - clip_child.x) / 2)}px`,
+                                "width": `${clip_child.x * theta_s_x}px`
+                            }, clip_child.ruleIndex)
                         } else {
-                            Styling.edit_style(clip_child.id, "transform", `scaleX(${theta_s_x}) scaleY(${transformScaleY})`, clip_child.ruleIndex)
-                            Styling.edit_style(clip_child.id, "left", `${theta_l}px`, clip_child.ruleIndex)
+                            Styling.edit_styles(clip_child.id, {
+                                "transform": `scaleX(${theta_s_x}) scaleY(${transformScaleY})`,
+                                "left": `${(theta_s_x - 1) * clip_child.x / 2}px`,
+                                "width": `${clip_child.x}px`
+                            }, clip_child.ruleIndex)
                         }
                     }
                     break;
@@ -766,29 +804,25 @@ let Resizers = {
             switch (direction) {
                 case "both_w_h":
                     let theta_s_x = changeX / clip_child.x;
-                    let theta_l = theta_s_x * ((changeX - clip_child.x) / 2);
                     let theta_s_y = changeY / clip_child.y;
-                    let theta_t = theta_s_y * ((changeY - clip_child.y) / 2);
                     if (theta_s_y > 0 && theta_s_x > 0) {
                         Styling.edit_style(clip_child.id, "transform", `scaleX(${theta_s_x}) scaleY(${theta_s_y})`, clip_child.ruleIndex)
                         if (theta_s_x >= 1 && theta_s_y >= 1) {
-                            Styling.edit_style(clip_child.id, "left", `${theta_l}px`, clip_child.ruleIndex)
-                            Styling.edit_style(clip_child.id, "top", `${theta_t}px`, clip_child.ruleIndex)
+                            Styling.edit_styles(clip_child.id, {
+                                "transform": `scaleX(${theta_s_x}) scaleY(${theta_s_y})`,
+                                "top": `${theta_s_y * ((changeY - clip_child.y) / 2)}px`,
+                                "left": `${theta_s_x * ((changeX - clip_child.x) / 2)}px`,
+                                "height": `${clip_child.y*theta_s_y}px`,
+                                "width": `${clip_child.x*theta_s_x}px`
+                            }, clip_child.ruleIndex)
                         } else {
-                            if (theta_s_x >= 1) {
-                                Styling.edit_style(clip_child.id, "left", `${theta_s_x * ((theta_s_x - 1) * clip_child.x / 2)}px`, clip_child.ruleIndex)
-                            } else {
-                                Styling.edit_style(clip_child.id, "left", `${(theta_s_x - 1) * clip_child.x / 2}px`, clip_child.ruleIndex)
-                            }
-
-                            if (theta_s_y >= 1) {
-                                Styling.edit_style(clip_child.id, "top", `${theta_s_y * ((theta_s_y - 1) * clip_child.y / 2)}px`, clip_child.ruleIndex)
-                            } else {
-                                Styling.edit_style(clip_child.id, "top", `${(theta_s_y - 1) * clip_child.y / 2}px`, clip_child.ruleIndex)
-                            }
-
-                            Styling.edit_style(clip_child.id, "width", `${clip_child.x}px`, clip_child.ruleIndex)
-                            Styling.edit_style(clip_child.id, "height", `${clip_child.y}px`, clip_child.ruleIndex)
+                            Styling.edit_styles(clip_child.id, {
+                                "transform": `scaleX(${theta_s_x}) scaleY(${theta_s_y})`,
+                                "top": `${(theta_s_y - 1)*clip_child.y / 2}px`,
+                                "left": `${(theta_s_x - 1)*clip_child.x / 2}px`,
+                                "height": `${clip_child.y}px`,
+                                "width": `${clip_child.x}px`
+                            }, clip_child.ruleIndex)
                         }
                     }
                     break;
@@ -841,6 +875,8 @@ function getViewBox(clip_path) {
     let s = fromPathToArray(clip_path);
     let y_large = 0;
     let x_large = 0;
+    let y_smallest = 0;
+    let x_smallest = 0;
     for (let i = 0; i < s.length; i++) {
         for (let j in s[i]) {
             if (j !== "type") {
@@ -849,10 +885,16 @@ function getViewBox(clip_path) {
                     if (parseFloat(s[i][j]) > x_large) {
                         x_large = parseFloat(s[i][j])
                     }
+                    if (parseFloat(s[i][j]) < x_smallest) {
+                        x_smallest = parseFloat(s[i][j])
+                    }
                 } else {
                     if (j.indexOf("y") > -1) {
                         if (parseFloat(s[i][j]) > y_large) {
                             y_large = parseFloat(s[i][j])
+                        }
+                        if (parseFloat(s[i][j]) < y_smallest) {
+                            y_smallest = parseFloat(s[i][j])
                         }
                     }
                 }
@@ -860,7 +902,16 @@ function getViewBox(clip_path) {
 
         }
     }
-    return {x: x_large, y: y_large}
+
+    let temp_x = x_large + Math.abs(x_smallest);
+    let temp_y = y_large + Math.abs(y_smallest);
+    if (temp_y>temp_x){
+        temp_x = temp_x*temp_y/temp_x;
+    }else
+    if (temp_x>temp_y){
+        temp_y = temp_y*temp_x/temp_y;
+    }
+    return {x: temp_x, y: temp_y}
 }
 
 G.prototype.create = function (tag_name, parent_path, parent) {
@@ -892,20 +943,34 @@ G.prototype.create = function (tag_name, parent_path, parent) {
 
         let temp = (getViewBox(this.clip_path));
 
-        this.child.x = temp.x;
-        this.child.y = temp.y;
+            console.log(temp)
 
-        initiateStyle(this.parentPath, this.childId, `
-        clip-path: ${`path("${this.clip_path}")`}
-        ;transform: scaleX(1) scaleY(1);top:0;left:0;
-        width: 100%;
-        height: 100%;
-        min-width: 100%;
-        min-height: 100%;
-        border: 0;
-        `);
-        this.child.ruleIndex = ruleIndex;
-        initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${temp.x}px; height: ${temp.y}px;border: 0`);
+            this.child.x = temp.x;
+            this.child.y = temp.y;
+
+            let test = 50;
+
+
+            let e = getTransform({
+                originalTransform: 1,
+                originalX: temp.x,
+                originalY: temp.y,
+                newX: test,
+                newY: test,
+            })
+            console.log(e)
+
+            initiateStyle(this.parentPath, this.childId, `
+                clip-path: ${`path("${this.clip_path}")`};
+                width: ${e.width}px;
+                height: ${e.height}px;
+                border: 0;
+                transform: scaleX(${e.transformX}) scaleY(${e.transformY});
+                top:${e.top}px;
+                left:${e.left}px;
+            `);
+            this.child.ruleIndex = ruleIndex;
+            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${test}px; height: ${test}px;border: 0;`);
     } else {
         if (this.framed) {
             this.childId = `poly${Math.floor(Math.random() * 10000)}`;
@@ -929,18 +994,34 @@ G.prototype.create = function (tag_name, parent_path, parent) {
 
             let temp = (getViewBox(this.framed));
 
+            console.log(temp)
+
             this.child.x = temp.x;
             this.child.y = temp.y;
 
+            let test = 50;
+
+
+            let e = getTransform({
+                originalTransform: 1,
+                originalX: temp.x,
+                originalY: temp.y,
+                newX: test,
+                newY: test,
+            })
+            console.log(e)
+
             initiateStyle(this.parentPath, this.childId, `
-        clip-path: ${`path("${this.framed}")`};
-        width: ${temp.x}px;
-        height: ${temp.x}px;
-        border: 0;
-        transform: scaleX(.1) scaleY(.31);top:0;left:0;
-        `);
+                clip-path: ${`path("${this.framed}")`};
+                width: ${e.width}px;
+                height: ${e.height}px;
+                border: 0;
+                transform: scaleX(${e.transformX}) scaleY(${e.transformY});
+                top:${e.top}px;
+                left:${e.left}px;
+            `);
             this.child.ruleIndex = ruleIndex;
-            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${temp.x}px; height: ${temp.y}px;border: 0;`);
+            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${test}px; height: ${test}px;border: 0;`);
         } else if (this.appended_img) {
             this.childId = `poly${Math.floor(Math.random() * 10000)}`;
 
