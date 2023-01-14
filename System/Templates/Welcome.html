@@ -140,13 +140,12 @@
 
         </div>
     </div>
-    <div id="genie-instant-toolbar" class="genie-instant-toolbar align_center fill_width"
-         onmouseenter="displayInstantToolbar()" onmouseleave="slowRemoveInstantToolbar()">
-        <div title="click to resize" class="gti fill_height align_center col toolbar-item-color" id="B">B</div>
+    <div id="genie-instant-toolbar" class="genie-instant-toolbar fill_width">
+        <!--<div title="click to resize" class="gti fill_height align_center col toolbar-item-color" id="B">B</div>
         <div title="click to rotate" class="gti fill_height align_center col toolbar-item-color" id="I">I</div>
         <div title="click to " class="gti fill_height align_center col toolbar-item-color" id="Color">Color</div>
         <div title="click to " class="gti fill_height align_center col toolbar-item-color" id="Background">Background
-        </div>
+        </div>-->
     </div>
     <div class="genie-top fill_width">
         <div class="genie-left-nav">
@@ -230,7 +229,15 @@
         </div>
 
         <div class="separator normal_drag normal_drag fill-height fill_height"></div>
-        <div class="genie-paint-field fill_height col" id="genie-paint-field">
+
+        <div class="paint-field-container-cont" id="paint-field-container-cont">
+
+
+        <div id="paint-field-container" class="paint-field-container fill_height col">
+            <div class="paint-temp-cont" id="paint-temp-cont">
+                <div class="genie-paint-field fill_height col" id="genie-paint-field"></div>
+            </div>
+        </div>
 
         </div>
         <div class="separator normal_drag fill-height fill_height"></div>
@@ -269,7 +276,12 @@
         </div>
     </div>
     <div class="separator normal_drag fill-width fill_width"></div>
-    <div class="genie-bottom fill_width"></div>
+    <div class="genie-bottom fill_width">
+        <div class="slidecontainer">
+  <input type="range" min="1" max="200" value="50" class="slider" id="myRange">
+  <p>Value: <span id="demo"></span></p>
+</div>
+    </div>
 </div>
 
 <script src="../lib/Js/utilities/constantMarkups.js"></script>

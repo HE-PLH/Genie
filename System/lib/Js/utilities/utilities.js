@@ -1,6 +1,3 @@
-
-
-
 /*
 ***************************************
  ==== 7. CONSTANT VARIABLES
@@ -45,7 +42,10 @@ let my_icons = {
     H5: "star-shield",
     H6: "truck"
 };
+
+let imageFrameInsideElement = [];
 let angle = 0, rotation_count = 0;
+let tool_for = null;
 let focusedElements = [];
 let currentBeingTyped = [];
 let typing = false;
@@ -55,6 +55,9 @@ let sequencedKeys = [];
 let g_timer = false;
 let styleId = "element";
 let classId = "element-utilities";
+
+// Get the root element
+var rootElement = document.querySelector(':root');
 let colors = {
     primary: "#5e77dc",
     white: "#fff",
@@ -62,6 +65,10 @@ let colors = {
     lightDark: "#2f2e2e",
     lighterDark: "#2f2e2e",
 }
+
+let offsetTransformX;
+let offsetTransformY;
+
 let styleElement = document.getElementById(`${styleId}`);
 let orient = '';
 let seprator = {
@@ -355,8 +362,6 @@ let Methods = {
 };
 
 
-
-
 /*
 ***************************************
  ==== 7. GLOBAL FUNCTIONS
@@ -504,18 +509,27 @@ function click(el, e) {
     } else if (el.classList.contains("gti")) {
         e.preventDefault();
         let txt = el.id;
+        console.log(txt)
         if (txt === "A") {
             appendingGL = !appendingGL;
             Methods.toogle.classes(el, "toolbar-item-color", colors.primary);
         } else {
-            document.getElementById("I").classList.remove(colors.primary);
+            let opt;
+            Methods.apply(focusedElements, (my_wnd) => {
+                if (my_wnd) {
+                    if ((opt = my_wnd["data-styles"])) {
+                        InstantTools[opt][txt].action(my_wnd);
+                    }
+                }
+            })
+            /*document.getElementById("I").classList.remove(colors.primary);
             document.getElementById("B").classList.remove(colors.primary);
             HandleHightlightedText();
             instantChanges[txt.toString()](highlightObj);
             window.clearTimeout(timeOut);
             timeOut = setTimeout(function () {
                 document.getElementById("genie-instant-toolbar").style.display = "none";
-            }, 3000);
+            }, 3000);*/
         }
         /*Methods.toogle.classes(this.el, "toolbar-item-color", colors.primary);*/
     } else
@@ -527,6 +541,10 @@ function click(el, e) {
         removeCurrentTool();
         highlightLayout();
         removeEditable();
+
+        if (imageFrameInsideElement.length) {
+            toogleFrameChildShow(imageFrameInsideElement[0])
+        }
         /*
                 remove instant toolbar
         */
@@ -552,15 +570,20 @@ function new_class_instr() {
 }
 
 function displayInstantToolbar() {
-    window.clearTimeout(timeOut);
-    document.getElementById("genie-instant-toolbar").style.display = "flex";
+    // window.clearTimeout(timeOut);
+    let cnt = document.getElementById("genie-instant-toolbar");
+    if (cnt.style.display === "none") {
+        cnt.style.display = "flex";
+    }
+    return cnt;
 }
 
 function slowRemoveInstantToolbar() {
-    window.clearTimeout(timeOut);
+    document.getElementById("genie-instant-toolbar").style.display = "none";
+    /*window.clearTimeout(timeOut);
     timeOut = setTimeout(function () {
         document.getElementById("genie-instant-toolbar").style.display = "none";
-    }, 3000);
+    }, 3000);*/
 }
 
 function highlightLayout(el) {
@@ -568,7 +591,8 @@ function highlightLayout(el) {
 }
 
 function HandleHightlightedText() {
-    let h_obj = Methods.getSelectedText();
+    displayInstantToolbar();
+    /*let h_obj = Methods.getSelectedText();
     let _start = h_obj.anchorOffset,
         _end = h_obj.focusOffset,
         _parent = h_obj.focusNode.parentElement,
@@ -578,9 +602,9 @@ function HandleHightlightedText() {
     _end = a > _end ? a : _end;
     if ((_start === _end)) {
         highlightObj = {};
-        /*checkIfBoldOrItalic();*/
+        /!*checkIfBoldOrItalic();*!/
     } else {
-        /*checkIfBoldOrItalic();*/
+        /!*checkIfBoldOrItalic();*!/
         highlightObj = {
             el: _el,
             parent: _parent,
@@ -588,9 +612,10 @@ function HandleHightlightedText() {
             start: _el.nodeValue.substring(0, _start),
             end: _el.nodeValue.substring(_end)
         };
-        document.getElementById("genie-instant-toolbar").style.display = "flex";
-        slowRemoveInstantToolbar();
-    }
+        displayInstantToolbar();
+        // document.getElementById("genie-instant-toolbar").style.display = "flex";
+        // slowRemoveInstantToolbar();
+    }*/
 }
 
 function checkIfBoldOrItalic() {
@@ -663,6 +688,7 @@ function createDomElement(args) {
     args.contentEditable ? el.contentEditable = args.contentEditable : "";
     args.appendTo ? args.appendTo.appendChild(el) : "";
     args.prependTo ? args.prependTo.prepend(el) : "";
+    args["data-styles"] ? el["data-styles"] = args["data-styles"] : "";
     return el;
 }
 
@@ -695,23 +721,25 @@ function hightlightAll() {
 
 function executeClip(_element, is_tile_img, is_frame) {
     let temp1 = document.querySelector(".genie-paint-field");
-        let tag = _element.getAttribute("alt");
-        let path = is_tile_img?graphicsObject[tag]:is_frame?frames[tag]:clipObject[tag];
-        tag = tag.replace(/\.webp/g, "");
-        tag = tag.replace(/\.svg/g, "");
-        tag = tag.replace(/\.jpg/g, "");
-        Elements[tag] === undefined ? Elements[tag] = 0 : Elements[tag]++;
+    let tag = _element.getAttribute("alt");
+    let path = is_tile_img ? graphicsObject[tag] : is_frame ? frames[tag] : clipObject[tag];
+    tag = tag.replace(/\.webp/g, "");
+    tag = tag.replace(/\.svg/g, "");
+    tag = tag.replace(/\.jpg/g, "");
+    Elements[tag] === undefined ? Elements[tag] = 0 : Elements[tag]++;
 
 
-        if (is_tile_img){
-            let e = new G(`${tag + "-" + Elements[tag].toString()}`, {appended_img: path}).create(tag, null, lastContextMenuPt);
-        }
-        else if (is_frame){
-            let e = new G(`${tag + "-" + Elements[tag].toString()}`, {framed:path}).create(tag, null, lastContextMenuPt);
-        }else{
-            let e = new G(`${tag + "-" + Elements[tag].toString()}`, {clipped: true, clipPath:path}).create(tag, null, lastContextMenuPt);
-        }
-        console.log(e)
+    if (is_tile_img) {
+        let e = new G(`${tag + "-" + Elements[tag].toString()}`, {appended_img: path}).create(tag, null, lastContextMenuPt);
+    } else if (is_frame) {
+        let e = new G(`${tag + "-" + Elements[tag].toString()}`, {framed: path}).create(tag, null, lastContextMenuPt);
+    } else {
+        let e = new G(`${tag + "-" + Elements[tag].toString()}`, {
+            clipped: true,
+            clipPath: path
+        }).create(tag, null, lastContextMenuPt);
+    }
+    console.log(e)
 }
 
 function getFocusedClasses(cls) {
@@ -796,6 +824,55 @@ function removeCurrentTool(el) {
     }
 }
 
+function toogleFrameChildShow(e) {
+    if (e.classList.contains("frame-parent")) {
+        console.log("hello")
+        e.classList.add("no-cursor")
+
+        let child = e.querySelector(".inner-mother");
+
+        imageFrameInsideElement.push(child);
+        child.style.opacity = "0.5";
+        let clip_el = child.parentElement;
+        child.classList.remove("no-cursor");
+        Methods.removeNode(child);
+
+        /*Styling.edit_styles(child.id, {
+            top: `${}px`
+        }, child.ruleIndex);*/
+
+
+        e.appendChild(child);
+        // child.classList.add("normal-drag");
+        return true;
+    } else if (e.classList.contains("frame-child")) {
+        e.classList.add("no-cursor")
+        let parent = e.parentElement;
+        parent.classList.remove("no-cursor");
+        let clipped_el = parent.querySelector("._clippath");
+        e.style.opacity = "1";
+        Methods.removeNode(e);
+        clipped_el.appendChild(e);
+        imageFrameInsideElement = [];
+        // child.classList.add("normal-drag");
+        return true
+    }
+    return false;
+}
+
+function displaySecLayout(html_contents) {
+    let tmp = boundary.el.parentElement;
+    let temp1 = document.querySelector(".genie-sec-layout-cont");
+    let temp2 = document.querySelector(".my-collapse");
+    let temp3 = document.querySelector(".separator");
+    temp1.style.width = "300px";
+    tmp.style.width = "calc(70% - 300px)";
+    temp2 ? temp2.style.width = "30px" : "";
+    temp3.style.width = "15px";
+    temp1.innerHTML = html_contents
+}
+
+
 function reloadCurrentTool(el) {
     removeCurrentTool();
     addCurrentTool();
@@ -835,7 +912,6 @@ function handleCurrentResize(el) {
             addCurrentTool(el);
             focusedElements = [];
             focusedElements.push(el);
-
         }
 
     }
@@ -853,8 +929,10 @@ function Compressed_layout(parentClass, cls, data) {
         loop(this.currentWindowData['children'], this.listContainer);
         console.timeEnd("loop");
         cont.appendChild(this.listContainer);
-        this.parentContainer.innerHTML = "";
-        this.parentContainer.appendChild(cont);
+        if (this.parentContainer) {
+            this.parentContainer.innerHTML = "";
+            this.parentContainer.appendChild(cont);
+        }
         cont = null;
         let my_con = document.querySelector('.compressed_layout');
 
@@ -894,7 +972,8 @@ function Compressed_layout(parentClass, cls, data) {
 }
 
 function reload_compressed_layout() {
-    new Compressed_layout("genie-compressed-layout", "container", boundary.el).init();
+    // new Compressed_layout("genie-compressed-layout", "container", boundary.el).init();
+    new Compressed_layout("genie-compressed-layout", "container", document.getElementById("genie-paint-field")).init();
 }
 
 
@@ -1054,7 +1133,7 @@ KeyEventHandler.prototype.handleDelete = function () {
         e ? e.parentNode.classList.contains("list_item") || e.classList.contains("hi") ? lst.push(e) : "" : "";
     });
     removeCurrentTool();
-    this.delete(lst)
+    this.delete(lst);
 };
 
 KeyEventHandler.prototype.delete = function (elements) {
@@ -1230,7 +1309,7 @@ KeyEventHandler.prototype.handle_key_up = function () {
         p.innerHTML = this.el.target.value;
     } else {
         if (this.el.classList.contains("hi")) {
-            HandleHightlightedText();
+            displayInstantToolbar();
         } else if (this.el.classList.contains("layout_title")) {
             this.el.value = this.el.value.split(" ").join("-");
             let el = this.el.parentNode.creator;
@@ -1275,6 +1354,17 @@ KeyEventHandler.prototype.handle_key_up = function () {
                     styleElement = document.getElementById(`${styleId}`);
                 })();
                 this.el.style.width = (this.el.value.length + 1) * 6 + "px";
+            }
+        } else if (this.el.classList.contains("font-size-input")) {
+            if (KEY.isLetter(this.key) || KEY.isNum(this.key)) {
+                let tmp = Methods.removeSpaces(this.el.value);
+                let val = parseFloat(tmp);
+                tmp = (tmp.split(`${val}`));
+                let res = `${val}${tmp[1]}`;
+                Methods.apply(focusedElements, (my_wnd) => {
+                    Styling.edit_style(my_wnd.id, "font-size", res, my_wnd.ruleIndex);
+                })
+                // this.el.value = res;
             }
         }
     }
@@ -1396,6 +1486,18 @@ MouseEventHandler.prototype.mouse_down = function () {
 };
 
 MouseEventHandler.prototype.released = function () {
+    if (wnd) {
+        if (wnd.classList.contains("image-mother")) {
+            if (this.el.classList.contains("frame-parent")) {
+                let _image_el = this.el.querySelector("img");
+                let _image = wnd.querySelector("img").getAttribute("src");
+                _image_el.setAttribute("src", _image);
+                removeCurrentTool(wnd);
+                Methods.removeNode(wnd);
+                addCurrentTool(this.el);
+            }
+        }
+    }
     if (mouse.hovering.carrying) {
         if (mouse.dragging.id === "layout_title") {
             let has_ul = mouse.dragging.element.parentNode.querySelector("ul");
@@ -1424,16 +1526,19 @@ MouseEventHandler.prototype.released = function () {
 
 MouseEventHandler.prototype.dblclick = function () {
     if (this.el.classList.contains("hi")) {
-        removeEditable();
-        removeCurrentTool();
-        /*if (!this.el.contentEditable) {
+        let chk = toogleFrameChildShow(this.el);
+        if (!chk) {
             removeEditable();
             removeCurrentTool();
+            /*if (!this.el.contentEditable) {
+                removeEditable();
+                removeCurrentTool();
+                this.el.contentEditable = true;
+            }*/
+            BRICK.typing = true;
             this.el.contentEditable = true;
-        }*/
-        BRICK.typing = true;
-        this.el.contentEditable = true;
-        this.el.style.cursor = "text";
+            this.el.style.cursor = "text";
+        }
     } else {
         if (this.el.classList.contains("editable")) {
             if (!Methods.find(currentBeingTyped, this.el)) {
@@ -1581,16 +1686,63 @@ MouseEventHandler.prototype.handle_late_click = function () {
             newProp = null;
         }
     } else if (this.el.classList.contains("hi")) {
-        if (BRICK.typing) {
-            HandleHightlightedText();
-        }
+        /*if (BRICK.typing) {
+
+        }*/
+        // HandleHightlightedText();
         checkSelectedCls();
         contract_drop();
+    } else if (this.el.classList.contains("font-family-item-cont")) {
+        Methods.apply(focusedElements, (my_wnd) => {
+            if (my_wnd) {
+                if (my_wnd.classList.contains("clip-parent")) {
+                    my_wnd = my_wnd.querySelector("._clippath");
+                }
+                let txt = this.el.querySelector(".font-family-item-text").innerText
+                Styling.edit_style(my_wnd.id, "font-family", txt, my_wnd.ruleIndex);
+                document.querySelector(".ffamily-text").innerHTML = txt;
+                let tmp = document.querySelector(".selected-font-family").querySelector(".font-family-item-text");
+                tmp.style.fontFamily = txt;
+                tmp.innerHTML = txt;
+            }
+        });
+    } else if (this.el.classList.contains("single-btn-item")) {
+        Methods.apply(focusedElements, (my_wnd) => {
+            if (my_wnd) {
+                if (my_wnd.classList.contains("clip-parent")) {
+                    my_wnd = my_wnd.querySelector("._clippath");
+                }
+                let txt = this.el.style.background;
+                Styling.edit_style(my_wnd.id, "background", txt, my_wnd.ruleIndex);
+                document.querySelector(".color-adjust-img").style.background = txt;
+
+            }
+        })
+    } else if (this.el.classList.contains("font-size-minus")) {
+        let f_el = document.querySelector(".font-size-input");
+        let tmp = f_el.value;
+        let val = parseFloat(tmp);
+        tmp = (tmp.split(`${val}`));
+        let res = `${--val}${tmp[1]}`;
+        Methods.apply(focusedElements, (my_wnd) => {
+            Styling.edit_style(my_wnd.id, "font-size", res, my_wnd.ruleIndex);
+        })
+        f_el.value = res;
+    } else if (this.el.classList.contains("font-size-plus")) {
+        let f_el = document.querySelector(".font-size-input");
+        let tmp = f_el.value;
+        let val = parseFloat(tmp);
+        tmp = (tmp.split(`${val}`));
+        let res = `${++val}${tmp[1]}`;
+        Methods.apply(focusedElements, (my_wnd) => {
+            Styling.edit_style(my_wnd.id, "font-size", res, my_wnd.ruleIndex);
+        })
+        f_el.value = res;
     } else if (this.el.classList.contains("my-collapse")) {
         console.log("hello")
         // Methods.removeNode(this.el.parentElement);
         let temp_w = this.el.parentNode.getBoundingClientRect().width;
-        let tmp = document.querySelector(".genie-paint-field");
+        let tmp = boundary.el.parentElement;
         let temp1 = this.el.parentElement.nextElementSibling;
         tmp.style.width = tmp.getBoundingClientRect().width + temp_w + temp1.getBoundingClientRect().width + "px";
         temp1.style.width = 0;
@@ -1599,37 +1751,28 @@ MouseEventHandler.prototype.handle_late_click = function () {
         this.el.parentNode.style["width"] = 0;
 
     } else if (this.el.classList.contains("genie-left-nav-item")) {
-        let tmp = document.querySelector(".genie-paint-field");
-        let temp1 = document.querySelector(".genie-sec-layout-cont");
-        let temp2 = document.querySelector(".my-collapse");
-        let temp3 = document.querySelector(".separator");
-        temp1.style.width = "300px";
-        tmp.style.width = "calc(70% - 300px)";
-        temp2?temp2.style.width = "30px":"";
-        temp3.style.width = "15px";
-        temp1.innerHTML = select_layouts[this.el.querySelector("span").innerText]
+        displaySecLayout(select_layouts[this.el.querySelector("span").innerText]);
     } else if (this.el.classList.contains("arrow-right")) {
         let parent = this.el.parentElement.querySelector(".box-inner");
         x = ((parent.getBoundingClientRect().width / 2)) + parent.scrollLeft;
         console.log(x)
         parent.scrollLeft = x;
 
-    }
-    else if (this.el.classList.contains("arrow-left")) {
+    } else if (this.el.classList.contains("arrow-left")) {
         let parent = this.el.parentElement.querySelector(".box-inner");
         x = ((parent.getBoundingClientRect().width / 2)) - parent.scrollLeft;
         console.log(x)
         parent.scrollLeft = -x;
 
-    }else if (this.el.classList.contains("see-all")) {
+    } else if (this.el.classList.contains("see-all")) {
         let temp1 = document.querySelector(".genie-sec-layout-cont");
         temp1.innerHTML = designElements[this.el.parentElement.children[0].innerText]
         console.log("here")
-    }else if (this.el.classList.contains("tab-img")) {
+    } else if (this.el.classList.contains("tab-img")) {
         executeClip(this.el)
-    }else if (this.el.classList.contains("tile-img")) {
+    } else if (this.el.classList.contains("tile-img")) {
         executeClip(this.el, true)
-    }else if (this.el.classList.contains("frame-tile-img")) {
+    } else if (this.el.classList.contains("frame-tile-img")) {
         executeClip(this.el, false, true)
     } else if (this.el.id === "create-new-class-btn") {
         new_class_instr();
@@ -1745,8 +1888,8 @@ MouseEventHandler.prototype.hover = function () {
 };
 
 MouseEventHandler.prototype.append = function () {
-    Styling.edit_style(mouse.dragging.id, "top", "1px", wnd.ruleIndex);
-    Styling.edit_style(mouse.dragging.id, "left", "1px", wnd.ruleIndex);
+    Styling.edit_style(mouse.dragging.id, "top", "0", wnd.ruleIndex);
+    Styling.edit_style(mouse.dragging.id, "left", "0", wnd.ruleIndex);
     removeCurrentTool();
     if (wnd instanceof Array) {
         wnd = wnd[0]
@@ -1775,6 +1918,7 @@ MouseEventHandler.prototype.append = function () {
 
 MouseEventHandler.prototype.handle_appendTool_drag = function (dragger, wnd) {
     let f = (ml, mt, wnd) => {
+        let pxChange = ml, pyChange = mt;
         if (percX) {
             ml = `${100 * ml / parentWidth}`;
         }
@@ -1789,14 +1933,14 @@ MouseEventHandler.prototype.handle_appendTool_drag = function (dragger, wnd) {
                         (ml >= 0) ? drag_style(wnd, "left", ml) : "";
             */
             drag_style(wnd, "left", `${ml + unitX}`);
-            Resizers.drag_clip(clip_child, wnd, "left", ml, unitX)
+            Resizers.drag_clip(clip_child, wnd, "left", pxChange, unitX, pxChange)
             left_display.value = `${ml + unitX}`;
         } else if (dragger.top_resize) {
             /*
                         (mt >= 0) ? drag_style(wnd, "top", mt) : "";
             */
             drag_style(wnd, "top", `${mt + unitY}`);
-            Resizers.drag_clip(clip_child, wnd, "top", mt, unitY)
+            Resizers.drag_clip(clip_child, wnd, "top", pyChange, unitY, pyChange)
             top_display.value = `${mt + unitY}`;
         }
         /*
@@ -1804,11 +1948,11 @@ MouseEventHandler.prototype.handle_appendTool_drag = function (dragger, wnd) {
         */
         if (dragger.height_resize) {
             drag_style(wnd, "height", `${mt + unitY}`);
-            Resizers.drag_clip(clip_child, wnd, "height", mt, unitY);
+            Resizers.drag_clip(clip_child, wnd, "height", pyChange, unitY, pyChange);
             height_display.value = `${mt + unitY}`;
         } else if (dragger.width_resize) {
             drag_style(wnd, "width", `${ml + unitX}`);
-            Resizers.drag_clip(clip_child, wnd, "width", ml, unitX);
+            Resizers.drag_clip(clip_child, wnd, "width", pxChange, unitX, pxChange);
             width_display.value = `${ml + unitX}`;
         }
     };
@@ -1866,6 +2010,7 @@ MouseEventHandler.prototype.handle_inside_element_drag = function (dragger, wnd)
         if (dragger.check === null) {
             this.handle_rotate(dragger, wnd)
         } else {
+            let pxChange = ml, pyChange = mt;
             if (percX) {
                 ml = `${100 * ml / parentWidth}`;
             }
@@ -1875,7 +2020,7 @@ MouseEventHandler.prototype.handle_inside_element_drag = function (dragger, wnd)
             if (dragger.check) {
                 drag_style(wnd, "height", `${mt + unitY}`);
                 drag_style(wnd, "width", `${ml + unitX}`);
-                Resizers.drag_clip_all(clip_child, wnd, "both_w_h", ml, mt, unitX, unitY);
+                Resizers.drag_clip_all(clip_child, wnd, "both_w_h", pxChange, pyChange, unitX, unitY);
                 // Resizers.drag_clip(clip_child, wnd, "width", ml, unitX);
                 height_display.value = `${mt + unitY}`;
                 width_display.value = `${ml + unitX}`;
@@ -1929,6 +2074,11 @@ MouseEventHandler.prototype.normal_drag = function () {
             isTTool = mouse.dragging.element.classList.contains("t_tool");
             isListItem = mouse.dragging.element.classList.contains("layout_title");
             is_field = mouse.dragging.element.classList.contains("genie-paint-field");
+
+            let temp_scale = getAllGroups(/scaleX\((\d.*)\)\s+scaleY\((\d.*)\)/g, boundary.el.style.transform);
+            offsetTransformX = parseFloat(temp_scale[0][1]);
+            offsetTransformY = parseFloat(temp_scale[0][2]);
+
         }
         no = focusedElements.length > 1;
         if (isWindow) {
@@ -2066,8 +2216,8 @@ MouseEventHandler.prototype.drag = function () {
     }
     if (mouse.dragging.draggable === true) {
         mouse.dragging.offset = {
-            x: mouse.moving.point.x - mouse.clicking.point.x,
-            y: mouse.moving.point.y - mouse.clicking.point.y
+            x: (mouse.moving.point.x - mouse.clicking.point.x),
+            y: (mouse.moving.point.y - mouse.clicking.point.y)
         };
         if (mouse.dragging.element) {
             /*
@@ -2099,6 +2249,8 @@ MouseEventHandler.prototype.drag = function () {
             if (mouse.dragging.element.classList.contains("normal_drag")) {
                 /*for (let i = 0; i<focusedElements.length;i++) {
                     console.log(focusedElements[i])*/
+                mouse.dragging.offset.x = mouse.dragging.offset.x/offsetTransformX;
+                mouse.dragging.offset.y = mouse.dragging.offset.y/offsetTransformY;
                 this.normal_drag();
                 /*}*/
             }
@@ -2165,14 +2317,38 @@ function rqst() {
     sendRequest({project_name: h["children"][0]["title"], project: h.innerHTML});
 }
 
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+  output.innerHTML = this.value;
+  boundary.el.style.transform = `scaleX(${this.value/100}) scaleY(${this.value/100})`;
+  setCssVariable('--toolsize', `${10/(this.value/100)}px`)
+  setCssVariable('--negativetoolsize', `${-15}px`)
+}
+
+
+
+
+// Create a function for getting a variable value
+function getCssVariable(property) {
+  // Get the styles (properties and values) for the root
+  let rs = getComputedStyle(rootElement);
+  // Alert the value of the --blue variable
+  // alert("The value of --blue is: " + rs.getPropertyValue(property||'--blue'));
+}
+
+// Create a function for setting a variable value
+function setCssVariable(property, value) {
+  // Set the value of variable --blue to another value (in this case "lightblue")
+  rootElement.style.setProperty(property||'--blue', value||'lightblue');
+}
+
 /*
 ***************************************
  ==== 7. ELEMENTS
  ***************************************
 */
 
-
-/*
-* <div class="D-ZUcw" style="margin: -4px 0px;"><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rCvqVTU/1/0/402w-idrkZVCwXGI.png" alt="Square" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId597" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAFEHK3BpiA/1/0/404w-GnDnCo80hlg.png" alt="Rounded Square" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId598" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rEUSxdE/1/0/804w-t8rBv8DGtyU.png" alt="Circle" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId599" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rIzwGHQ/2/0/404w-aTx5hIJ54sQ.png" alt="Triangle Up" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId600" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lvBcr8Q/2/0/404w-bYy6pq3utRc.png" alt="Triangle Down" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId601" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rI8iZ1c/1/0/404w-b9rzdI-7r_Y.png" alt="Diamond" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId602" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rEE7Fs8/1/0/404w-XIk1i4yB4YM.png" alt="Pentagon" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId603" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rOrmA5A/1/0/348w-H-c_Fu_D-KI.png" alt="Hexagon Vertical" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId604" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rID8RM4/1/0/404w-b4TXCBMgkp8.png" alt="Hexagon Horizontal" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId605" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rOgunQY/1/0/404w-LY-wOntoeVo.png" alt="Octagon" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId606" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7ljCsz84/1/0/404w-SUviByp4S-4.png" alt="4-Pointed Star" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId607" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rFLytUE/1/0/404w-mSWZsrd2CkU.png" alt="5-Pointed Star" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId608" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7liqzgb0/1/0/356w-do76m3qcurw.png" alt="6-Pointed Star" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId609" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rNROzv0/1/0/404w-DbF2Ill2VaY.png" alt="8-Pointed Star" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId610" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rAZX3-o/1/0/804w-N933_KraONA.png" alt="Star Burst 1" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId611" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE1BySBc-s/5/0/404w-52ZCCFfaZsI.png" alt="Star Burst 2" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId612" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7ljtDqvw/1/0/404w-db4mDMb3Dmk.png" alt="8-Pointed Star Inflated" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId613" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lqCUXwk/1/0/404w-lUHS__vwMpY.png" alt="Star Burst 3" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId614" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7ln6Nwjc/2/0/404w-9JFf0XOzdYY.png" alt="Star Burst 4" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId615" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rLV4tqQ/1/0/404w-5CFChL99nO4.png" alt="Arrow Right" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId616" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rPRXHUk/1/0/404w-3nv0IV8oDfg.png" alt="Arrow Left" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId617" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rBCEgeo/1/0/404w-4_kO1lsaCTU.png" alt="Arrow Up" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId618" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rMwt7Ls/1/0/404w-B3sw56NllxY.png" alt="Arrow Down" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId619" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rEyI1_8/1/0/404w-uDYW6ss_n8E.png" alt="Arrow Horizontal" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId620" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lo5Zk0o/4/0/404w-Ik40x6a8ZnA.png" alt="Arrow Block Right" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId621" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lkjnmfM/2/0/404w-52OvVa8KUwE.png" alt="Arrow Block 2 Right" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId622" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lkhGbzc/2/0/404w-YRRJ_hQHrqM.png" alt="Arrow Block Concave" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId623" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7l0GoGOs/2/0/404w-EGr6F73nd_c.png" alt="Arrow Block Convex" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId624" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lxJL7as/3/0/404w-M3upwblHJEM.png" alt="Pill" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId625" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rJYYx5o/1/0/406w-vgX30FzXj9w.png" alt="Square Speech Bubble" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId626" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7l3J68zY/2/0/406w-y5R2WyjVkxU.png" alt="Round Speech Bubble" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId627" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rCGifNk/1/0/406w-jIn1YVXNkGQ.png" alt="Heart" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId628" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7l-OAKeA/2/0/402w-IB_xyqsB0BA.png" alt="Cross" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId629" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7lwzETcE/3/0/406w-73gMnSQib0c.png" alt="Cloud" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId630" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rMUQlAk/1/0/318w-NU4Ix7q5guY.png" alt="Banner 2" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId631" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rKLKA8k/2/0/370w-2qM1B0CNpl8.png" alt="Banner 3" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId632" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rPGN4_0/1/0/402w-Lf-b5Cf2_To.png" alt="Banner 4" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId633" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rMr1Z9U/1/0/404w-w0v9KBJ_LgQ.png" alt="Banner 5" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId634" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rB52ro4/1/0/404w-DH_NmyNb32Y.png" alt="Banner 7" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId635" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rA4YV1w/1/0/404w-CkjFtNwKxpE.png" alt="Parallelogram Right" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId636" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rLfn4pI/1/0/404w-d4-zFl7NXFU.png" alt="Parallelogram Left" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId637" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rN-rL1w/1/0/404w-JLR2uB4dw98.png" alt="Trapezoid Up" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId638" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7rMNDpuI/1/0/404w-XQe1fYw0hG4.png" alt="Trapezoid Down" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId639" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7l8a7Pp4/2/0/332w-SsxwjKxgmG8.png" alt="Arch Down" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId640" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div><div class="FA8sBg" style="margin: 4px 0px;"><div class="v1Egnw" style="height: 71.75px; margin: 0px -4px;"><div class="qFtWQg" style="width: 71.75px; margin: 0px 4px; height: 71.75px;"><div class="A0JANA ADVZ4g"><div class="GVUpNQ"><div class="ZP8HvQ oDHgrA"><div class="oDHgrA"><div class="BE2rWg" draggable="true"><div class="mh2TGQ CAFSwg wZ_zoQ _6mbnHA raefMw wKiiLw"><img class="_9Al4OQ A_yLpA _1vGB4g" crossorigin="anonymous" src="https://template.canva.com/EAE7l3ea-00/2/0/332w-Pgn1uS1cfow.png" alt="Arch Up" draggable="false"><div role="button" aria-label="Add this graphic to the canvas" class="e_NdpQ gwb2Ug _7YslCg _682gpw" draggable="true" tabindex="0" style="touch-action: auto;"></div><span class="T5OikA epg7uw _45rcUQ ZakHgA JA7pfA yAhYLw"><div class=""><button class="_1QoxDw Qkd66A tYI0Vw o4TrkA z6Gm7g Eph8Hg cclg9A vwGvLA Qkd66A tYI0Vw q3o1Qw cwOZMg zQlusQ uRvRjQ IS_6ew" type="button" aria-label="Show details" aria-controls="__a11yId641" aria-expanded="false" aria-haspopup="menu" role="button"><span class="TcNIhA"><span aria-hidden="true" class="uRWxVA dkWypw"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M3.25 9.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.75 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" fill-rule="evenodd"></path></svg></span></span></button></div></span></div></div></div></div></div></div></div></div></div></div>
-* */
 

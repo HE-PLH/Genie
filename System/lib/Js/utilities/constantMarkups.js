@@ -13,7 +13,6 @@ let projectObject = `
     </div>
 </div>
 `;
-
 let ctxmenu = `
 <div class="do" title="done">
     <div class="lib">
@@ -96,7 +95,6 @@ let ctxmenu = `
     </div>
 </div>
 `;
-
 /*tools*/
 let RotationalTool = `<div id="rot-resize-cont" class="rot-resize-cont align_center normal_drag _tool rot">
     <div id="rotate_z" class="rot-resize normal_drag"></div>
@@ -160,10 +158,8 @@ let searchTool = `
 </div>
 </div>
 `
-
 let designElements = {
     "Lines and Shapes": `
-
     <div class="nav-item-display-top align-center">
     <svg viewBox="0 0 24 24" class="small-ic" width="24px" height="24px">
         <use xlink:href="../sources/svg_icons.svg#arrow-left"></use>
@@ -365,7 +361,6 @@ let designElements = {
     </div>
     `,
     "Graphics": `
-
     <div class="nav-item-display-top align-center">
     <svg viewBox="0 0 24 24" class="small-ic" width="24px" height="24px">
         <use xlink:href="../sources/svg_icons.svg#arrow-left"></use>
@@ -468,7 +463,6 @@ let designElements = {
     </div>
     `,
     "Frames": `
-
     <div class="nav-item-display-top align-center">
     <svg viewBox="0 0 24 24" class="small-ic" width="24px" height="24px">
         <use xlink:href="../sources/svg_icons.svg#arrow-left"></use>
@@ -561,6 +555,7 @@ let designElements = {
     `
 }
 
+
 let select_layouts = {
     Design: `
 <div class="my-collapse">
@@ -573,7 +568,7 @@ let select_layouts = {
 <div id="genie-left-nav-right-tab-title" class="tab-btn tab align_center">Styles</div>
 </div>
 <div id="genie-left-nav-styles-body" class="tab-body tab-main-body fill_width">
-    <div id="genie-left-nav-main" class="genie-style-mains fill_width">
+    <div id="genie-left-nav-main" class="genie-style-mains fill_width tab-body-active">
         <div class="fill_width disp-layout-tab">
             <div class="box-outer">
                 <a class="arrow-left m-arrow align-center">
@@ -808,7 +803,6 @@ let select_layouts = {
                 </div>
             </div>
         </div>
-
     </div>
                 <div id="genie-right-main" class="genie-style-mains fill_width">
                     Test
@@ -838,7 +832,7 @@ ${searchTool}
 <div id="genie-left-nav-right-tab-title" class="tab-btn tab align_center">Audio</div>
 </div>
 <div id="genie-left-nav-styles-body" class="tab-body tab-main-body fill_width">
-    <div id="genie-left-nav-main" class="genie-style-mains fill_width">
+    <div id="genie-left-nav-main" class="genie-style-mains fill_width tab-body-active">
     <div class="image-list-container">
         <div class="image-tile">
             <img class="tile-img" src="../sources/imgs/person2.jpg" alt="person2.jpg">
@@ -867,4 +861,2353 @@ ${searchTool}
                 </div>
             </div>
             `,
+    fontFamily: `
+${searchTool}
+            <div class="my-collapse">
+                <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                    <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
+                </svg>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: RoxboroughCF Bold" class="font-family-item-text">
+                    RoxboroughCF Bold
+                </div>
+                <div class="font-family-icon-cont">
+                   <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                      <use xlink:href="../sources/svg_icons.svg#done"></use>
+                   </svg>
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: DM Sans" class="font-family-item-text">
+                    DM Sans
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Hanuman" class="font-family-item-text">
+                    Hanuman
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Open Sans" class="font-family-item-text">
+                    Open Sans
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Alata" class="font-family-item-text">
+                    Alata
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Helvetica" class="font-family-item-text">
+                    Helvetica
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Verdana" class="font-family-item-text">
+                    Verdana
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Calibri" class="font-family-item-text">
+                    Calibri
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Noto" class="font-family-item-text">
+                    Noto
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Sans" class="font-family-item-text">
+                    Lucida Sans
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Gill Sans" class="font-family-item-text">
+                    Gill Sans
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Century Gothic" class="font-family-item-text">
+                    Century Gothic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Candara" class="font-family-item-text">
+                    Candara
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Futara" class="font-family-item-text">
+                    Futara
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Franklin Gothic Medium" class="font-family-item-text">
+                    Franklin Gothic Medium
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Trebuchet MS" class="font-family-item-text">
+                    Trebuchet MS
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Geneva" class="font-family-item-text">
+                    Geneva
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Segoe UI" class="font-family-item-text">
+                    Segoe UI
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Optima" class="font-family-item-text">
+                    Optima
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Avanta Garde" class="font-family-item-text">
+                    Avanta Garde
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: SERIF FONT FAMILY" class="font-family-item-text">
+                    FONT FAMILY	APPEARANCE
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Times New Roman" class="font-family-item-text">
+                    Times New Roman
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Big Caslon" class="font-family-item-text">
+                    Big Caslon
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bodoni MT" class="font-family-item-text">
+                    Bodoni MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Book Antiqua" class="font-family-item-text">
+                    Book Antiqua
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bookman" class="font-family-item-text">
+                    Bookman
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: New Century Schoolbook" class="font-family-item-text">
+                    New Century Schoolbook
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Calisto MT" class="font-family-item-text">
+                    Calisto MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Cambria" class="font-family-item-text">
+                    Cambria
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Didot" class="font-family-item-text">
+                    Didot
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Garamond" class="font-family-item-text">
+                    Garamond
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Cambria Math" class="font-family-item-text">
+                    Cambria Math
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Goudy Old Style" class="font-family-item-text">
+                    Goudy Old Style
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Hoefler Text" class="font-family-item-text">
+                    Hoefler Text
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Bright" class="font-family-item-text">
+                    Lucida Bright
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Palatino" class="font-family-item-text">
+                    Palatino
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Perpetua" class="font-family-item-text">
+                    Perpetua
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Rockwell" class="font-family-item-text">
+                    Rockwell
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Rockwell Extra Bold" class="font-family-item-text">
+                    Rockwell Extra Bold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Baskerville" class="font-family-item-text">
+                    Baskerville
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MONOSPACE FONT FAMILY" class="font-family-item-text">
+                    FONT FAMILY	APPEARANCE
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Consolas" class="font-family-item-text">
+                    Consolas
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Courier" class="font-family-item-text">
+                    Courier
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Courier New" class="font-family-item-text">
+                    Courier New
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Console" class="font-family-item-text">
+                    Lucida Console
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucidatypewriter" class="font-family-item-text">
+                    Lucidatypewriter
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Sans Typewriter" class="font-family-item-text">
+                    Lucida Sans Typewriter
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Monaco" class="font-family-item-text">
+                    Monaco
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Andale Mono" class="font-family-item-text">
+                    Andale Mono
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: CURSIVE FONT FAMILY" class="font-family-item-text">
+                    FONT FAMILY	APPEARANCE
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Comic Sans" class="font-family-item-text">
+                    Comic Sans
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Comic Sans MS" class="font-family-item-text">
+                    Comic Sans MS
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Apple Chancery" class="font-family-item-text">
+                    Apple Chancery
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Zapf Chancery" class="font-family-item-text">
+                    Zapf Chancery
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bradley Hand" class="font-family-item-text">
+                    Bradley Hand
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brush Script MT" class="font-family-item-text">
+                    Brush Script MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brush Script Std" class="font-family-item-text">
+                    Brush Script Std
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Snell Roundhan" class="font-family-item-text">
+                    Snell Roundhan
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: URW Chancery" class="font-family-item-text">
+                    URW Chancery
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Coronet script" class="font-family-item-text">
+                    Coronet script
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Florence" class="font-family-item-text">
+                    Florence
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Parkavenue" class="font-family-item-text">
+                    Parkavenue
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: FANTASY FONT FAMILY" class="font-family-item-text">
+                    FONT FAMILY	APPEARANCE
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Impact" class="font-family-item-text">
+                    Impact
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brushstroke" class="font-family-item-text">
+                    Brushstroke
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Luminari" class="font-family-item-text">
+                    Luminari
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Chalkduster" class="font-family-item-text">
+                    Chalkduster
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Jazz LET" class="font-family-item-text">
+                    Jazz LET
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Blippo" class="font-family-item-text">
+                    Blippo
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Stencil Std" class="font-family-item-text">
+                    Stencil Std
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Marker Felt" class="font-family-item-text">
+                    Marker Felt
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Trattatello" class="font-family-item-text">
+                    Trattatello
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arnoldboecklin" class="font-family-item-text">
+                    Arnoldboecklin
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Oldtown" class="font-family-item-text">
+                    Oldtown
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Copperplate" class="font-family-item-text">
+                    Copperplate
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: papyrus" class="font-family-item-text">
+                    papyrus
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: CSS Fonts List" class="font-family-item-text">
+                    FONT FAMILY	APPEARANCE
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Abadi MT Condensed Light" class="font-family-item-text">
+                    Abadi MT Condensed Light
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Aharoni" class="font-family-item-text">
+                    Aharoni
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Aharoni Bold" class="font-family-item-text">
+                    Aharoni Bold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Aldhabi" class="font-family-item-text">
+                    Aldhabi
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: AlternateGothic2 BT" class="font-family-item-text">
+                    AlternateGothic2 BT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Andale Mono" class="font-family-item-text">
+                    Andale Mono
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Andalus" class="font-family-item-text">
+                    Andalus
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Angsana New" class="font-family-item-text">
+                    Angsana New
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: AngsanaUPC" class="font-family-item-text">
+                    AngsanaUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Aparajita" class="font-family-item-text">
+                    Aparajita
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Apple Chancery" class="font-family-item-text">
+                    Apple Chancery
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arabic Typesetting" class="font-family-item-text">
+                    Arabic Typesetting
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arial" class="font-family-item-text">
+                    Arial
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arial Black" class="font-family-item-text">
+                    Arial Black
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arial narrow" class="font-family-item-text">
+                    Arial narrow
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arial Nova" class="font-family-item-text">
+                    Arial Nova
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arial Rounded MT Bold" class="font-family-item-text">
+                    Arial Rounded MT Bold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arnoldboecklin" class="font-family-item-text">
+                    Arnoldboecklin
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Avanta Garde" class="font-family-item-text">
+                    Avanta Garde
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bahnschrift" class="font-family-item-text">
+                    Bahnschrift
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bahnschrift Light" class="font-family-item-text">
+                    Bahnschrift Light
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bahnschrift SemiBold" class="font-family-item-text">
+                    Bahnschrift SemiBold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bahnschrift SemiLight" class="font-family-item-text">
+                    Bahnschrift SemiLight
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Baskerville" class="font-family-item-text">
+                    Baskerville
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Batang" class="font-family-item-text">
+                    Batang
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: BatangChe" class="font-family-item-text">
+                    BatangChe
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Big Caslon" class="font-family-item-text">
+                    Big Caslon
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: BIZ UDGothic" class="font-family-item-text">
+                    BIZ UDGothic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: BIZ UDMincho Medium" class="font-family-item-text">
+                    BIZ UDMincho Medium
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Blippo" class="font-family-item-text">
+                    Blippo
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bodoni MT" class="font-family-item-text">
+                    Bodoni MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Book Antiqua" class="font-family-item-text">
+                    Book Antiqua
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Book Antiqua" class="font-family-item-text">
+                    Book Antiqua
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bookman" class="font-family-item-text">
+                    Bookman
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bradley Hand" class="font-family-item-text">
+                    Bradley Hand
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Browallia New" class="font-family-item-text">
+                    Browallia New
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: BrowalliaUPC" class="font-family-item-text">
+                    BrowalliaUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brush Script MT" class="font-family-item-text">
+                    Brush Script MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brush Script Std" class="font-family-item-text">
+                    Brush Script Std
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brushstroke" class="font-family-item-text">
+                    Brushstroke
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Calibri" class="font-family-item-text">
+                    Calibri
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Calibri Light" class="font-family-item-text">
+                    Calibri Light
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Calisto MT" class="font-family-item-text">
+                    Calisto MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Cambodian" class="font-family-item-text">
+                    Cambodian
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Cambria" class="font-family-item-text">
+                    Cambria
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Candara" class="font-family-item-text">
+                    Candara
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Goudy Old Style" class="font-family-item-text">
+                    Goudy Old Style
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Hoefler Text" class="font-family-item-text">
+                    Hoefler Text
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Bright" class="font-family-item-text">
+                    Lucida Bright
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Palatino" class="font-family-item-text">
+                    Palatino
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Perpetua" class="font-family-item-text">
+                    Perpetua
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Rockwell" class="font-family-item-text">
+                    Rockwell
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Rockwell Extra Bold" class="font-family-item-text">
+                    Rockwell Extra Bold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Baskerville" class="font-family-item-text">
+                    Baskerville
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MONOSPACE FONT FAMILY" class="font-family-item-text">
+                    FONT FAMILY	APPEARANCE
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Consolas" class="font-family-item-text">
+                    Consolas
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Courier" class="font-family-item-text">
+                    Courier
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Courier New" class="font-family-item-text">
+                    Courier New
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Console" class="font-family-item-text">
+                    Lucida Console
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucidatypewriter" class="font-family-item-text">
+                    Lucidatypewriter
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Sans Typewriter" class="font-family-item-text">
+                    Lucida Sans Typewriter
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Monaco" class="font-family-item-text">
+                    Monaco
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Andale Mono" class="font-family-item-text">
+                    Andale Mono
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: CURSIVE FONT FAMILY" class="font-family-item-text">
+                    FONT FAMILY	APPEARANCE
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Comic Sans" class="font-family-item-text">
+                    Comic Sans
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Comic Sans MS" class="font-family-item-text">
+                    Comic Sans MS
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Apple Chancery" class="font-family-item-text">
+                    Apple Chancery
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Zapf Chancery" class="font-family-item-text">
+                    Zapf Chancery
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bradley Hand" class="font-family-item-text">
+                    Bradley Hand
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brush Script MT" class="font-family-item-text">
+                    Brush Script MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brush Script Std" class="font-family-item-text">
+                    Brush Script Std
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Snell Roundhan" class="font-family-item-text">
+                    Snell Roundhan
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: URW Chancery" class="font-family-item-text">
+                    URW Chancery
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Coronet script" class="font-family-item-text">
+                    Coronet script
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Florence" class="font-family-item-text">
+                    Florence
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Parkavenue" class="font-family-item-text">
+                    Parkavenue
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: FANTASY FONT FAMILY" class="font-family-item-text">
+                    FONT FAMILY	APPEARANCE
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Impact" class="font-family-item-text">
+                    Impact
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brushstroke" class="font-family-item-text">
+                    Brushstroke
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Luminari" class="font-family-item-text">
+                    Luminari
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Chalkduster" class="font-family-item-text">
+                    Chalkduster
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Jazz LET" class="font-family-item-text">
+                    Jazz LET
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Blippo" class="font-family-item-text">
+                    Blippo
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Stencil Std" class="font-family-item-text">
+                    Stencil Std
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Marker Felt" class="font-family-item-text">
+                    Marker Felt
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Trattatello" class="font-family-item-text">
+                    Trattatello
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arnoldboecklin" class="font-family-item-text">
+                    Arnoldboecklin
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Oldtown" class="font-family-item-text">
+                    Oldtown
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Copperplate" class="font-family-item-text">
+                    Copperplate
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: papyrus" class="font-family-item-text">
+                    papyrus
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: CSS Fonts List" class="font-family-item-text">
+                    FONT FAMILY	APPEARANCE
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Abadi MT Condensed Light" class="font-family-item-text">
+                    Abadi MT Condensed Light
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Aharoni" class="font-family-item-text">
+                    Aharoni
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Aharoni Bold" class="font-family-item-text">
+                    Aharoni Bold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Aldhabi" class="font-family-item-text">
+                    Aldhabi
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: AlternateGothic2 BT" class="font-family-item-text">
+                    AlternateGothic2 BT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Andale Mono" class="font-family-item-text">
+                    Andale Mono
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Andalus" class="font-family-item-text">
+                    Andalus
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Angsana New" class="font-family-item-text">
+                    Angsana New
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: AngsanaUPC" class="font-family-item-text">
+                    AngsanaUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Aparajita" class="font-family-item-text">
+                    Aparajita
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Apple Chancery" class="font-family-item-text">
+                    Apple Chancery
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arabic Typesetting" class="font-family-item-text">
+                    Arabic Typesetting
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arial" class="font-family-item-text">
+                    Arial
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arial Black" class="font-family-item-text">
+                    Arial Black
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arial narrow" class="font-family-item-text">
+                    Arial narrow
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arial Nova" class="font-family-item-text">
+                    Arial Nova
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arial Rounded MT Bold" class="font-family-item-text">
+                    Arial Rounded MT Bold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Arnoldboecklin" class="font-family-item-text">
+                    Arnoldboecklin
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Avanta Garde" class="font-family-item-text">
+                    Avanta Garde
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bahnschrift" class="font-family-item-text">
+                    Bahnschrift
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bahnschrift Light" class="font-family-item-text">
+                    Bahnschrift Light
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bahnschrift SemiBold" class="font-family-item-text">
+                    Bahnschrift SemiBold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bahnschrift SemiLight" class="font-family-item-text">
+                    Bahnschrift SemiLight
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Baskerville" class="font-family-item-text">
+                    Baskerville
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Batang" class="font-family-item-text">
+                    Batang
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: BatangChe" class="font-family-item-text">
+                    BatangChe
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Big Caslon" class="font-family-item-text">
+                    Big Caslon
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: BIZ UDGothic" class="font-family-item-text">
+                    BIZ UDGothic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: BIZ UDMincho Medium" class="font-family-item-text">
+                    BIZ UDMincho Medium
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Blippo" class="font-family-item-text">
+                    Blippo
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bodoni MT" class="font-family-item-text">
+                    Bodoni MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Book Antiqua" class="font-family-item-text">
+                    Book Antiqua
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Book Antiqua" class="font-family-item-text">
+                    Book Antiqua
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bookman" class="font-family-item-text">
+                    Bookman
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Bradley Hand" class="font-family-item-text">
+                    Bradley Hand
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Browallia New" class="font-family-item-text">
+                    Browallia New
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: BrowalliaUPC" class="font-family-item-text">
+                    BrowalliaUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brush Script MT" class="font-family-item-text">
+                    Brush Script MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brush Script Std" class="font-family-item-text">
+                    Brush Script Std
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Brushstroke" class="font-family-item-text">
+                    Brushstroke
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Calibri" class="font-family-item-text">
+                    Calibri
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Calibri Light" class="font-family-item-text">
+                    Calibri Light
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Calisto MT" class="font-family-item-text">
+                    Calisto MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Cambodian" class="font-family-item-text">
+                    Cambodian
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Cambria" class="font-family-item-text">
+                    Cambria
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Cambria Math" class="font-family-item-text">
+                    Cambria Math
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Candara" class="font-family-item-text">
+                    Candara
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Century Gothic" class="font-family-item-text">
+                    Century Gothic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Chalkduster" class="font-family-item-text">
+                    Chalkduster
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Cherokee" class="font-family-item-text">
+                    Cherokee
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Comic Sans" class="font-family-item-text">
+                    Comic Sans
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Comic Sans MS" class="font-family-item-text">
+                    Comic Sans MS
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Consolas" class="font-family-item-text">
+                    Consolas
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Constantia" class="font-family-item-text">
+                    Constantia
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Copperplate" class="font-family-item-text">
+                    Copperplate
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Copperplate Gothic Light" class="font-family-item-text">
+                    Copperplate Gothic Light
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Copperplate Gothic Bold" class="font-family-item-text">
+                    Copperplate Gothic Bold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Corbel" class="font-family-item-text">
+                    Corbel
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Cordia New" class="font-family-item-text">
+                    Cordia New
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: CordiaUPC" class="font-family-item-text">
+                    CordiaUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Coronetscript" class="font-family-item-text">
+                    Coronetscript
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Courier" class="font-family-item-text">
+                    Courier
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Courier New" class="font-family-item-text">
+                    Courier New
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: DaunPenh" class="font-family-item-text">
+                    DaunPenh
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: David" class="font-family-item-text">
+                    David
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: DengXian" class="font-family-item-text">
+                    DengXian
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: DFKai-SB" class="font-family-item-text">
+                    DFKai-SB
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Didot" class="font-family-item-text">
+                    Didot
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: DilleniaUPC" class="font-family-item-text">
+                    DilleniaUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: DokChampa" class="font-family-item-text">
+                    DokChampa
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Dotum" class="font-family-item-text">
+                    Dotum
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: DotumChe" class="font-family-item-text">
+                    DotumChe
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Ebrima" class="font-family-item-text">
+                    Ebrima
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Estrangelo Edessa" class="font-family-item-text">
+                    Estrangelo Edessa
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: EucrosiaUPC" class="font-family-item-text">
+                    EucrosiaUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Euphemia" class="font-family-item-text">
+                    Euphemia
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: FangSong" class="font-family-item-text">
+                    FangSong
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Florence" class="font-family-item-text">
+                    Florence
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Franklin Gothic Medium" class="font-family-item-text">
+                    Franklin Gothic Medium
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: FrankRuehl" class="font-family-item-text">
+                    FrankRuehl
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: FreesiaUPC" class="font-family-item-text">
+                    FreesiaUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Futara" class="font-family-item-text">
+                    Futara
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Gabriola" class="font-family-item-text">
+                    Gabriola
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Gadugi" class="font-family-item-text">
+                    Gadugi
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Garamond" class="font-family-item-text">
+                    Garamond
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Gautami" class="font-family-item-text">
+                    Gautami
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Geneva" class="font-family-item-text">
+                    Geneva
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Georgia" class="font-family-item-text">
+                    Georgia
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Georgia Pro" class="font-family-item-text">
+                    Georgia Pro
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Gill Sans" class="font-family-item-text">
+                    Gill Sans
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Gill Sans Nova" class="font-family-item-text">
+                    Gill Sans Nova
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Gisha" class="font-family-item-text">
+                    Gisha
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Goudy Old Style" class="font-family-item-text">
+                    Goudy Old Style
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Gulim" class="font-family-item-text">
+                    Gulim
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: GulimChe" class="font-family-item-text">
+                    GulimChe
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Gungsuh" class="font-family-item-text">
+                    Gungsuh
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: GungsuhChe" class="font-family-item-text">
+                    GungsuhChe
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Hebrew" class="font-family-item-text">
+                    Hebrew
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Hoefler Text" class="font-family-item-text">
+                    Hoefler Text
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: HoloLens MDL2 Assets" class="font-family-item-text">
+                    HoloLens MDL2 Assets
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Impact" class="font-family-item-text">
+                    Impact
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Ink Free" class="font-family-item-text">
+                    Ink Free
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: IrisUPC" class="font-family-item-text">
+                    IrisUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Iskoola Pota" class="font-family-item-text">
+                    Iskoola Pota
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Japanese" class="font-family-item-text">
+                    Japanese
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: JasmineUPC" class="font-family-item-text">
+                    JasmineUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Javanese Text" class="font-family-item-text">
+                    Javanese Text
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Jazz LET" class="font-family-item-text">
+                    Jazz LET
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: KaiTi" class="font-family-item-text">
+                    KaiTi
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Kalinga" class="font-family-item-text">
+                    Kalinga
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Kartika" class="font-family-item-text">
+                    Kartika
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Khmer UI" class="font-family-item-text">
+                    Khmer UI
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: KodchiangUPC" class="font-family-item-text">
+                    KodchiangUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Kokila" class="font-family-item-text">
+                    Kokila
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Korean" class="font-family-item-text">
+                    Korean
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lao" class="font-family-item-text">
+                    Lao
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lao UI" class="font-family-item-text">
+                    Lao UI
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Latha" class="font-family-item-text">
+                    Latha
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Leelawadee" class="font-family-item-text">
+                    Leelawadee
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Leelawadee UI" class="font-family-item-text">
+                    Leelawadee UI
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Leelawadee UI Semilight" class="font-family-item-text">
+                    Leelawadee UI Semilight
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Levenim MT" class="font-family-item-text">
+                    Levenim MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: LilyUPC" class="font-family-item-text">
+                    LilyUPC
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Bright" class="font-family-item-text">
+                    Lucida Bright
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Console" class="font-family-item-text">
+                    Lucida Console
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Handwriting" class="font-family-item-text">
+                    Lucida Handwriting
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Sans" class="font-family-item-text">
+                    Lucida Sans
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Sans Typewriter" class="font-family-item-text">
+                    Lucida Sans Typewriter
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucida Sans Unicode" class="font-family-item-text">
+                    Lucida Sans Unicode
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Lucidatypewriter" class="font-family-item-text">
+                    Lucidatypewriter
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Luminari" class="font-family-item-text">
+                    Luminari
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Malgun Gothic" class="font-family-item-text">
+                    Malgun Gothic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Malgun Gothic Semilight" class="font-family-item-text">
+                    Malgun Gothic Semilight
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Mangal" class="font-family-item-text">
+                    Mangal
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Marker Felt" class="font-family-item-text">
+                    Marker Felt
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Marlett" class="font-family-item-text">
+                    Marlett
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Meiryo" class="font-family-item-text">
+                    Meiryo
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Meiryo UI" class="font-family-item-text">
+                    Meiryo UI
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft Himalaya" class="font-family-item-text">
+                    Microsoft Himalaya
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft JhengHei" class="font-family-item-text">
+                    Microsoft JhengHei
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft JhengHei UI" class="font-family-item-text">
+                    Microsoft JhengHei UI
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft New Tai Lue" class="font-family-item-text">
+                    Microsoft New Tai Lue
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft PhagsPa" class="font-family-item-text">
+                    Microsoft PhagsPa
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft Sans Serif" class="font-family-item-text">
+                    Microsoft Sans Serif
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft Tai Le" class="font-family-item-text">
+                    Microsoft Tai Le
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft Uighur" class="font-family-item-text">
+                    Microsoft Uighur
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft YaHei" class="font-family-item-text">
+                    Microsoft YaHei
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft YaHei UI" class="font-family-item-text">
+                    Microsoft YaHei UI
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Microsoft Yi Baiti" class="font-family-item-text">
+                    Microsoft Yi Baiti
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MingLiU" class="font-family-item-text">
+                    MingLiU
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MingLiU_HKSCS" class="font-family-item-text">
+                    MingLiU_HKSCS
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MingLiU_HKSCS-ExtB" class="font-family-item-text">
+                    MingLiU_HKSCS-ExtB
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MingLiU-ExtB" class="font-family-item-text">
+                    MingLiU-ExtB
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Miriam" class="font-family-item-text">
+                    Miriam
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Monaco" class="font-family-item-text">
+                    Monaco
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Mongolian Baiti" class="font-family-item-text">
+                    Mongolian Baiti
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MoolBoran" class="font-family-item-text">
+                    MoolBoran
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MS Gothic" class="font-family-item-text">
+                    MS Gothic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MS Mincho" class="font-family-item-text">
+                    MS Mincho
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MS PGothic" class="font-family-item-text">
+                    MS PGothic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MS PMincho" class="font-family-item-text">
+                    MS PMincho
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MS UI Gothic" class="font-family-item-text">
+                    MS UI Gothic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: MV Boli" class="font-family-item-text">
+                    MV Boli
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Myanmar Text" class="font-family-item-text">
+                    Myanmar Text
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Narkisim" class="font-family-item-text">
+                    Narkisim
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Neue Haas Grotesk Text Pro" class="font-family-item-text">
+                    Neue Haas Grotesk Text Pro
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: New Century Schoolbook" class="font-family-item-text">
+                    New Century Schoolbook
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: News Gothic MT" class="font-family-item-text">
+                    News Gothic MT
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Nirmala UI" class="font-family-item-text">
+                    Nirmala UI
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: No automatic language associations" class="font-family-item-text">
+                    No automatic language associations
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Noto" class="font-family-item-text">
+                    Noto
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: NSimSun" class="font-family-item-text">
+                    NSimSun
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Nyala" class="font-family-item-text">
+                    Nyala
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Oldtown" class="font-family-item-text">
+                    Oldtown
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Optima" class="font-family-item-text">
+                    Optima
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Palatino" class="font-family-item-text">
+                    Palatino
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Palatino Linotype" class="font-family-item-text">
+                    Palatino Linotype
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: papyrus" class="font-family-item-text">
+                    papyrus
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Parkavenue" class="font-family-item-text">
+                    Parkavenue
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Perpetua" class="font-family-item-text">
+                    Perpetua
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Plantagenet Cherokee" class="font-family-item-text">
+                    Plantagenet Cherokee
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: PMingLiU" class="font-family-item-text">
+                    PMingLiU
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Raavi" class="font-family-item-text">
+                    Raavi
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Rockwell" class="font-family-item-text">
+                    Rockwell
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Rockwell Extra Bold" class="font-family-item-text">
+                    Rockwell Extra Bold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Rockwell Nova" class="font-family-item-text">
+                    Rockwell Nova
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Rockwell Nova Cond" class="font-family-item-text">
+                    Rockwell Nova Cond
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Rockwell Nova Extra Bold" class="font-family-item-text">
+                    Rockwell Nova Extra Bold
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Rod" class="font-family-item-text">
+                    Rod
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Sakkal Majalla" class="font-family-item-text">
+                    Sakkal Majalla
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Sanskrit Text" class="font-family-item-text">
+                    Sanskrit Text
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Segoe MDL2 Assets" class="font-family-item-text">
+                    Segoe MDL2 Assets
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Segoe Print" class="font-family-item-text">
+                    Segoe Print
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Segoe Script" class="font-family-item-text">
+                    Segoe Script
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Segoe UI" class="font-family-item-text">
+                    Segoe UI
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Segoe UI Emoji" class="font-family-item-text">
+                    Segoe UI Emoji
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Segoe UI Historic" class="font-family-item-text">
+                    Segoe UI Historic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Segoe UI Symbol" class="font-family-item-text">
+                    Segoe UI Symbol
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Shonar Bangla" class="font-family-item-text">
+                    Shonar Bangla
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Shruti" class="font-family-item-text">
+                    Shruti
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: SimHei" class="font-family-item-text">
+                    SimHei
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: SimKai" class="font-family-item-text">
+                    SimKai
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Simplified Arabic" class="font-family-item-text">
+                    Simplified Arabic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Simplified Chinese" class="font-family-item-text">
+                    Simplified Chinese
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: SimSun" class="font-family-item-text">
+                    SimSun
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: SimSun-ExtB" class="font-family-item-text">
+                    SimSun-ExtB
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Sitka" class="font-family-item-text">
+                    Sitka
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Snell Roundhan" class="font-family-item-text">
+                    Snell Roundhan
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Stencil Std" class="font-family-item-text">
+                    Stencil Std
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Sylfaen" class="font-family-item-text">
+                    Sylfaen
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Symbol" class="font-family-item-text">
+                    Symbol
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Tahoma" class="font-family-item-text">
+                    Tahoma
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Thai" class="font-family-item-text">
+                    Thai
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Times New Roman" class="font-family-item-text">
+                    Times New Roman
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Traditional Arabic" class="font-family-item-text">
+                    Traditional Arabic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Traditional Chinese" class="font-family-item-text">
+                    Traditional Chinese
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Trattatello" class="font-family-item-text">
+                    Trattatello
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Trebuchet MS" class="font-family-item-text">
+                    Trebuchet MS
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Tunga" class="font-family-item-text">
+                    Tunga
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: UD Digi Kyokasho" class="font-family-item-text">
+                    UD Digi Kyokasho
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: UD Digi KyoKasho NK-R" class="font-family-item-text">
+                    UD Digi KyoKasho NK-R
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: UD Digi KyoKasho NP-R" class="font-family-item-text">
+                    UD Digi KyoKasho NP-R
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: UD Digi KyoKasho N-R" class="font-family-item-text">
+                    UD Digi KyoKasho N-R
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Urdu Typesetting" class="font-family-item-text">
+                    Urdu Typesetting
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: URW Chancery" class="font-family-item-text">
+                    URW Chancery
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Utsaah" class="font-family-item-text">
+                    Utsaah
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Vani" class="font-family-item-text">
+                    Vani
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Verdana" class="font-family-item-text">
+                    Verdana
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Verdana Pro" class="font-family-item-text">
+                    Verdana Pro
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Vijaya" class="font-family-item-text">
+                    Vijaya
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Vrinda" class="font-family-item-text">
+                    Vrinda
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Webdings" class="font-family-item-text">
+                    Webdings
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Westminster" class="font-family-item-text">
+                    Westminster
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Wingdings" class="font-family-item-text">
+                    Wingdings
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Yu Gothic" class="font-family-item-text">
+                    Yu Gothic
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Yu Gothic UI" class="font-family-item-text">
+                    Yu Gothic UI
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Yu Mincho" class="font-family-item-text">
+                    Yu Mincho
+                </div>
+            </div>
+            <div class="selected-font-family font-family-item-cont">
+                <div style="font-family: Zapf Chancery" class="font-family-item-text">
+                    Zapf Chancery
+                </div>
+            </div>
+            
+            `,
+    colorAdjust: `
+${searchTool}
+<div class="btn-options-container">
+    <div class="btn-options-top">
+        Document Colors
+    </div>
+    <div class="btn-options-bottom">
+    
+        <div class="single-btn-item add-own-color-btn">
+            <input type="color" class="add-own-color"/>
+            <div class="icon-cont">
+                <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                    <use xlink:href="../sources/svg_icons.svg#plus"></use>
+                </svg>
+            </div>
+                    
+            </div>
+            
+        <div id="single-btn-item-editable" class="single-btn-item" style="background: red"></div>
+        <div class="single-btn-item" style="background: green"></div>
+        <div class="single-btn-item" style="background: blue"></div>
+        <div class="single-btn-item" style="background: purple"></div>
+        <div class="single-btn-item" style="background: rgb(211, 183, 20)"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(45, 139, 186) 0%, rgb(45, 139, 186) 100%)"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(108, 229, 232) 0%, rgb(108, 229, 232) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(0, 0, 0) 0%, rgb(0, 0, 0))"></div>
+    </div>
+    <div class="btn-options-top">
+        Default Colors
+    </div>
+    <div class="btn-options-bottom">
+        <div class="single-btn-item" style="background: black"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(84, 84, 84) 0%, rgb(84, 84, 84) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(115, 115, 115) 0%, rgb(115, 115, 115) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(166, 166, 166) 0%, rgb(166, 166, 166) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(217, 217, 217) 0%, rgb(217, 217, 217) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(255, 22, 22) 0%, rgb(255, 22, 22) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(255, 87, 87) 0%, rgb(255, 87, 87) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(255, 102, 196) 0%, rgb(255, 102, 196) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(203, 108, 230) 0%, rgb(203, 108, 230) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(140, 82, 255) 0%, rgb(140, 82, 255) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(94, 23, 235) 0%, rgb(94, 23, 235) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(3, 152, 158) 0%, rgb(3, 152, 158) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(0, 194, 203) 0%, rgb(0, 194, 203) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(92, 225, 230) 0%, rgb(92, 225, 230) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(56, 182, 255) 0%, rgb(56, 182, 255) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(82, 113, 255) 0%, rgb(82, 113, 255) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(0, 74, 173) 0%, rgb(0, 74, 173) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(0, 128, 55) 0%, rgb(0, 128, 55) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(126, 217, 87) 0%, rgb(126, 217, 87) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(201, 226, 101) 0%, rgb(201, 226, 101) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(255, 222, 89) 0%, rgb(255, 222, 89) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(255, 189, 89) 0%, rgb(255, 189, 89) 100%);"></div>
+        <div class="single-btn-item" style="background: linear-gradient(to right, rgb(255, 145, 77) 0%, rgb(255, 145, 77) 100%);"></div>
+        
+    </div>
+</div>
+`
+}
+
+
+let fontFamilyObject = {
+    body: `
+            <div class="ffamily-cont double-item-cont gti-item">
+                <button class="double-item-main ffamily-text">
+                    <span>Cambria Math</span>
+                </button>
+                    <div class="double-item-minor ffamily-icon">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                          <use xlink:href="../sources/svg_icons.svg#done"></use>
+                        </svg>
+                    </div>
+            </div>`,
+    action: function (el) {
+                //change font-family of el
+                console.log("heeey")
+                displaySecLayout(select_layouts["fontFamily"])
+                let family = Styling.get_style(el.id, "font-family", el.ruleIndex);
+                let tmp1 = document.querySelector(".selected-font-family").querySelector(".font-family-item-text");
+                tmp1.style.fontFamily = family;
+                tmp1.innerHTML = family;
+            },
+    size: 100
+}
+
+let fontSizeObject = {
+    body: `
+            <div class="font-size-cont gti-item">
+                <button class="font-size-minus gti-item-clickable">
+                    -
+                </button>
+                
+                    <input class="font-size-input gti-item-clickable"/>
+                
+                    <button class="font-size-plus gti-item-clickable">
+                        +
+                    </button>
+            </div>`,
+    action: function (el) {
+                //change font-size of el
+            },
+    size: 100
+}
+let colorAdjustObject= {
+            body: `<div class="color-adjust gti-item">
+                        <div class="color-adjust-letter">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#letterA"></use>
+                        </svg>
+                        </div>
+                        <div class="color-adjust-img">
+                            
+                        </div>
+                    </div>`,
+            action: function (el) {
+                //bold el
+                displaySecLayout(select_layouts["colorAdjust"]);
+                document.querySelector(".add-own-color").addEventListener("input", (e)=>{
+                    document.getElementById("single-btn-item-editable").style.background = e.currentTarget.value;
+                });
+            },
+            size: 20
+        };
+let boldObject= {
+            body: `<div class="gti-item bold-adjust">B</div>`,
+            action: function (el) {
+                //bold el
+
+                let b = Styling.get_style(el.id, "font-weight", el.ruleIndex);
+                Styling.edit_style(el.id, "font-weight", b==="bold"?"":"bold", el.ruleIndex);
+            },
+            size: 20
+        };
+let italicsObject= {
+            body: `<div class="gti-item italics-adjust">I</div>`,
+            action: function (el) {
+                //italicise el
+                let b = Styling.get_style(el.id, "font-style", el.ruleIndex);
+                Styling.edit_style(el.id, "font-style", b==="italic"?"":"italic", el.ruleIndex);
+
+            },
+            size: 20
+        };
+let underlineObject= {
+            body: `<div class="gti-item underline-adjust">U</div>`,
+            action: function (el) {
+                //underline el
+                if (el.classList.contains("clip-parent")) {
+                    el = el.querySelector("._clippath")
+                }
+                let b = Styling.get_style(el.id, "text-decoration", el.ruleIndex);
+                Styling.edit_style(el.id, "text-decoration", b==="underline"?"":"underline", el.ruleIndex);
+            },
+            size: 20
+        };
+let centerObject= {
+            body: `<div class="gti-item center-adjust">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#center-icon"></use>
+                        </svg>
+                    </div>`,
+            action: function (el) {
+                //bold el
+
+
+                if (el.classList.contains("clip-parent")) {
+                    el = el.querySelector("._clippath")
+                }
+                if (el.classList.contains("align-center")) {
+                    el.classList.remove("align-center")
+                } else {
+                    el.classList.add("align-center")
+                }
+            },
+            size: 20
+        };
+let bulletObject= {
+            body: `<div class="gti-item bullet-adjust">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#bullet"></use>
+                        </svg>
+                    </div>`,
+            action: function (el) {
+                //bold el
+            },
+            size: 20
+        };
+let lineHeightObject= {
+            body: `<div class="gti-item line-height-adjust">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#line-height"></use>
+                        </svg>
+                    </div>`,
+            action: function (el) {
+                //lineheight el
+                /*if (el.classList.contains("clip-parent")) {
+                    el = el.querySelector("._clippath")
+                }
+                let b = Styling.get_style(el.id, "text-decoration", el.ruleIndex);
+                Styling.edit_style(el.id, "text-decoration", b==="underline"?"":"underline", el.ruleIndex);*/
+            },
+            size: 20
+        };
+let effectsObject= {
+            body: `<button class="gti-item effects-adjust">
+                        <span>Effects</span>
+                    </button>`,
+            action: function (el) {
+                //bold el
+            },
+            size: 60
+        };
+let moreObject= {
+            body: `<div class="gti-item more">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#more"></use>
+                        </svg>
+                    </div>`,
+            action: function (el) {
+                //bold el
+            },
+            size: 20
+        };
+let transparentObject= {
+            body: `<div class="gti-item transparent">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#transparent"></use>
+                        </svg>
+                    </div>`,
+            action: function (el) {
+                //bold el
+                if (el.classList.contains("clip-parent")) {
+                    el = el.querySelector("._clippath")
+                }
+                let b = Styling.get_style(el.id, "background", el.ruleIndex);
+                Styling.edit_style(el.id, "background", b==="transparent"?"":"transparent", el.ruleIndex);
+            },
+            size: 20
+        };
+let caseAdjustObject = {
+            body: `<div class="gti-item case-adjust">
+                        <div class="case-adjust-img"></div>
+                    </div>`,
+            action: function (el) {
+                //bold el
+            },
+            size: 20
+        }
+
+
+
+let InstantTools = {
+    normal: {
+        fontFamily: fontFamilyObject,
+        fontSize: fontSizeObject,
+        colorAdjust: colorAdjustObject,
+        bold:  boldObject,
+        italics: italicsObject,
+        underline: underlineObject,
+        center: centerObject,
+        bullet: bulletObject,
+        lineHeight: lineHeightObject,
+        effects: effectsObject,
+        more: moreObject,
+        transparent: transparentObject,
+        caseAdjust: caseAdjustObject,
+    },
+    clipped: {
+        fontFamily: {
+            body: fontFamilyObject.body,
+            action: function (el) {
+                el = el.querySelector("._clippath");
+                //change font-family of el
+                displaySecLayout(select_layouts["fontFamily"])
+                let family = Styling.get_style(el.id, "font-family", el.ruleIndex);
+                let tmp1 = document.querySelector(".selected-font-family").querySelector(".font-family-item-text");
+                tmp1.style.fontFamily = family;
+                tmp1.innerHTML = family;
+            },
+            size: fontFamilyObject.size
+        },
+        fontSize: fontSizeObject,
+        colorAdjust: {
+            body: colorAdjustObject.body,
+            action: function (el) {
+                el = el.querySelector("._clippath");
+                displaySecLayout(select_layouts["colorAdjust"]);
+                document.querySelector(".add-own-color").addEventListener("input", (e)=>{
+                    document.getElementById("single-btn-item-editable").style.background = e.currentTarget.value;
+                });
+            },
+            size: colorAdjustObject.size
+        },
+        bold:  boldObject,
+        italics: italicsObject,
+        underline: underlineObject,
+        center: centerObject,
+        bullet: bulletObject,
+        lineHeight: lineHeightObject,
+        effects: effectsObject,
+        more: moreObject,
+        transparent: transparentObject,
+        caseAdjust: caseAdjustObject,
+    }
 }

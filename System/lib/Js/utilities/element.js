@@ -2,11 +2,12 @@ let currentResize = "Q", center = {x: 0, y: 0};
 let parentWidth = 0, parentHeight = 0;
 let virtual_appender = createDomElement({name: "div"});
 let boundary = {
-    el: document.getElementById("genie-paint-field"),
+    el: document.getElementById("paint-field-container"),
     x: 0,
     y: 0
 }, ml = 0, mt = 0, mw = 0, mh = 0, unitX = "", unitY = "", percX = false, percY = false;
 
+boundary.el.style.transform = "scaleX(0.9) scaleY(0.9)"
 let Elements = {};
 let ruleIndex = 1;
 let transformScaleX;
@@ -270,6 +271,7 @@ let BRICK = {
     },
     click: function (el) {
         //the shitty negating part
+        // wnd = el;
         if (dragger.angle) {
             let str = Styling.get_style(el.id, "transform", el.ruleIndex).split(" ");
             let t = "";
@@ -283,9 +285,46 @@ let BRICK = {
             document.getElementById("rot-resize-cont").style.transform = t;*/
         }
         hightlightAll();
-        el.done.scrollIntoView(false)
+        el.done.scrollIntoView(false);
+        BRICK.handleToolbar(el);
     },
-    typing: false
+    typing: false,
+    handleToolbar(el) {
+        let toolbar_cont = displayInstantToolbar(), opt = "", temp;
+        if (tool_for !== el) {
+            toolbar_cont.innerHTML = "";
+            console.log(el["data-styles"])
+            if ((opt = el["data-styles"])) {
+                let style_items = InstantTools[opt];
+                for (let item in style_items) {
+                    temp = createDomElement({
+                        name: `div`,
+                        appendTo: toolbar_cont,
+                        id: `${item}`,
+                        class: `gti`,
+                        innerHTML: `${style_items[item].body}`,
+                        contentEditable: false,
+                    });
+                    temp.style.width = `${style_items[item].size}px`;
+                }
+                let family = Styling.get_style(el.id, "font-family", el.ruleIndex);
+                document.querySelector(".ffamily-text").innerHTML = family || "Calibri";
+
+                let size = Styling.get_style(el.id, "font-size", el.ruleIndex);
+                document.querySelector(".font-size-input").value = size || "12px";
+
+                let my_wnd = el;
+                if (el.classList.contains("clip-parent")){
+                    my_wnd = el.querySelector("._clippath");
+                }
+                let background = Styling.get_style(my_wnd.id, "background", my_wnd.ruleIndex);
+                document.querySelector(".color-adjust-img").style.background = background||"url(../sources/imgs/color-adjust.webp)";
+
+            }
+
+        }
+        tool_for = el;
+    }
 };
 
 let TraditionalTool = {
@@ -327,6 +366,7 @@ let TraditionalTool = {
 
         t_top_left_top: (ml, mt, sw, sh, wnd) => {
             mh = sh - mouse.dragging.offset.y;
+            let pyChange = mh;
             if (percY) {
                 mt = `${100 * mt / parentHeight}`;
                 mh = `${100 * mh / parentHeight}`;
@@ -336,11 +376,12 @@ let TraditionalTool = {
                 drag_style(wnd, "height", `${mh + unitY}`);
             }
             height_display.value = `${mh + unitY}`;
-            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            Resizers.drag_clip(clip_child, wnd, "height", pyChange, unitY);
             top_display.value = `${mt + unitY}`;
         },
         t_top: (ml, mt, sw, sh, wnd) => {
             mh = sh - mouse.dragging.offset.y;
+            let pyChange = mh;
             if (percY) {
                 mt = `${100 * mt / parentHeight}`;
                 mh = `${100 * mh / parentHeight}`;
@@ -350,11 +391,12 @@ let TraditionalTool = {
                 drag_style(wnd, "height", `${mh + unitY}`);
             }
             height_display.value = `${mh + unitY}`;
-            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            Resizers.drag_clip(clip_child, wnd, "height", pyChange, unitY);
             top_display.value = `${mt + unitY}`;
         },
         t_top_right_top: (ml, mt, sw, sh, wnd) => {
             mh = sh - mouse.dragging.offset.y;
+            let pyChange = mh;
             if (percY) {
                 mt = `${100 * mt / parentHeight}`;
                 mh = `${100 * mh / parentHeight}`;
@@ -364,12 +406,13 @@ let TraditionalTool = {
                 drag_style(wnd, "height", `${mh + unitY}`);
             }
             height_display.value = `${mh + unitY}`;
-            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            Resizers.drag_clip(clip_child, wnd, "height", pyChange, unitY);
             top_display.value = `${mt + unitY}`;
         },
         t_top_right: (ml, mt, sw, sh, wnd) => {
             mh = sh - mouse.dragging.offset.y;
             mw = sw + mouse.dragging.offset.x;
+            let pxChange = mw, pyChange = mh;
             if (percX) {
                 mw = `${100 * mw / parentWidth}`;
             }
@@ -391,7 +434,7 @@ let TraditionalTool = {
                 flag = false;
             }
             if (flag) {
-                Resizers.drag_clip_all(clip_child, wnd, "both_w_h", mw, mh, unitX, unitY);
+                Resizers.drag_clip_all(clip_child, wnd, "both_w_h", pxChange, pyChange, unitX, unitY);
             }
             height_display.value = `${mh + unitY}`;
             width_display.value = `${mw + unitX}`;
@@ -399,35 +442,39 @@ let TraditionalTool = {
         },
         t_top_right_top_right: (ml, mt, sw, sh, wnd) => {
             mw = sw + mouse.dragging.offset.x;
+            let pxChange = mw;
             if (percX) {
                 mw = `${100 * mw / parentWidth}`;
             }
             drag_style(wnd, "width", `${mw + unitX}`);
-            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
+            Resizers.drag_clip(clip_child, wnd, "width", pxChange, unitX);
             width_display.value = `${mw + unitX}`;
         },
         t_right: (ml, mt, sw, sh, wnd) => {
             mw = sw + mouse.dragging.offset.x;
+            let pxChange = mw;
             if (percX) {
                 mw = `${100 * mw / parentWidth}`;
             }
             drag_style(wnd, "width", `${mw + unitX}`);
-            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
+            Resizers.drag_clip(clip_child, wnd, "width", pxChange, unitX);
             width_display.value = `${mw + unitX}`;
 
         },
         t_bottom_right_right: (ml, mt, sw, sh, wnd) => {
             mw = sw + mouse.dragging.offset.x;
+            let pxChange = mw;
             if (percX) {
                 mw = `${100 * mw / parentWidth}`;
             }
             drag_style(wnd, "width", `${mw + unitX}`);
-            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
+            Resizers.drag_clip(clip_child, wnd, "width", pxChange, unitX);
             width_display.value = `${mw + unitX}`;
         },
         t_bottom_right: (ml, mt, sw, sh, wnd) => {
             mw = sw + mouse.dragging.offset.x;
             mh = sh + mouse.dragging.offset.y;
+            let pxChange = mw, pyChange = mh;
             if (percX) {
                 mw = `${100 * mw / parentWidth}`;
             }
@@ -439,39 +486,43 @@ let TraditionalTool = {
             height_display.value = `${mh + unitY}`;
             width_display.value = `${mw + unitX}`;
 
-            Resizers.drag_clip_all(clip_child, wnd, "both_w_h", mw, mh, unitX, unitY);
+            Resizers.drag_clip_all(clip_child, wnd, "both_w_h", pxChange, pyChange, unitX, unitY);
 
         },
         t_bottom_bottom_right: (ml, mt, sw, sh, wnd) => {
             mh = sh + mouse.dragging.offset.y;
+            let pyChange = mh;
             if (percY) {
                 mh = `${100 * mh / parentHeight}`;
             }
             drag_style(wnd, "height", `${mh + unitY}`);
-            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            Resizers.drag_clip(clip_child, wnd, "height", pyChange, unitY);
             height_display.value = `${mh + unitY}`;
         },
         t_bottom: (ml, mt, sw, sh, wnd) => {
             mh = sh + mouse.dragging.offset.y;
+            let pyChange = mh;
             if (percY) {
                 mh = `${100 * mh / parentHeight}`;
             }
             drag_style(wnd, "height", `${mh + unitY}`);
-            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            Resizers.drag_clip(clip_child, wnd, "height", pyChange, unitY);
             height_display.value = `${mh + unitY}`;
         },
         t_bottom_left_bottom: (ml, mt, sw, sh, wnd) => {
             mh = sh + mouse.dragging.offset.y;
+            let pyChange = mh;
             if (percY) {
                 mh = `${100 * mh / parentHeight}`;
             }
             drag_style(wnd, "height", `${mh + unitY}`);
-            Resizers.drag_clip(clip_child, wnd, "height", mh, unitY);
+            Resizers.drag_clip(clip_child, wnd, "height", pyChange, unitY);
             height_display.value = `${mh + unitY}`;
         },
         t_bottom_left: (ml, mt, sw, sh, wnd) => {
             mw = sw - mouse.dragging.offset.x;
             mh = sh + mouse.dragging.offset.y;
+            let pxChange = mw, pyChange = mh;
             if (percX) {
                 ml = `${100 * ml / parentWidth}`;
                 mw = `${100 * mw / parentWidth}`;
@@ -493,7 +544,7 @@ let TraditionalTool = {
             }
 
             if (flag) {
-                Resizers.drag_clip_all(clip_child, wnd, "both_w_h", mw, mh, unitX, unitY);
+                Resizers.drag_clip_all(clip_child, wnd, "both_w_h", pxChange, pyChange, unitX, unitY);
             }
 
             height_display.value = `${mh + unitY}`;
@@ -502,6 +553,7 @@ let TraditionalTool = {
         },
         t_left_bottom_left: (ml, mt, sw, sh, wnd) => {
             mw = sw - mouse.dragging.offset.x;
+            let pxChange = mw;
             if (percX) {
                 ml = `${100 * ml / parentWidth}`;
                 mw = `${100 * mw / parentWidth}`;
@@ -511,11 +563,12 @@ let TraditionalTool = {
                 drag_style(wnd, "width", `${mw + unitX}`);
             }
             width_display.value = `${mw + unitX}`;
-            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
+            Resizers.drag_clip(clip_child, wnd, "width", pxChange, unitX);
             left_display.value = `${ml + unitX}`;
         },
         t_left: (ml, mt, sw, sh, wnd) => {
             mw = sw - mouse.dragging.offset.x;
+            let pxChange = mw;
             if (percX) {
                 ml = `${100 * ml / parentWidth}`;
                 mw = `${100 * mw / parentWidth}`;
@@ -525,11 +578,12 @@ let TraditionalTool = {
                 drag_style(wnd, "width", `${mw + unitX}`);
             }
             width_display.value = `${mw + unitX}`;
-            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
+            Resizers.drag_clip(clip_child, wnd, "width", pxChange, unitX);
             left_display.value = `${ml + unitX}`;
         },
         t_left_top: (ml, mt, sw, sh, wnd) => {
             mw = sw - mouse.dragging.offset.x;
+            let pxChange = mw;
             if (percX) {
                 ml = `${100 * ml / parentWidth}`;
                 mw = `${100 * mw / parentWidth}`;
@@ -539,7 +593,7 @@ let TraditionalTool = {
                 drag_style(wnd, "width", `${mw + unitX}`);
             }
             width_display.value = `${mw + unitX}`;
-            Resizers.drag_clip(clip_child, wnd, "width", mw, unitX);
+            Resizers.drag_clip(clip_child, wnd, "width", pxChange, unitX);
             left_display.value = `${ml + unitX}`;
         },
         t_rot: (ml, mt, sw, sh, wnd) => {
@@ -742,8 +796,9 @@ let Resizers = {
             dragger.angle.push(parseFloat(t.substring(2, t.length - 1)));
         }
     },
-    drag_clip(clip_child, wnd, direction, change, unitsOfChange) {
+    drag_clip(clip_child, wnd, direction, change, unitsOfChange, pxChange) {
         if (dragger.clip_drag) {
+
             let str = "";
             switch (direction) {
                 case "top":
@@ -760,10 +815,11 @@ let Resizers = {
                         if (theta_s_y >= 1) {
                             Styling.edit_styles(clip_child.id, {
                                 "transform": `scaleX(${transformScaleX}) scaleY(${theta_s_y})`,
-                                "top": `${theta_s_y * ((change - clip_child.y) / 2)}px`,
-                                "height": `${clip_child.y * theta_s_y}px`
+                                "top": `${theta_s_y * ((change - clip_child.y) / 2)}${unitsOfChange}`,
+                                "height": `${clip_child.y * theta_s_y}${unitsOfChange}`
                             }, clip_child.ruleIndex)
                         } else {
+                            unitsOfChange = "px";
                             Styling.edit_styles(clip_child.id, {
                                 "transform": `scaleX(${transformScaleX}) scaleY(${theta_s_y})`,
                                 "top": `${(theta_s_y - 1) * clip_child.y / 2}px`,
@@ -783,14 +839,15 @@ let Resizers = {
                         if (theta_s_x >= 1) {
                             Styling.edit_styles(clip_child.id, {
                                 "transform": `scaleX(${theta_s_x}) scaleY(${transformScaleY})`,
-                                "left": `${theta_s_x * ((change - clip_child.x) / 2)}px`,
-                                "width": `${clip_child.x * theta_s_x}px`
+                                "left": `${theta_s_x * ((change - clip_child.x) / 2)}${unitsOfChange}`,
+                                "width": `${clip_child.x * theta_s_x}${unitsOfChange}`
                             }, clip_child.ruleIndex)
                         } else {
+                            unitsOfChange = "px";
                             Styling.edit_styles(clip_child.id, {
                                 "transform": `scaleX(${theta_s_x}) scaleY(${transformScaleY})`,
-                                "left": `${(theta_s_x - 1) * clip_child.x / 2}px`,
-                                "width": `${clip_child.x}px`
+                                "left": `${(theta_s_x - 1) * clip_child.x / 2}${unitsOfChange}`,
+                                "width": `${clip_child.x}${unitsOfChange}`
                             }, clip_child.ruleIndex)
                         }
                     }
@@ -798,7 +855,8 @@ let Resizers = {
             }
         }
     },
-    drag_clip_all(clip_child, wnd, direction, changeX, changeY, unitsOfChangeX, unitsOfChangeY) {
+    drag_clip_all(clip_child, wnd, direction, changeX, changeY, unitsOfChangeX, unitsOfChangeY, pxChange, pyChange) {
+
         if (dragger.clip_drag) {
             let str = "";
             switch (direction) {
@@ -810,18 +868,22 @@ let Resizers = {
                         if (theta_s_x >= 1 && theta_s_y >= 1) {
                             Styling.edit_styles(clip_child.id, {
                                 "transform": `scaleX(${theta_s_x}) scaleY(${theta_s_y})`,
-                                "top": `${theta_s_y * ((changeY - clip_child.y) / 2)}px`,
-                                "left": `${theta_s_x * ((changeX - clip_child.x) / 2)}px`,
-                                "height": `${clip_child.y*theta_s_y}px`,
-                                "width": `${clip_child.x*theta_s_x}px`
+                                "top": `${theta_s_y * ((changeY - clip_child.y) / 2)}${unitsOfChangeY}`,
+                                "left": `${theta_s_x * ((changeX - clip_child.x) / 2)}${unitsOfChangeX}`,
+                                "height": `${clip_child.y*theta_s_y}${unitsOfChangeY}`,
+                                "width": `${clip_child.x*theta_s_x}${unitsOfChangeX}`
                             }, clip_child.ruleIndex)
                         } else {
+                            unitsOfChangeX = "px";
+                            unitsOfChangeY = "px";
                             Styling.edit_styles(clip_child.id, {
                                 "transform": `scaleX(${theta_s_x}) scaleY(${theta_s_y})`,
-                                "top": `${(theta_s_y - 1)*clip_child.y / 2}px`,
-                                "left": `${(theta_s_x - 1)*clip_child.x / 2}px`,
-                                "height": `${clip_child.y}px`,
-                                "width": `${clip_child.x}px`
+                                "top": `${(theta_s_y - 1)*clip_child.y / 2}${unitsOfChangeY}`,
+                                "left": `${(theta_s_x - 1)*clip_child.x / 2}${unitsOfChangeX}`,
+                                // "height": `${clip_child.y}px`,
+                                "height": `${clip_child.y}${unitsOfChangeY}`,
+                                // "width": `${clip_child.x}px`
+                                "width": `${clip_child.x}${unitsOfChangeX}`
                             }, clip_child.ruleIndex)
                         }
                     }
@@ -930,13 +992,14 @@ G.prototype.create = function (tag_name, parent_path, parent) {
             class: `hi normal_drag initial clip-parent element-mother`,
             innerHTML: ``,
             contentEditable: false,
+            "data-styles": "clipped",
         });
 
         this.child = createDomElement({
             name: `div`,
             appendTo: this.target,
             id: `${this.childId}`,
-            class: `hi initial _clippath`,
+            class: `hi initial _clippath no-cursor`,
             innerHTML: ``,
             contentEditable: false,
         });
@@ -971,6 +1034,7 @@ G.prototype.create = function (tag_name, parent_path, parent) {
             `);
             this.child.ruleIndex = ruleIndex;
             initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${test}px; height: ${test}px;border: 0;`);
+            this.target.ruleIndex = ruleIndex;
     } else {
         if (this.framed) {
             this.childId = `poly${Math.floor(Math.random() * 10000)}`;
@@ -978,30 +1042,27 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 name: `div`,
                 appendTo: this.parent,
                 id: `${this.id}`,
-                class: `hi normal_drag initial clip-parent element-mother`,
+                class: `hi normal_drag initial clip-parent element-mother frame-parent`,
                 innerHTML: ``,
                 contentEditable: false,
+                "data-styles": "framed",
             });
 
             this.child = createDomElement({
                 name: `div`,
                 appendTo: this.target,
                 id: `${this.childId}`,
-                class: `hi initial _clippath`,
+                class: `hi initial _clippath no-cursor`,
                 innerHTML: ``,
                 contentEditable: false,
             });
 
-            let temp = (getViewBox(this.framed));
-
-            console.log(temp)
+            let temp = (getViewBox(this.framed.clip_path));
 
             this.child.x = temp.x;
             this.child.y = temp.y;
 
             let test = 50;
-
-
             let e = getTransform({
                 originalTransform: 1,
                 originalX: temp.x,
@@ -1009,10 +1070,8 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 newX: test,
                 newY: test,
             })
-            console.log(e)
-
             initiateStyle(this.parentPath, this.childId, `
-                clip-path: ${`path("${this.framed}")`};
+                clip-path: ${`path("${this.framed.clip_path}")`};
                 width: ${e.width}px;
                 height: ${e.height}px;
                 border: 0;
@@ -1021,7 +1080,40 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 left:${e.left}px;
             `);
             this.child.ruleIndex = ruleIndex;
-            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${test}px; height: ${test}px;border: 0;`);
+            initiateStyle(this.parentPath, this.id, `left:0%;top:0%;width: ${test}px; height: ${test}px;border: 0;`);
+
+            this.target.ruleIndex = ruleIndex;
+            //second child === image coontainer
+
+            let _temp_id = `${this.id}${Math.floor(Math.random() * 10000)}`
+            this.target2 = createDomElement({
+                name: `div`,
+                appendTo: this.child,
+                id: `${_temp_id}`,
+                class: `frame-child inner-mother normal_drag hi element-daughter no-cursor`,
+                innerHTML: ``,
+                contentEditable: false,
+                "data-styles": "appended_img",
+            });
+
+            this.child2 = createDomElement({
+                name: `img`,
+                appendTo: this.target2,
+                id: `{${this.childId}${Math.floor(Math.random() * 10000)}`,
+                class: `element-daughter`,
+                innerHTML: ``,
+                contentEditable: false,
+            });
+            this.child2.setAttribute("alt", this.tagName)
+            this.child2.setAttribute("src", "../sources/imgs/"+this.framed.appended_img)
+            temp = {x: 50, y: 50};
+            initiateStyle(this.parentPath, _temp_id, `left:0%;top:0%;width: ${100}%; height: ${100}%;background-color: transparent;border:0;position: absolute`);
+            this.target2.ruleIndex = ruleIndex;
+            /*getImgSize("../sources/imgs/"+this.framed.appended_img, this.child2, (t) => {
+                let ratio = (t.x / t.y) || 1;
+                Styling.edit_style(_temp_id, "width", `${temp.x * ratio}px`, ruleIndex)
+            })*/
+
         } else if (this.appended_img) {
             this.childId = `poly${Math.floor(Math.random() * 10000)}`;
 
@@ -1029,14 +1121,15 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 name: `div`,
                 appendTo: this.parent,
                 id: `${this.id}`,
-                class: `hi normal_drag initial element-mother`,
+                class: `hi normal_drag initial element-mother image-mother`,
                 innerHTML: ``,
                 contentEditable: false,
+                "data-styles": "appended_img",
             });
             this.child = createDomElement({
                 name: `img`,
                 appendTo: this.target,
-                id: `${this.id}`,
+                id: `${this.childId}`,
                 class: `element-daughter`,
                 innerHTML: ``,
                 contentEditable: false,
@@ -1046,7 +1139,7 @@ G.prototype.create = function (tag_name, parent_path, parent) {
 
             let temp = {x: 50, y: 50};
             initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${temp.x}px; height: ${temp.y}px;background-color: transparent;border:0`);
-
+            this.target.ruleIndex = ruleIndex;
             getImgSize(this.appended_img, this.child, (t) => {
                 let ratio = (t.x / t.y) || 1;
                 Styling.edit_style(this.id, "width", `${temp.x * ratio}px`, ruleIndex)
@@ -1059,14 +1152,15 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                         appendTo: this.parent,
                         id: `${this.id}`,
                         class: `hi normal_drag initial clip-parent`,
-                        innerHTML: `<div id='poly${Math.floor(Math.random() * 10000)}' class="hi star initial _clippath"></div>`,
+                        innerHTML: `<div id='poly${Math.floor(Math.random() * 10000)}' class="no-cursor hi star initial _clippath"></div>`,
                         contentEditable: false,
+                        "data-styles": "normal",
                     });
                     /*let tmp = createDomElement({
                         name: `div`,
                         appendTo: this.target,
                         id: `${this.id}`,
-                        class: `hi initial _clippath`,
+                        class: `hi initial _clippath no-cursor`,
                         innerHTML: "",
                         contentEditable: false
                     });*/
@@ -1078,16 +1172,18 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                         id: `${this.id}`,
                         class: `hi normal_drag initial`,
                         innerHTML: "hi there",
-                        contentEditable: false
+                        contentEditable: false,
+                        "data-styles": "normal",
                     });
                     break;
             }
             initiateStyle(this.parentPath, this.id);
+            this.target.ruleIndex = ruleIndex;
         }
     }
 
 
-    this.target.ruleIndex = ruleIndex;
+
     //this.bindings();
     reload_compressed_layout();
     return this.target;
