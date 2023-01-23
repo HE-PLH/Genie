@@ -832,7 +832,7 @@ ${searchTool}
 <div id="genie-left-nav-right-tab-title" class="tab-btn tab align_center">Audio</div>
 </div>
 <div id="genie-left-nav-styles-body" class="tab-body tab-main-body fill_width">
-    <div id="genie-left-nav-main" class="genie-style-mains fill_width tab-body-active">
+    <div id="genie-left-nav-main" class="genie-style-mains uploads-main-body fill_width tab-body-active">
     <div class="image-list-container">
         <div class="image-tile">
             <img class="tile-img" src="../sources/imgs/person2.jpg" alt="person2.jpg">
@@ -849,8 +849,313 @@ ${searchTool}
             <img class="tile-img" src="../sources/imgs/person4.jpg" alt="person4.jpg">
         </div>
         <div class="image-tile">
-            <img class="tile-img" src="../sources/imgs/IMG_20200224_120902.jpg" alt="IMG_20200224_120902.jpg">
+            <img class="tile-img" src="../sources/imgs/logo.png" alt="logo.png">
         </div>
+        <div class="image-tile">
+            <img class="tile-img" src="../sources/imgs/letterhead.png" alt="letterhead.png">
+        </div>
+        <div class="image-tile">
+            <img class="tile-img" src="../sources/imgs/footer.png" alt="footer.png">
+        </div>
+       
+    </div>
+    </div>
+     <div id="genie-right-main" class="genie-style-mains fill_width">
+                    Test
+                </div>
+     <div id="genie-right-nost-main" class="genie-style-mains fill_width">
+                    Test1
+                </div>
+            </div>
+            `,
+    Elements: `
+${searchTool}
+<div class="my-collapse">
+                <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                    <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
+                </svg>
+            </div>
+<div id="genie-left-nav-main" class="genie-style-mains fill_width tab-body-active">
+        <div class="fill_width disp-layout-tab">
+            <div class="box-outer">
+                <a class="arrow-left m-arrow align-center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#arrow-left"></use>
+                    </svg>
+                </a>
+                <a class="arrow-right m-arrow align-center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#arrow-right"></use>
+                    </svg>
+                </a>
+                <div class="box-inner">
+                    <div class="thumb align-center">Lines</div>
+                    <div class="thumb align-center">Arrow</div>
+                    <div class="thumb align-center">Circle</div>
+                    <div class="thumb align-center">Heart</div>
+                    <div class="thumb align-center">Square</div>
+                    <div class="thumb align-center">Rectangle</div>
+                    <div class="thumb align-center">Box</div>
+                    <div class="thumb align-center">Star</div>
+                    <div class="thumb align-center">Table</div>
+                    <div class="thumb align-center">Phhone</div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="fill_width disp-layout-tab">
+            <div class="fill_width disp-layout-tab-top">
+                <div class="recent-used disp-btn">Lines and Shapes</div>
+                <div class="see-all disp-btn">See All</div>
+            </div>
+            <div class="image-box-outer box-outer">
+                <a class="arrow-left m-arrow align-center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#arrow-left"></use>
+                    </svg>
+                </a>
+                <a class="arrow-right m-arrow align-center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#arrow-right"></use>
+                    </svg>
+                </a>
+                <div class="image-box-inner box-inner">
+                    <div class="image-thumb align-center">
+                        <img class="tab-img" src="../sources/imgs/elements/rectangle.webp" alt="rectangle.webp"/>
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tab-img" src="../sources/imgs/elements/diamond.webp" alt="diamond.webp"/>
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tab-img" src="../sources/imgs/elements/rounded-rectangle.webp" alt="rounded-rectangle.webp"/>
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tab-img" src="../sources/imgs/elements/line.svg" alt="line.svg"/>
+                    </div>
+                    
+                    <div class="image-thumb align-center">
+                        <img class="tab-img" src="../sources/imgs/elements/inverted-triangle.webp" alt="inverted-triangle.webp"/>
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tab-img" src="../sources/imgs/elements/triangle.webp" alt="triangle.webp"/>
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tab-img" src="../sources/imgs/elements/line1.svg" alt="line1.svg"/>
+                    </div>
+                    <div class="see-all-redirect-btn align-center">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#arrow-right"></use>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fill_width disp-layout-tab">
+            <div class="fill_width disp-layout-tab-top">
+                <div class="recent-used disp-btn">Graphics</div>
+                <div class="see-all disp-btn">See All</div>
+            </div>
+            <div class="image-box-outer box-outer">
+                <a class="arrow-left m-arrow align-center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#arrow-left"></use>
+                    </svg>
+                </a>
+                <a class="arrow-right m-arrow align-center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#arrow-right"></use>
+                    </svg>
+                </a>
+                <div class="image-box-inner box-inner">
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/person2.jpg" alt="person2.jpg">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/person1.jpg" alt="person1.jpg">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/person3.jpg" alt="person3.jpg">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/person4.jpg" alt="person4.jpg">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic1.webp" alt="graphic1.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic2.webp" alt="graphic2.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic3.webp" alt="graphic3.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic4.webp" alt="graphic4.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic5.webp" alt="graphic5.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic6.webp" alt="graphic6.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic7.webp" alt="graphic7.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic8.webp" alt="graphic8.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic9.webp" alt="graphic9.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic10.webp" alt="graphic10.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic11.webp" alt="graphic11.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic12.webp" alt="graphic12.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic13.webp" alt="graphic13.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic14.webp" alt="graphic14.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic15.webp" alt="graphic15.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic16.webp" alt="graphic16.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic17.webp" alt="graphic17.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic18.webp" alt="graphic18.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic19.webp" alt="graphic19.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic20.webp" alt="graphic20.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic21.webp" alt="graphic21.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic22.webp" alt="graphic22.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic23.webp" alt="graphic23.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="tile-img" src="../sources/imgs/graphics/graphic24.webp" alt="graphic24.webp">
+                    </div>
+                    
+                    <div class="see-all-redirect-btn align-center">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#arrow-right"></use>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fill_width disp-layout-tab">
+            <div class="fill_width disp-layout-tab-top">
+                <div class="recent-used disp-btn">Frames</div>
+                <div class="see-all disp-btn">See All</div>
+            </div>
+            <div class="image-box-outer box-outer">
+                <a class="arrow-left m-arrow align-center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#arrow-left"></use>
+                    </svg>
+                </a>
+                <a class="arrow-right m-arrow align-center">
+                    <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                        <use xlink:href="../sources/svg_icons.svg#arrow-right"></use>
+                    </svg>
+                </a>
+                <div class="image-box-inner box-inner">
+                    <div class="image-thumb align-center">
+                        <img class="frame-tile-img" src="../sources/imgs/frame/frame1.webp" alt="frame1.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="frame-tile-img" src="../sources/imgs/frame/frame2.webp" alt="frame2.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="frame-tile-img" src="../sources/imgs/frame/frame3.webp" alt="frame3.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="frame-tile-img" src="../sources/imgs/frame/frame4.webp" alt="frame4.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="frame-tile-img" src="../sources/imgs/frame/frame5.webp" alt="frame5.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="frame-tile-img" src="../sources/imgs/frame/frame6.webp" alt="frame6.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="frame-tile-img" src="../sources/imgs/frame/frame7.webp" alt="frame7.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="frame-tile-img" src="../sources/imgs/frame/frame8.webp" alt="frame8.webp">
+                    </div>
+                    <div class="image-thumb align-center">
+                        <img class="frame-tile-img" src="../sources/imgs/frame/frame9.webp" alt="frame9.webp">
+                    </div>
+                    
+                    <div class="see-all-redirect-btn align-center">
+                        <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                            <use xlink:href="../sources/svg_icons.svg#arrow-right"></use>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            `,
+    Text: `
+${searchTool}
+<div class="my-collapse">
+                <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                    <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
+                </svg>
+            </div>
+<div class="button-cont">
+    <button id="add-text-btn" class="text-btn">
+    <span>Add a Textbox</span>
+</button>
+    
+</div>
+<div class="button-cont">
+    <button id="add-heading-text-btn" class="text-btn">
+    <span>Add a heading</span>
+</button>
+    
+</div>
+<div class="button-cont">
+    <button id="add-sub-heading-text-btn" class="text-btn">
+    <span>Add a sub heading</span>
+</button>    
+</div>
+<div class="button-cont">
+    <button id="add-little-text-btn" class="text-btn">
+    <span>Add a little bit of text</span>
+</button>    
+</div>
+<div id="genie-left-nav-styles-top" class="tab-top">
+                <div id="genie-left-nav-left-tab-title" class="tab-btn tab align_center">Images</div>
+<div id="genie-left-nav-right-tab-title" class="tab-btn tab align_center">Videos</div>
+<div id="genie-left-nav-right-tab-title" class="tab-btn tab align_center">Audio</div>
+</div>
+<div id="genie-left-nav-styles-body" class="tab-body tab-main-body fill_width">
+    <div id="genie-left-nav-main" class="genie-style-mains uploads-main-body fill_width tab-body-active">
+    <div class="image-list-container">
+        <div class="image-thumb text-img-cont align-center">
+                        <img class="m_tile-img" src="../sources/imgs/graphics/graphic3.webp" alt="graphic3.webp">
+                    </div>
+       
     </div>
     </div>
      <div id="genie-right-main" class="genie-style-mains fill_width">

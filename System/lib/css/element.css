@@ -33,17 +33,20 @@ div ::selection { background: transparent; text-shadow: none; }
     --toolsize:10px;
     --negativetoolsize: -10px;
     --trot: -45px;
+    --VHappendTool: 40px;
+    --negativeVHappendTool: -40px;
+    --appendToolTail: 4px;
 }
 
 .verticalAppendedTool{
-    width: 10px;
-    height: 40px;
-    left: 40px;
-    top: -40px;
+    width: var(--toolsize);
+    height: var(--VHappendTool);
+    left: var(--VHappendTool);
+    top: var(--negativeVHappendTool);
 }
 .horizontalAppendedTool{
-    width: 40px;
-    height: 10px;
+    width: var(--VHappendTool);
+    height: var(--toolsize);
     justify-content: center;
     display: flex;
     align-items: center;
@@ -57,17 +60,17 @@ div ::selection { background: transparent; text-shadow: none; }
 }
 
 .horizontalAppendedTool .point_tail{
-    width: 30px;
-    height: 3px;
+    width: calc(var(--VHappendTool) - 10px);
+    height: calc(var(--appendToolTail) - 1px);
     background: lightblue;
 }
 
 
 .verticalAppendedTool .point_tail{
-    height: 30px;
-    width: 4px;
+    height: calc(var(--VHappendTool) - 10px);
+    width: var(--appendToolTail);
     background: lightblue;
-    margin-left: 3px;
+    margin-left: calc(var(--appendToolTail) - 1px)
 }
 
 #size-resize, #position-resize{
@@ -110,19 +113,19 @@ div ::selection { background: transparent; text-shadow: none; }
 }
 
 #left_resize .point{
-    margin-left: -5px;
-    border-top: solid transparent 5px;
-    border-left: solid transparent 5px;
-    border-right: solid lightblue 10px;
-    border-bottom: solid transparent 5px;
+    margin-left: calc(var(--negativetoolsize) / 2);
+    border-top: solid transparent calc(var(--toolsize) / 2);
+    border-left: solid transparent calc(var(--toolsize) / 2);
+    border-right: solid lightblue var(--toolsize);
+    border-bottom: solid transparent calc(var(--toolsize) / 2);
 }
 #top_resize .point{
-    margin-top: -5px;
+    margin-top: calc(var(--negativetoolsize) / 2);
     margin-bottom: 0;
-    border-top: solid transparent 5px;
-    border-left: solid transparent 5px;
-    border-right: solid transparent 5px;
-    border-bottom: solid lightblue 10px;
+    border-top: solid transparent calc(var(--toolsize) / 2);
+    border-left: solid transparent calc(var(--toolsize) / 2);
+    border-right: solid transparent calc(var(--toolsize) / 2);
+    border-bottom: solid lightblue var(--toolsize);
 }
 
 #left_resize:hover .point{
@@ -138,12 +141,13 @@ div ::selection { background: transparent; text-shadow: none; }
 
 #width_resize .point{
     margin-left: 0px;
-    border: solid lightblue 5px;
+    border: solid lightblue var(--toolsize);
 }
 #height_resize .point{
-    margin-top: 0px;
+    margin-left: calc(var(--negativetoolsize) / 4);
+    margin-top:var(--negativetoolsize);
     margin-bottom: 0;
-    border: solid lightblue 5px;
+    border: solid lightblue var(--toolsize);
 }
 
 .rot-resize{

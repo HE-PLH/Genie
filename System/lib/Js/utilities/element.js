@@ -7,7 +7,8 @@ let boundary = {
     y: 0
 }, ml = 0, mt = 0, mw = 0, mh = 0, unitX = "", unitY = "", percX = false, percY = false;
 
-boundary.el.style.transform = "scaleX(0.9) scaleY(0.9)"
+boundary.el.style.transform = "scaleX(0.37) scaleY(0.37)";
+handleSliderTransform(38)
 let Elements = {};
 let ruleIndex = 1;
 let transformScaleX;
@@ -112,8 +113,8 @@ function getTransform({originalTransform, originalX, originalY, newX, newY}) {
         if (theta_s_x >= 1 && theta_s_y >= 1) {
             left = theta_l;
             top = theta_t;
-            width = originalX*theta_s_x;
-            height = originalY*theta_s_y;
+            width = originalX * theta_s_x;
+            height = originalY * theta_s_y;
         } else {
             if (theta_s_x >= 1) {
                 left = theta_s_x * ((theta_s_x - 1) * originalX / 2);
@@ -314,11 +315,11 @@ let BRICK = {
                 document.querySelector(".font-size-input").value = size || "12px";
 
                 let my_wnd = el;
-                if (el.classList.contains("clip-parent")){
+                if (el.classList.contains("clip-parent")) {
                     my_wnd = el.querySelector("._clippath");
                 }
                 let background = Styling.get_style(my_wnd.id, "background", my_wnd.ruleIndex);
-                document.querySelector(".color-adjust-img").style.background = background||"url(../sources/imgs/color-adjust.webp)";
+                document.querySelector(".color-adjust-img").style.background = background || "url(../sources/imgs/color-adjust.webp)";
 
             }
 
@@ -870,16 +871,16 @@ let Resizers = {
                                 "transform": `scaleX(${theta_s_x}) scaleY(${theta_s_y})`,
                                 "top": `${theta_s_y * ((changeY - clip_child.y) / 2)}${unitsOfChangeY}`,
                                 "left": `${theta_s_x * ((changeX - clip_child.x) / 2)}${unitsOfChangeX}`,
-                                "height": `${clip_child.y*theta_s_y}${unitsOfChangeY}`,
-                                "width": `${clip_child.x*theta_s_x}${unitsOfChangeX}`
+                                "height": `${clip_child.y * theta_s_y}${unitsOfChangeY}`,
+                                "width": `${clip_child.x * theta_s_x}${unitsOfChangeX}`
                             }, clip_child.ruleIndex)
                         } else {
                             unitsOfChangeX = "px";
                             unitsOfChangeY = "px";
                             Styling.edit_styles(clip_child.id, {
                                 "transform": `scaleX(${theta_s_x}) scaleY(${theta_s_y})`,
-                                "top": `${(theta_s_y - 1)*clip_child.y / 2}${unitsOfChangeY}`,
-                                "left": `${(theta_s_x - 1)*clip_child.x / 2}${unitsOfChangeX}`,
+                                "top": `${(theta_s_y - 1) * clip_child.y / 2}${unitsOfChangeY}`,
+                                "left": `${(theta_s_x - 1) * clip_child.x / 2}${unitsOfChangeX}`,
                                 // "height": `${clip_child.y}px`,
                                 "height": `${clip_child.y}${unitsOfChangeY}`,
                                 // "width": `${clip_child.x}px`
@@ -908,6 +909,7 @@ function G(id, params) {
     this.clip_path = params ? params.clipPath : null;
     this.appended_img = params ? params.appended_img : null;
     this.framed = params ? params.framed : null;
+    this.vertical_text_layout = params ? params.vertical_text_layout : null;
     this.target = document.getElementById(`.${this.id}`);
     this.parentPath = null;
     this.parent = null;
@@ -967,11 +969,10 @@ function getViewBox(clip_path) {
 
     let temp_x = x_large + Math.abs(x_smallest);
     let temp_y = y_large + Math.abs(y_smallest);
-    if (temp_y>temp_x){
-        temp_x = temp_x*temp_y/temp_x;
-    }else
-    if (temp_x>temp_y){
-        temp_y = temp_y*temp_x/temp_y;
+    if (temp_y > temp_x) {
+        temp_x = temp_x * temp_y / temp_x;
+    } else if (temp_x > temp_y) {
+        temp_y = temp_y * temp_x / temp_y;
     }
     return {x: temp_x, y: temp_y}
 }
@@ -1006,24 +1007,24 @@ G.prototype.create = function (tag_name, parent_path, parent) {
 
         let temp = (getViewBox(this.clip_path));
 
-            console.log(temp)
+        console.log(temp)
 
-            this.child.x = temp.x;
-            this.child.y = temp.y;
+        this.child.x = temp.x;
+        this.child.y = temp.y;
 
-            let test = 50;
+        let test = 50;
 
 
-            let e = getTransform({
-                originalTransform: 1,
-                originalX: temp.x,
-                originalY: temp.y,
-                newX: test,
-                newY: test,
-            })
-            console.log(e)
+        let e = getTransform({
+            originalTransform: 1,
+            originalX: temp.x,
+            originalY: temp.y,
+            newX: test,
+            newY: test,
+        })
+        console.log(e)
 
-            initiateStyle(this.parentPath, this.childId, `
+        initiateStyle(this.parentPath, this.childId, `
                 clip-path: ${`path("${this.clip_path}")`};
                 width: ${e.width}px;
                 height: ${e.height}px;
@@ -1032,9 +1033,9 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 top:${e.top}px;
                 left:${e.left}px;
             `);
-            this.child.ruleIndex = ruleIndex;
-            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${test}px; height: ${test}px;border: 0;`);
-            this.target.ruleIndex = ruleIndex;
+        this.child.ruleIndex = ruleIndex;
+        initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${test}px; height: ${test}px;border: 0;`);
+        this.target.ruleIndex = ruleIndex;
     } else {
         if (this.framed) {
             this.childId = `poly${Math.floor(Math.random() * 10000)}`;
@@ -1105,7 +1106,7 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 contentEditable: false,
             });
             this.child2.setAttribute("alt", this.tagName)
-            this.child2.setAttribute("src", "../sources/imgs/"+this.framed.appended_img)
+            this.child2.setAttribute("src", "../sources/imgs/" + this.framed.appended_img)
             temp = {x: 50, y: 50};
             initiateStyle(this.parentPath, _temp_id, `left:0%;top:0%;width: ${100}%; height: ${100}%;background-color: transparent;border:0;position: absolute`);
             this.target2.ruleIndex = ruleIndex;
@@ -1114,7 +1115,8 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 Styling.edit_style(_temp_id, "width", `${temp.x * ratio}px`, ruleIndex)
             })*/
 
-        } else if (this.appended_img) {
+        }
+        else if (this.appended_img) {
             this.childId = `poly${Math.floor(Math.random() * 10000)}`;
 
             this.target = createDomElement({
@@ -1144,7 +1146,34 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 let ratio = (t.x / t.y) || 1;
                 Styling.edit_style(this.id, "width", `${temp.x * ratio}px`, ruleIndex)
             })
-        } else {
+        }
+        else if (this.vertical_text_layout) {
+            this.target = createDomElement({
+                name: `${"div"}`,
+                appendTo: this.parent,
+                id: `${this.id}`,
+                class: `hi normal_drag initial`,
+                contentEditable: false,
+                "data-styles": "normal",
+            });
+            templateLayoutObject.verticalSame.children.map(({name, innerHTML, style}) => {
+                this.childId = `poly${Math.floor(Math.random() * 10000)}`;
+                this.child = createDomElement({
+                    name: `${name}`,
+                    appendTo: this.target,
+                    id: `${this.childId}`,
+                    class: `element-daughter no-cursor`,
+                    innerHTML: `${innerHTML}`,
+                    contentEditable: false,
+                });
+                initiateStyle(this.parentPath, this.childId, `left:0%;top:0%;width: ${style.width}; height: ${style.height};background-color: transparent;border:0;position: absolute;`+style.others);
+                this.child.ruleIndex = ruleIndex;
+            });
+            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${templateLayoutObject.verticalSame.target.style.width}px; height: ${templateLayoutObject.verticalSame.target.style.height}px;background-color: transparent;border:0`);
+            this.target.ruleIndex = ruleIndex;
+
+        }
+        else {
             switch (this.tagName) {
                 case "poly1":
                     this.target = createDomElement({
@@ -1181,7 +1210,6 @@ G.prototype.create = function (tag_name, parent_path, parent) {
             this.target.ruleIndex = ruleIndex;
         }
     }
-
 
 
     //this.bindings();

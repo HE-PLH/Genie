@@ -57,7 +57,8 @@ let styleId = "element";
 let classId = "element-utilities";
 
 // Get the root element
-var rootElement = document.querySelector(':root');
+let rootElement = document.querySelector(':root');
+let scrollScale = 1;
 let colors = {
     primary: "#5e77dc",
     white: "#fff",
@@ -719,20 +720,27 @@ function hightlightAll() {
     highlightLayout(ell);
 }
 
-function executeClip(_element, is_tile_img, is_frame) {
-    let temp1 = document.querySelector(".genie-paint-field");
-    let tag = _element.getAttribute("alt");
+function executeClip(_element, is_tile_img, is_frame, vertical_text_layout) {
+    let temp1 = document.querySelector(".genie-paint-field"), tag="";
+    if (_element.tagName==="IMG") {
+        tag = _element.getAttribute("alt");
+    }
     let path = is_tile_img ? graphicsObject[tag] : is_frame ? frames[tag] : clipObject[tag];
-    tag = tag.replace(/\.webp/g, "");
-    tag = tag.replace(/\.svg/g, "");
-    tag = tag.replace(/\.jpg/g, "");
+    if (tag) {
+        tag = tag.replace(/\.webp/g, "");
+        tag = tag.replace(/\.svg/g, "");
+        tag = tag.replace(/\.jpg/g, "");
+        tag = tag.replace(/\.png/g, "");
+    }
+    tag = tag || "div";
     Elements[tag] === undefined ? Elements[tag] = 0 : Elements[tag]++;
-
 
     if (is_tile_img) {
         let e = new G(`${tag + "-" + Elements[tag].toString()}`, {appended_img: path}).create(tag, null, lastContextMenuPt);
     } else if (is_frame) {
         let e = new G(`${tag + "-" + Elements[tag].toString()}`, {framed: path}).create(tag, null, lastContextMenuPt);
+    } else if (vertical_text_layout) {
+        let e = new G(`${tag + "-" + Elements[tag].toString()}`, {vertical_text_layout: true}).create(tag, null, lastContextMenuPt);
     } else {
         let e = new G(`${tag + "-" + Elements[tag].toString()}`, {
             clipped: true,
@@ -757,6 +765,52 @@ function getFocusedClasses(cls) {
 
     }
     return [lst, lst1];
+}
+
+function positionCurrentTool(el) {
+    let resize;
+    switch (currentResize) {
+        case "Q":
+            el.querySelector("position-resize");
+            f(resize);
+            break;
+        case "W":
+            el.getElementById("size-resize");
+            f(resize);
+            break;
+        case "E":
+            el.getElementById("rot-resize-cont");
+            f(resize, 80);
+            break;
+        case "T":
+            el.getElementById("traditional");
+            f(resize);
+            break;
+    }
+
+    function f(p, flag) {
+        if (el) {
+            /*if (e){
+                center = {x: e.pageX-el.getBoundingClientRect().left, y: e.pageY-el.getBoundingClientRect().top};
+            }else{*/
+            center = {x: el.clientWidth / 2, y: el.clientHeight / 2};
+
+            /*}*/
+
+            el.appendChild(p);
+            p.style.left = `${center.x - (flag ? flag : 40 / scrollScale)}px`;
+            p.style.top = `${center.y - (flag ? flag : 0)}px`;
+        } else {
+            Methods.apply(focusedElements, (e) => {
+                if (e.classList.contains("hi")) {
+                    center = {x: e.clientWidth / 2, y: e.clientHeight / 2};
+                    e.appendChild(p);
+                    p.style.left = `${center.x - (flag ? flag : 40 / scrollScale)}px`;
+                    p.style.top = `${center.y - (flag ? flag : 0)}px`;
+                }
+            });
+        }
+    }
 }
 
 function addCurrentTool(el) {
@@ -798,14 +852,14 @@ function addCurrentTool(el) {
             /*}*/
 
             el.appendChild(p);
-            p.style.left = `${center.x - (flag ? flag : 40)}px`;
+            p.style.left = `${center.x - (flag ? flag : 40 / scrollScale)}px`;
             p.style.top = `${center.y - (flag ? flag : 0)}px`;
         } else {
             Methods.apply(focusedElements, (e) => {
                 if (e.classList.contains("hi")) {
                     center = {x: e.clientWidth / 2, y: e.clientHeight / 2};
                     e.appendChild(p);
-                    p.style.left = `${center.x - (flag ? flag : 40)}px`;
+                    p.style.left = `${center.x - (flag ? flag : 40 / scrollScale)}px`;
                     p.style.top = `${center.y - (flag ? flag : 0)}px`;
                 }
             });
@@ -1601,6 +1655,14 @@ MouseEventHandler.prototype.handle_late_click = function () {
         toolbarItems(this.el);
         currentResize = this.el.id;
         reloadCurrentTool();
+    } else if (this.el.classList.contains("text-img-cont")) {
+        executeClip(false, false, false, true);
+    } else if (this.el.classList.contains("button-cont")) {
+        switch (this.el.id) {
+            case "add-sub-heading-text-btn":
+                executeClip(false, false, false, true)
+                break;
+        }
     } else if (this.el.classList.contains("tab-btn")) {
         let len = this.el.parentElement.childElementCount;
         let targetList = this.el.parentElement.children;
@@ -1772,6 +1834,8 @@ MouseEventHandler.prototype.handle_late_click = function () {
         executeClip(this.el)
     } else if (this.el.classList.contains("tile-img")) {
         executeClip(this.el, true)
+    } else if (this.el.classList.contains("m_tile-img")) {
+        executeClip(this.el, false, false, true)
     } else if (this.el.classList.contains("frame-tile-img")) {
         executeClip(this.el, false, true)
     } else if (this.el.id === "create-new-class-btn") {
@@ -2249,8 +2313,8 @@ MouseEventHandler.prototype.drag = function () {
             if (mouse.dragging.element.classList.contains("normal_drag")) {
                 /*for (let i = 0; i<focusedElements.length;i++) {
                     console.log(focusedElements[i])*/
-                mouse.dragging.offset.x = mouse.dragging.offset.x/offsetTransformX;
-                mouse.dragging.offset.y = mouse.dragging.offset.y/offsetTransformY;
+                mouse.dragging.offset.x = mouse.dragging.offset.x / offsetTransformX;
+                mouse.dragging.offset.y = mouse.dragging.offset.y / offsetTransformY;
                 this.normal_drag();
                 /*}*/
             }
@@ -2321,28 +2385,36 @@ var slider = document.getElementById("myRange");
 var output = document.getElementById("demo");
 output.innerHTML = slider.value;
 
-slider.oninput = function() {
-  output.innerHTML = this.value;
-  boundary.el.style.transform = `scaleX(${this.value/100}) scaleY(${this.value/100})`;
-  setCssVariable('--toolsize', `${10/(this.value/100)}px`)
-  setCssVariable('--negativetoolsize', `${-15}px`)
+slider.oninput = function () {
+    handleSliderTransform(this.value);
+    // positionCurrentTool(tool_for)
 }
 
 
-
+function handleSliderTransform(val) {
+    output.innerHTML = val / 100;
+    scrollScale = val / 100;
+    boundary.el.style.transform = `scaleX(${scrollScale}) scaleY(${scrollScale})`;
+    setCssVariable('--toolsize', `${10 / (scrollScale)}px`);
+    setCssVariable('--negativetoolsize', `${-10 / (scrollScale)}px`);
+    setCssVariable('--VHappendTool', `${40 / (scrollScale)}px`);
+    setCssVariable('--negativeVHappendTool', `${-40 / (scrollScale)}px`);
+    setCssVariable('--appendToolTail', `${4 / (scrollScale)}px`);
+    // positionCurrentTool(tool_for)
+}
 
 // Create a function for getting a variable value
 function getCssVariable(property) {
-  // Get the styles (properties and values) for the root
-  let rs = getComputedStyle(rootElement);
-  // Alert the value of the --blue variable
-  // alert("The value of --blue is: " + rs.getPropertyValue(property||'--blue'));
+    // Get the styles (properties and values) for the root
+    let rs = getComputedStyle(rootElement);
+    // Alert the value of the --blue variable
+    // alert("The value of --blue is: " + rs.getPropertyValue(property||'--blue'));
 }
 
 // Create a function for setting a variable value
 function setCssVariable(property, value) {
-  // Set the value of variable --blue to another value (in this case "lightblue")
-  rootElement.style.setProperty(property||'--blue', value||'lightblue');
+    // Set the value of variable --blue to another value (in this case "lightblue")
+    rootElement.style.setProperty(property || '--blue', value || 'lightblue');
 }
 
 /*

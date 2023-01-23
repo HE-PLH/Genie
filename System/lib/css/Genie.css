@@ -488,6 +488,8 @@ div.compressed_layout ul li ul li ul li {
 
 .genie-bottom {
     height: 25%;
+    display: flex;
+    justify-content: center;
 }
 
 .genie-top-nav {
@@ -613,7 +615,7 @@ div.compressed_layout ul li ul li ul li {
 .paint-field-container {
     width: 793.701px;
     height: 1122.52px;
-    margin: 50px;
+    margin: 10px;
     overflow: hidden;
     background-color: white;
     transform-style: preserve-3d;
@@ -1224,7 +1226,7 @@ div.compressed_layout ul li ul li ul li {
     height: 20%;
     background: url("../../sources/imgs/color-adjust.webp");
     width: 100%;
-    background-size: 100% 100%;
+    background-size: 100% 100%!important;
     margin-bottom: 10%;
 }
 .color-adjust{
@@ -1412,7 +1414,7 @@ div.compressed_layout ul li ul li ul li {
 .slider {
   -webkit-appearance: none;
   width: 100%;
-  height: 15px;
+  height: 10px;
   border-radius: 5px;
   background: #d3d3d3;
   outline: none;
@@ -1424,17 +1426,92 @@ div.compressed_layout ul li ul li ul li {
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 25px;
-  height: 25px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  background: #04AA6D;
+  background: var(--blue);
   cursor: pointer;
 }
 
 .slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  background: #04AA6D;
+  background: var(--blue);
   cursor: pointer;
+}
+
+.slidecontainer{
+    width: 100px;
+    height: 10px;
+    display: flex;
+    flex-direction: column;
+    font-size: 11px;
+    padding: 10px;
+}
+
+.uploads-main-body{
+    height: calc(100% - 140px);
+}
+
+.button-cont{
+    width: 100%;
+    height: 40px;
+}
+
+.text-btn{
+    width: calc(100% - 8px);
+    padding: 0 4px;
+    margin: 4px 4px;
+    height: 100%;
+    fill: white;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    border: 0;
+}
+
+.add-text-btn{
+    background-color: #5e77dc;
+}
+
+#add-heading-text-btn:hover, #add-sub-heading-text-btn:hover, #add-little-text-btn:hover{
+    background-color: #211f1f !important;
+}
+#add-heading-text-btn{
+    background-color: gray;
+    font-weight: 700;
+    font-style: normal;
+    text-transform: none;
+    font-size: 28px;
+}
+#add-sub-heading-text-btn{
+    background-color: gray;
+    font-weight: 700;
+    font-style: normal;
+    text-transform: none;
+    font-size: 16.8px;
+}
+#add-little-text-btn{
+    background-color: gray;
+    font-weight: 700;
+    font-style: normal;
+    text-transform: none;
+    font-size: 12px;
+}
+
+.text-img-cont{
+    height: 50px;
+    width: 60px!important;
+}
+.text-img-cont img{
+    background-size: 100% 100% !important;
+}
+.text-img-cont img{
+    pointer-events: none;
+}
+
+.text-btn:hover{
+    background-color: #3b15ea;
 }
