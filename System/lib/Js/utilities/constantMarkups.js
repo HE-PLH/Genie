@@ -555,9 +555,23 @@ let designElements = {
     `
 }
 
+const IMAGE_LINK = "http://localhost:2727/singlemedia"
+function appendImageToUploadArea(img) {
+    let upload_dir = document.getElementById("upload-area");
+    let _temp = `
+        <div class="image-tile">
+            <img class="tile-img" src="${IMAGE_LINK+"/"+img}" alt="person2.jpg">
+        </div>`
+
+    upload_dir.innerHTML+=_temp
+
+    console.log(img)
+}
+
 
 let select_layouts = {
-    Design: `
+    Design: {
+        markup: `
 <div class="my-collapse">
                 <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
                     <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
@@ -809,7 +823,12 @@ let select_layouts = {
                 </div>
             </div>
             `,
-    Uploads: `
+        actions: function () {
+
+        }
+    },
+    Uploads: {
+        markup: `
 ${searchTool}
 <div class="my-collapse">
                 <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
@@ -819,6 +838,7 @@ ${searchTool}
 <div class="double-item-cont upload-cont">
     <button class="double-item-main upload-btn">
     <span>Upload files</span>
+    <input type='file' id="getFile" name="file" multiple='multiple' accept='image/*' style="display:none">
 </button>
     <div class="double-item-minor upload-hum">
     <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
@@ -833,7 +853,7 @@ ${searchTool}
 </div>
 <div id="genie-left-nav-styles-body" class="tab-body tab-main-body fill_width">
     <div id="genie-left-nav-main" class="genie-style-mains uploads-main-body fill_width tab-body-active">
-    <div class="image-list-container">
+    <div id="upload-area" class="image-list-container">
         <div class="image-tile">
             <img class="tile-img" src="../sources/imgs/person2.jpg" alt="person2.jpg">
         </div>
@@ -868,7 +888,41 @@ ${searchTool}
                 </div>
             </div>
             `,
-    Elements: `
+        actions: function () {
+
+            // bind upload button to upload event
+            document.getElementById("getFile").addEventListener("change", (e) => {
+            console.log(e)
+            let photos = e.target.files;
+            let formData = new FormData();
+
+            for (let i = 0; i < photos.length; i++){
+                const photo = photos[i];
+                formData.append('file', photo);
+            }
+
+            // formData.append("file", photo);
+
+            sendFile(formData, "http://localhost:2727/data/media", (response) => {
+                console.log(response);
+            })
+            /*fetch("http://localhost:2727/data/media", {method: "POST", body: formData}).then((response)=>{
+                console.log(response);
+            });*/
+        })
+
+            //load currently uploaded images by user
+            getFile("http://localhost:2727/data/media/get", (e)=>{
+                e.response.map((item)=>{
+                    appendImageToUploadArea(item.name)
+                })
+                console.log(e)
+            })
+
+        }
+    },
+    Elements: {
+        markup: `
 ${searchTool}
 <div class="my-collapse">
                 <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
@@ -1115,7 +1169,36 @@ ${searchTool}
         </div>
     </div>
             `,
-    Text: `
+        actions: function () {
+
+        }
+    },
+    Fields: {
+        markup: `
+    ${searchTool}
+    <div class="my-collapse">
+                <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                    <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
+                </svg>
+            </div>
+            <div class="image-list-container">
+        <div class="image-tile field-img-tile">
+            <img class="field-img" src="../sources/imgs/fields/field1.png" alt="field1.png">
+        </div>
+        <div class="image-tile field-img-tile">
+            <img class="field-img" src="../sources/imgs/fields/field2.png" alt="field2.png">
+        </div>
+        <div class="image-tile field-img-tile">
+            <img class="field-img" src="../sources/imgs/fields/field3.png" alt="field3.png">
+        </div>
+        </div>
+    `,
+        actions: function () {
+
+        }
+    },
+    Text: {
+        markup: `
 ${searchTool}
 <div class="my-collapse">
                 <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
@@ -1153,8 +1236,65 @@ ${searchTool}
     <div id="genie-left-nav-main" class="genie-style-mains uploads-main-body fill_width tab-body-active">
     <div class="image-list-container">
         <div class="image-thumb text-img-cont align-center">
-                        <img class="m_tile-img" src="../sources/imgs/graphics/graphic3.webp" alt="graphic3.webp">
-                    </div>
+            <img class="m_tile-img" src="../sources/imgs/text/text1.webp" alt="text1.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text2.webp" alt="text2.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text3.webp" alt="text3.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text4.webp" alt="text4.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text5.webp" alt="text5.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text6.webp" alt="text6.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text7.webp" alt="text7.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text8.webp" alt="text8.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text9.webp" alt="text9.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text10.webp" alt="text10.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text11.webp" alt="text11.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text12.webp" alt="text12.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text13.webp" alt="text13.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text14.webp" alt="text14.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text15.webp" alt="text15.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text16.webp" alt="text16.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text17.webp" alt="text17.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text18.webp" alt="text18.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text19.webp" alt="text19.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img class="m_tile-img" src="../sources/imgs/text/text20.webp" alt="text20.webp">
+        </div>
        
     </div>
     </div>
@@ -1166,7 +1306,79 @@ ${searchTool}
                 </div>
             </div>
             `,
-    fontFamily: `
+        actions: function () {
+
+        }
+    },
+    Create: {
+        markup: `
+${searchTool}
+<div class="my-collapse">
+                <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                    <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
+                </svg>
+            </div>
+
+
+<div class="button-cont">
+    <button id="add-clipped-element-btn" class="text-btn">
+    <span>Add Clipped</span>
+</button>
+</div>
+<div class="button-cont">
+    <button id="add-framed-element-btn" class="text-btn">
+    <span>Add Framed</span>
+</button>
+</div>
+<div class="button-cont">
+    <button id="add-appended-img-element-btn" class="text-btn">
+    <span>Add Appended Img</span>
+</button>
+</div>
+<div class="button-cont">
+    <button id="add-text-element-btn" class="text-btn">
+    <span>Add Texts</span>
+</button>    
+</div>
+
+<div id="genie-left-nav-styles-top" class="tab-top">
+                <div id="genie-left-nav-left-tab-title" class="tab-btn tab align_center">Images</div>
+<div id="genie-left-nav-right-tab-title" class="tab-btn tab align_center">Videos</div>
+<div id="genie-left-nav-right-tab-title" class="tab-btn tab align_center">Audio</div>
+</div>
+<div id="genie-left-nav-styles-body" class="tab-body tab-main-body fill_width">
+    <div id="genie-left-nav-main" class="genie-style-mains uploads-main-body fill_width tab-body-active">
+    <div class="image-list-container">
+        <div class="image-thumb text-img-cont align-center">
+            <img id="create-clipped-tile" src="../sources/imgs/text/text1.webp" alt="text1.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img  id="create-framed-tile" src="../sources/imgs/text/text2.webp" alt="text2.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img id="create-appended-img-tile" src="../sources/imgs/text/text3.webp" alt="text3.webp">
+        </div>
+        <div class="image-thumb text-img-cont align-center">
+            <img id="create-text-tile" src="../sources/imgs/text/text4.webp" alt="text3.webp">
+        </div>
+        
+       
+    </div>
+    </div>
+     <div id="genie-right-main" class="genie-style-mains fill_width">
+                    Test
+                </div>
+     <div id="genie-right-nost-main" class="genie-style-mains fill_width">
+                    Test1
+                </div>
+            </div>
+            `,
+        actions: function () {
+
+        }
+    },
+    fontFamily: {
+        markup: `
 ${searchTool}
             <div class="my-collapse">
                 <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
@@ -3210,7 +3422,43 @@ ${searchTool}
             </div>
             
             `,
-    colorAdjust: `
+        actions: function () {
+
+        }
+    },
+    clipped: {
+        markup: `${searchTool}
+            <div class="my-collapse">
+                <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                    <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
+                </svg>
+            </div>
+            <div class="vl-item">
+                <div class="vl-top">Clip path</div>
+                <div class="vl-bottom">
+                    <textarea id="clip-text-area" class="clip-text-area"></textarea>
+                </div>
+            </div>
+            
+            <div class="vl-item">
+                <div class="vl-top">selection Image</div>
+                <div class="vl-bottom">
+                    <button class="double-item-main upload-btn">
+                        <span>upload from device</span>
+                        <input type='file' id="getFile" name="file" multiple='multiple' accept='image/*' style="display:none">
+                    </button>
+                    <button class="from-uploads-btn">
+                        From uploads
+                    </button>
+                </div>
+            </div>
+`,
+        actions: function () {
+
+        }
+    },
+    colorAdjust: {
+        markup: `
 ${searchTool}
 <div class="btn-options-container">
     <div class="btn-options-top">
@@ -3268,7 +3516,11 @@ ${searchTool}
         
     </div>
 </div>
-`
+`,
+        actions: function () {
+
+        }
+    }
 }
 
 
@@ -3285,14 +3537,14 @@ let fontFamilyObject = {
                     </div>
             </div>`,
     action: function (el) {
-                //change font-family of el
-                console.log("heeey")
-                displaySecLayout(select_layouts["fontFamily"])
-                let family = Styling.get_style(el.id, "font-family", el.ruleIndex);
-                let tmp1 = document.querySelector(".selected-font-family").querySelector(".font-family-item-text");
-                tmp1.style.fontFamily = family;
-                tmp1.innerHTML = family;
-            },
+        //change font-family of el
+        console.log("heeey")
+        displaySecLayout(select_layouts["fontFamily"])
+        let family = Styling.get_style(el.id, "font-family", el.ruleIndex);
+        let tmp1 = document.querySelector(".selected-font-family").querySelector(".font-family-item-text");
+        tmp1.style.fontFamily = family;
+        tmp1.innerHTML = family;
+    },
     size: 100
 }
 
@@ -3310,12 +3562,12 @@ let fontSizeObject = {
                     </button>
             </div>`,
     action: function (el) {
-                //change font-size of el
-            },
+        //change font-size of el
+    },
     size: 100
 }
-let colorAdjustObject= {
-            body: `<div class="color-adjust gti-item">
+let colorAdjustObject = {
+    body: `<div class="color-adjust gti-item">
                         <div class="color-adjust-letter">
                         <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
                             <use xlink:href="../sources/svg_icons.svg#letterA"></use>
@@ -3325,141 +3577,159 @@ let colorAdjustObject= {
                             
                         </div>
                     </div>`,
-            action: function (el) {
-                //bold el
-                displaySecLayout(select_layouts["colorAdjust"]);
-                document.querySelector(".add-own-color").addEventListener("input", (e)=>{
-                    document.getElementById("single-btn-item-editable").style.background = e.currentTarget.value;
-                });
-            },
-            size: 20
-        };
-let boldObject= {
-            body: `<div class="gti-item bold-adjust">B</div>`,
-            action: function (el) {
-                //bold el
+    action: function (el) {
+        //bold el
+        displaySecLayout(select_layouts["colorAdjust"]);
+        document.querySelector(".add-own-color").addEventListener("input", (e) => {
+            document.getElementById("single-btn-item-editable").style.background = e.currentTarget.value;
+        });
+    },
+    size: 20
+};
+let boldObject = {
+    body: `<div class="gti-item bold-adjust">B</div>`,
+    action: function (el) {
+        //bold el
 
-                let b = Styling.get_style(el.id, "font-weight", el.ruleIndex);
-                Styling.edit_style(el.id, "font-weight", b==="bold"?"":"bold", el.ruleIndex);
-            },
-            size: 20
-        };
-let italicsObject= {
-            body: `<div class="gti-item italics-adjust">I</div>`,
-            action: function (el) {
-                //italicise el
-                let b = Styling.get_style(el.id, "font-style", el.ruleIndex);
-                Styling.edit_style(el.id, "font-style", b==="italic"?"":"italic", el.ruleIndex);
+        let b = Styling.get_style(el.id, "font-weight", el.ruleIndex);
+        Styling.edit_style(el.id, "font-weight", b === "bold" ? "" : "bold", el.ruleIndex);
+    },
+    size: 20
+};
+let italicsObject = {
+    body: `<div class="gti-item italics-adjust">I</div>`,
+    action: function (el) {
+        //italicise el
+        let b = Styling.get_style(el.id, "font-style", el.ruleIndex);
+        Styling.edit_style(el.id, "font-style", b === "italic" ? "" : "italic", el.ruleIndex);
 
-            },
-            size: 20
-        };
-let underlineObject= {
-            body: `<div class="gti-item underline-adjust">U</div>`,
-            action: function (el) {
-                //underline el
-                if (el.classList.contains("clip-parent")) {
-                    el = el.querySelector("._clippath")
-                }
-                let b = Styling.get_style(el.id, "text-decoration", el.ruleIndex);
-                Styling.edit_style(el.id, "text-decoration", b==="underline"?"":"underline", el.ruleIndex);
-            },
-            size: 20
-        };
-let centerObject= {
-            body: `<div class="gti-item center-adjust">
+    },
+    size: 20
+};
+let underlineObject = {
+    body: `<div class="gti-item underline-adjust">U</div>`,
+    action: function (el) {
+        //underline el
+        if (el.classList.contains("clip-parent")) {
+            el = el.querySelector("._clippath")
+        }
+        let b = Styling.get_style(el.id, "text-decoration", el.ruleIndex);
+        Styling.edit_style(el.id, "text-decoration", b === "underline" ? "" : "underline", el.ruleIndex);
+    },
+    size: 20
+};
+let centerObject = {
+    body: `<div class="gti-item center-adjust">
                         <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
                             <use xlink:href="../sources/svg_icons.svg#center-icon"></use>
                         </svg>
                     </div>`,
-            action: function (el) {
-                //bold el
+    action: function (el) {
+        //bold el
 
 
-                if (el.classList.contains("clip-parent")) {
-                    el = el.querySelector("._clippath")
-                }
-                if (el.classList.contains("align-center")) {
-                    el.classList.remove("align-center")
-                } else {
-                    el.classList.add("align-center")
-                }
-            },
-            size: 20
-        };
-let bulletObject= {
-            body: `<div class="gti-item bullet-adjust">
+        if (el.classList.contains("clip-parent")) {
+            el = el.querySelector("._clippath")
+        }
+        if (el.classList.contains("align-center")) {
+            el.classList.remove("align-center")
+        } else {
+            el.classList.add("align-center")
+        }
+    },
+    size: 20
+};
+let bulletObject = {
+    body: `<div class="gti-item bullet-adjust">
                         <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
                             <use xlink:href="../sources/svg_icons.svg#bullet"></use>
                         </svg>
                     </div>`,
-            action: function (el) {
-                //bold el
-            },
-            size: 20
-        };
-let lineHeightObject= {
-            body: `<div class="gti-item line-height-adjust">
+    action: function (el) {
+        //bold el
+    },
+    size: 20
+};
+let lineHeightObject = {
+    body: `<div class="gti-item line-height-adjust">
                         <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
                             <use xlink:href="../sources/svg_icons.svg#line-height"></use>
                         </svg>
                     </div>`,
-            action: function (el) {
-                //lineheight el
-                /*if (el.classList.contains("clip-parent")) {
-                    el = el.querySelector("._clippath")
-                }
-                let b = Styling.get_style(el.id, "text-decoration", el.ruleIndex);
-                Styling.edit_style(el.id, "text-decoration", b==="underline"?"":"underline", el.ruleIndex);*/
-            },
-            size: 20
-        };
-let effectsObject= {
-            body: `<button class="gti-item effects-adjust">
+    action: function (el) {
+        //lineheight el
+        /*if (el.classList.contains("clip-parent")) {
+            el = el.querySelector("._clippath")
+        }
+        let b = Styling.get_style(el.id, "text-decoration", el.ruleIndex);
+        Styling.edit_style(el.id, "text-decoration", b==="underline"?"":"underline", el.ruleIndex);*/
+    },
+    size: 20
+};
+let effectsObject = {
+    body: `<button class="gti-item effects-adjust">
                         <span>Effects</span>
                     </button>`,
-            action: function (el) {
-                //bold el
-            },
-            size: 60
-        };
-let moreObject= {
-            body: `<div class="gti-item more">
+    action: function (el) {
+        //bold el
+    },
+    size: 60
+};
+let moreObject = {
+    body: `<div class="gti-item more">
                         <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
                             <use xlink:href="../sources/svg_icons.svg#more"></use>
                         </svg>
                     </div>`,
-            action: function (el) {
-                //bold el
-            },
-            size: 20
-        };
-let transparentObject= {
-            body: `<div class="gti-item transparent">
+    action: function (el) {
+        //bold el
+    },
+    size: 20
+};
+let transparentObject = {
+    body: `<div class="gti-item transparent">
                         <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
                             <use xlink:href="../sources/svg_icons.svg#transparent"></use>
                         </svg>
                     </div>`,
-            action: function (el) {
-                //bold el
-                if (el.classList.contains("clip-parent")) {
-                    el = el.querySelector("._clippath")
-                }
-                let b = Styling.get_style(el.id, "background", el.ruleIndex);
-                Styling.edit_style(el.id, "background", b==="transparent"?"":"transparent", el.ruleIndex);
-            },
-            size: 20
-        };
+    action: function (el) {
+        //bold el
+        if (el.classList.contains("clip-parent")) {
+            el = el.querySelector("._clippath")
+        }
+        let b = Styling.get_style(el.id, "background", el.ruleIndex);
+        Styling.edit_style(el.id, "background", b === "transparent" ? "" : "transparent", el.ruleIndex);
+    },
+    size: 20
+};
 let caseAdjustObject = {
-            body: `<div class="gti-item case-adjust">
+    body: `<div class="gti-item case-adjust">
                         <div class="case-adjust-img"></div>
                     </div>`,
-            action: function (el) {
-                //bold el
-            },
-            size: 20
-        }
-
+    action: function (el) {
+        //bold el
+    },
+    size: 20
+}
+let structureObject = {
+    body: `<div class="gti-item structure-adjust">
+                        <div class="structure-adjust-img">STRUCTURE</div>
+                    </div>`,
+    action: function (el) {
+        //bold el
+        console.log("heeey")
+        let temp_el = el.querySelector("._clippath")
+        // console.log(temp_el)
+        displaySecLayout(select_layouts["clipped"])
+        let clip = Styling.get_style(temp_el.id, "clip-path", temp_el.ruleIndex);
+        let tmp1 = document.querySelector(".clip-text-area");
+        tmp1.innerHTML = clip;
+        /*tmp1.addEventListener("change", ()=>{
+            Styling.edit_style(temp_el.id, "clip-path", tmp1.innerHTML, temp_el.ruleIndex);
+        })*/
+    },
+    size: 110
+}
 
 
 let InstantTools = {
@@ -3467,7 +3737,7 @@ let InstantTools = {
         fontFamily: fontFamilyObject,
         fontSize: fontSizeObject,
         colorAdjust: colorAdjustObject,
-        bold:  boldObject,
+        bold: boldObject,
         italics: italicsObject,
         underline: underlineObject,
         center: centerObject,
@@ -3498,13 +3768,13 @@ let InstantTools = {
             action: function (el) {
                 el = el.querySelector("._clippath");
                 displaySecLayout(select_layouts["colorAdjust"]);
-                document.querySelector(".add-own-color").addEventListener("input", (e)=>{
+                document.querySelector(".add-own-color").addEventListener("input", (e) => {
                     document.getElementById("single-btn-item-editable").style.background = e.currentTarget.value;
                 });
             },
             size: colorAdjustObject.size
         },
-        bold:  boldObject,
+        bold: boldObject,
         italics: italicsObject,
         underline: underlineObject,
         center: centerObject,
@@ -3514,5 +3784,6 @@ let InstantTools = {
         more: moreObject,
         transparent: transparentObject,
         caseAdjust: caseAdjustObject,
+        structure: structureObject
     }
 }

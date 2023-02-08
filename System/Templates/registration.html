@@ -1,0 +1,204 @@
+<!--18SOECE11014-->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- For favicon png -->
+		<link rel="shortcut icon" type="image/icon" href="logo/favicon1.png"/>
+		<title>Sign Up</title>
+		 <link rel="stylesheet" href="../lib/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/css/bootstrap.min%20(1).css">
+        <style>
+
+body{
+    background-color: #C7D3D4FF;
+    
+}
+.registration-logo{
+  font-size: 35px;
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 300;
+}
+
+.registration-form{
+	padding: 50px 10px ;
+}
+.with-border{
+    border-bottom: 2px solid #f4f4f4;
+}
+.registration-form form{
+	background-color: #FFF;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 30px;
+    
+     
+}
+.registration-form .item{
+	border-radius: 10px;
+    margin-bottom: 25px;
+    padding: 10px 20px;
+}
+
+.registration-form .login-button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  border-radius: 10px;
+  background: #363636;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+}
+.login-button:hover,.login-button:active,.login-button:focus {
+  background: #00001a;
+}
+#A3{
+	margin-top:10px;
+}
+
+@media (max-width: 576px) {
+    .login-form form,
+    .registration-form form{
+        padding: 50px 20px;
+    }
+}
+
+[type=file] {
+    position: absolute;
+    filter: alpha(opacity=0);
+    opacity: 0;
+}
+input,
+[type=file] + label {
+  border-radius: 10px;
+  margin-bottom: 25px;
+  padding: 10px 20px;
+  display: block;
+  border: 1px solid #ced4da;
+  text-align: left;
+  width: 100%;
+  background-clip: padding-box;
+  position: relative;
+}
+[type=file] + label {
+  text-align: left;
+  width: 100%;
+  background-color: #fff;
+  background-clip: padding-box;
+  color: #495057;
+  border: 1px solid #ced4da;
+  border-radius: 10px;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+[type=file] + label:hover {
+  background: #3399ff;
+}
+        </style>
+    </head>
+	<body class="bg-img">
+		<div class="registration-form">
+			<form class="A1">
+				<div class="registration-logo with-border">
+					<h1><b>Sign Up</b></h1>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<input type="text" id="name" name="name" class="form-control item" placeholder="Name" required>
+						</div>
+					</div>
+
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div>
+							<input type="email" id="email" name="email" class="form-control item" placeholder="Enter Email" required>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="password" id="password" name="password" class="form-control item" placeholder="Password" required>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="password" id="confirmpassword" name="confirmpassword" class="form-control item" placeholder="Confirm Password" required>
+						</div>
+					</div>
+				</div>
+				
+
+				
+				
+				<div class="row">
+					<div class="col-md-12">
+						<div id="register" class="btn btn-block login-button">Register</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<a href="index.php" class="text-center" ><h4 id="A3"><b>I already have a Register</b></h4></a>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<a id="gotologin" href="./index.html" class="btn btn-block login-button">Gotologin</a>
+					</div>
+				</div>
+
+			</form>
+		</div>
+		<script src="../lib/Js/external/jquery-3.3.1.min.js"></script>
+		<script src="../lib/Js/utilities/send.js"></script>
+		<script type="text/javascript">
+			/*$("[type=file]").on("change", function(){
+			// Name of file and placeholder
+			var file = this.files[0].name;
+			var dflt = $(this).attr("placeholder");
+			if($(this).val()!=""){
+				$(this).next().text(file);
+			} else {
+				$(this).next().text(dflt);
+			}
+			});*/
+			document.getElementById("register").addEventListener("click", register)
+
+			function register(e) {
+				e.preventDefault()
+
+				let form_object = {};
+				let filled = true;
+				document.querySelectorAll(".form-control").forEach((el)=>{
+					form_object[el.getAttribute("name")] = el.value;
+					if (el.value === ""){
+						filled=false;
+					}
+				});
+
+				if (filled) {
+					if (form_object.password!==form_object.confirmpassword){
+						alert("password mismatch")
+					}else {
+						sendRequest(form_object, "http://localhost:2727/auth/signup",(response)=>{
+							if (response.error){
+								console.log(response)
+							}else{
+                                location.href = "./index.html"
+							}
+						})
+						console.log(form_object)
+					}
+				}else {
+					alert("kindly fill all fields")
+				}
+			}
+
+		</script>
+
+	</body>
+</html>

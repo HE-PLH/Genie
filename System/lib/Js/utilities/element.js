@@ -910,6 +910,7 @@ function G(id, params) {
     this.appended_img = params ? params.appended_img : null;
     this.framed = params ? params.framed : null;
     this.vertical_text_layout = params ? params.vertical_text_layout : null;
+    this.file_img = params ? params.file_img : null;
     this.target = document.getElementById(`.${this.id}`);
     this.parentPath = null;
     this.parent = null;
@@ -1147,29 +1148,87 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 Styling.edit_style(this.id, "width", `${temp.x * ratio}px`, ruleIndex)
             })
         }
-        else if (this.vertical_text_layout) {
-            this.target = createDomElement({
-                name: `${"div"}`,
-                appendTo: this.parent,
-                id: `${this.id}`,
-                class: `hi normal_drag initial`,
-                contentEditable: false,
-                "data-styles": "normal",
-            });
-            templateLayoutObject.verticalSame.children.map(({name, innerHTML, style}) => {
-                this.childId = `poly${Math.floor(Math.random() * 10000)}`;
-                this.child = createDomElement({
-                    name: `${name}`,
-                    appendTo: this.target,
-                    id: `${this.childId}`,
-                    class: `element-daughter no-cursor`,
-                    innerHTML: `${innerHTML}`,
+        else if (this.file_img) {
+            if (this.file_img.children.length) {
+                this.target = createDomElement({
+                    name: `${"div"}`,
+                    appendTo: this.parent,
+                    id: `${this.id}`,
+                    class: `hi normal_drag initial vertical-parent`,
                     contentEditable: false,
+                    "data-styles": "normal",
                 });
-                initiateStyle(this.parentPath, this.childId, `left:0%;top:0%;width: ${style.width}; height: ${style.height};background-color: transparent;border:0;position: absolute;`+style.others);
-                this.child.ruleIndex = ruleIndex;
-            });
-            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${templateLayoutObject.verticalSame.target.style.width}px; height: ${templateLayoutObject.verticalSame.target.style.height}px;background-color: transparent;border:0`);
+                this.file_img.children.map(({name, innerHTML, class_additional, style}) => {
+                    console.log(innerHTML)
+                    this.childId = `poly${Math.floor(Math.random() * 10000)}`;
+                    this.child = createDomElement({
+                        name: `${name}`,
+                        appendTo: this.target,
+                        id: `${this.childId}`,
+                        class: `hi normal_drag initial no-cursor vertical-child ${class_additional}`,
+                        innerHTML: `${innerHTML}`,
+                        contentEditable: false,
+                        "data-styles": "normal",
+                    });
+                    initiateStyle(this.parentPath, this.childId, `left:0%;width: ${style.width}; height: ${style.height};background-color: transparent;border:0;position: absolute;` + style.others);
+                    this.child.ruleIndex = ruleIndex;
+                });
+            }else{
+
+                this.target = createDomElement({
+                    name: `${"div"}`,
+                    appendTo: this.parent,
+                    innerHTML: `${this.file_img.target.innerHTML}`,
+                    id: `${this.id}`,
+                    class: `hi normal_drag initial ` + this.file_img.target.class_additional,
+                    contentEditable: false,
+                    "data-styles": "normal",
+                });
+
+            }
+            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${this.file_img.target.style.width}px; height: ${this.file_img.target.style.height}px;` + this.file_img.target.style.others)
+            this.target.ruleIndex = ruleIndex;
+
+        }
+        else if (this.vertical_text_layout) {
+            if (this.vertical_text_layout.children.length) {
+                this.target = createDomElement({
+                    name: `${"div"}`,
+                    appendTo: this.parent,
+                    id: `${this.id}`,
+                    class: `hi normal_drag initial vertical-parent`,
+                    contentEditable: false,
+                    "data-styles": "normal",
+                });
+                this.vertical_text_layout.children.map(({name, innerHTML, class_additional, style}) => {
+                    console.log(innerHTML)
+                    this.childId = `poly${Math.floor(Math.random() * 10000)}`;
+                    this.child = createDomElement({
+                        name: `${name}`,
+                        appendTo: this.target,
+                        id: `${this.childId}`,
+                        class: `hi normal_drag initial no-cursor vertical-child ${class_additional}`,
+                        innerHTML: `${innerHTML}`,
+                        contentEditable: false,
+                        "data-styles": "normal",
+                    });
+                    initiateStyle(this.parentPath, this.childId, `left:0%;width: ${style.width}; height: ${style.height};background-color: transparent;border:0;position: absolute;` + style.others);
+                    this.child.ruleIndex = ruleIndex;
+                });
+            }else{
+
+                this.target = createDomElement({
+                    name: `${"div"}`,
+                    appendTo: this.parent,
+                    innerHTML: `${this.vertical_text_layout.target.innerHTML}`,
+                    id: `${this.id}`,
+                    class: `hi normal_drag initial ` + this.vertical_text_layout.target.class_additional,
+                    contentEditable: false,
+                    "data-styles": "normal",
+                });
+
+            }
+            initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${this.vertical_text_layout.target.style.width}px; height: ${this.vertical_text_layout.target.style.height}px;` + this.vertical_text_layout.target.style.others)
             this.target.ruleIndex = ruleIndex;
 
         }

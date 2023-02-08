@@ -377,8 +377,9 @@ div.compressed_layout ul li ul li ul li {
     top: 25%;
     left: 25%;
     box-shadow: #151513 0 0 2px 0;
-    z-index: 50;
+    z-index: 5000;
     display: none;
+
 }
 
 .window_body, .window_top {
@@ -822,6 +823,7 @@ div.compressed_layout ul li ul li ul li {
     float: left;
     flex-direction: column;
     position: relative;
+    color: white;
     margin-left: 5px;
     background-color: var(--primary);
     font-weight: bold;
@@ -1108,6 +1110,9 @@ div.compressed_layout ul li ul li ul li {
     background-color: #4c2dd6;
 
 }
+.upload-btn *{
+    pointer-events: none;
+}
 .upload-btn:hover{
     background-color: #3b15ea;
 }
@@ -1170,7 +1175,13 @@ div.compressed_layout ul li ul li ul li {
 }
 .image-tile img{
     height: 100px;
-
+}
+.field-img-tile{
+    height: 100%;
+    margin: 5px;
+}
+.field-img-tile img{
+    height: 50px;
 }
 
 .font-size-cont{
@@ -1305,6 +1316,24 @@ div.compressed_layout ul li ul li ul li {
 .case-adjust{
     width: 100%;
     height: 100%;
+}
+
+.structure-adjust{
+    width: 100%;
+    height: 100%;
+}
+.structure-adjust-img{
+    height: 100%;
+    width: 100%;
+    margin-bottom: 10%;
+    font-size: 20px;
+    font-family: "Impact";
+    /*font-weight: bold;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #d50c31;
+    color: white;
 }
 
 .font-family-item-cont:hover{
@@ -1454,6 +1483,10 @@ div.compressed_layout ul li ul li ul li {
     height: calc(100% - 140px);
 }
 
+
+.button-cont *{
+    pointer-events: none;
+}
 .button-cont{
     width: 100%;
     height: 40px;
@@ -1476,25 +1509,28 @@ div.compressed_layout ul li ul li ul li {
     background-color: #5e77dc;
 }
 
-#add-heading-text-btn:hover, #add-sub-heading-text-btn:hover, #add-little-text-btn:hover{
-    background-color: #211f1f !important;
+.button-cont button{
+    background-color: transparent;
+}
+.button-cont:hover{
+    background-color: #9f9090 !important;
 }
 #add-heading-text-btn{
-    background-color: gray;
+    background-color: transparent;
     font-weight: 700;
     font-style: normal;
     text-transform: none;
     font-size: 28px;
 }
 #add-sub-heading-text-btn{
-    background-color: gray;
+    background-color: transparent;
     font-weight: 700;
     font-style: normal;
     text-transform: none;
     font-size: 16.8px;
 }
 #add-little-text-btn{
-    background-color: gray;
+    background-color: transparent;
     font-weight: 700;
     font-style: normal;
     text-transform: none;
@@ -1514,4 +1550,27 @@ div.compressed_layout ul li ul li ul li {
 
 .text-btn:hover{
     background-color: #3b15ea;
+}
+
+.vl-item{
+    width: 100%;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+.vl-top{
+    width: 100%;
+    height: 30%;
+    display: flex;
+    align-items: center;
+    color: white;
+    font-family: Impact;
+}
+
+.vl-bottom{
+    width: 100%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
 }

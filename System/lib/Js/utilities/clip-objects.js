@@ -102,6 +102,58 @@ let graphicsObject = {
 }
 
 
+let files = {
+    "field1.png": {
+        target: {
+            name: "div",
+            class_additional: "align-center",
+                style: {
+                    others: "color:red;background-color:blue;font-family:DejaVu Sans Mono;display:flex;flex-direction:row",
+                    width: `300`,
+                    height: `75`,
+                }
+        },
+        children: [
+            {
+                name: "div",
+                innerHTML: "Date:",
+                class_additional: "align-center",
+                style: {
+                    others: "background-color:transparent;" +
+                        "font-family:Impact;" +
+                        "font-size: 30.024px;" +
+                        "color: rgb(255, 223, 43);" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `30%`,
+                    height: `100%`,
+                }
+            },
+            {
+                name: "div",
+                innerHTML: "02/04/2022",
+                class_additional: "align-center-right",
+                style: {
+                    others: "background-color:transparent;font-family:Impact;left:30%;font-size: 30.024px;" +
+                        "font-family:Impact;" +
+                        "color: rgb(255, 223, 43);" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;" ,
+                    width: `70%`,
+                    height: `100%`,
+                }
+            }
+        ]
+    },
+}
 let frames = {
     // "frame1.webp": "M 500 250.002 c 0 138.065 -111.931 249.996 -250 249.996 c -138.071 0 -250 -111.931 -250 -249.996 C 0 111.93 111.929 0 250 0 s 250 111.93 250 250.002 Z",
     // "frame1.webp": "M 9610 11513 c -240 -36 -379 -77 -565 -168 c -127 -62 -257 -142 -342 -212 c -55 -44 -92 -118 -103 -207 c -9 -69 -9 -71 -69 -126 c -64 -58 -80 -94 -61 -130 c 10 -19 5 -29 -48 -93 c -67 -82 -86 -116 -96 -170 c -4 -20 -20 -52 -35 -70 c -42 -49 -53 -73 -45 -112 c 5 -28 -2 -49 -43 -127 c -95 -183 -386 -597 -451 -641 c -21 -15 -91 -50 -155 -77 c -357 -150 -608 -293 -882 -501 c -132 -100 -230 -186 -514 -455 c -87 -83 -243 -222 -345 -308 c -258 -219 -387 -338 -486 -452 c -111 -127 -105 -122 -400 -350 c -747 -578 -1345 -1106 -1704 -1504 c -184 -204 -431 -492 -445 -519 c -11 -19 -11 -31 -1 -61 c 12 -36 11 -38 -57 -141 c -59 -88 -193 -301 -271 -430 c -21 -34 -32 -129 -16 -129 c 26 0 91 62 196 187 c 67 80 124 141 126 135 c 7 -23 -29 -296 -46 -340 c -23 -60 -52 -105 -138 -214 c -38 -47 -100 -137 -138 -200 c -66 -108 -83 -128 -435 -478 c -490 -488 -852 -821 -1231 -1132 c -58 -47 -117 -97 -132 -111 c -34 -31 -37 -76 -8 -102 c 11 -10 20 -21 20 -25 c 0 -3 -121 -119 -268 -258 c -307 -287 -352 -333 -352 -362 c 0 -59 61 -109 117 -96 c 16 4 72 28 125 53 c 54 26 101 44 104 40 c 3 -3 -42 -59 -100 -123 c -59 -65 -105 -122 -103 -128 c 3 -7 33 -10 83 -7 c 90 4 90 13 -5 -97 c -49 -57 -53 -64 -39 -79 c 15 -14 38 -4 265 109 c 224 113 538 285 668 366 c 55 34 75 33 47 -3 c -11 -13 -277 -293 -591 -623 c -315 -329 -582 -613 -593 -631 c -25 -39 -16 -63 36 -99 c 61 -42 121 -25 326 92 c 68 38 116 60 118 53 c 1 -7 -9 -39 -22 -72 c -28 -67 -24 -75 36 -76 c 38 -2 101 22 229 87 c 75 37 99 45 127 40 c 20 -3 39 -9 44 -14 c 5 -5 -4 -36 -22 -73 c -16 -35 -30 -74 -30 -87 c 0 -28 42 -46 85 -38 c 58 12 192 86 298 166 c 59 44 109 80 111 80 c 3 0 2 -25 -1 -56 l -6 -56 l 24 12 c 13 8 173 160 354 339 c 414 409 1160 1129 1283 1238 c 137 124 280 226 771 555 c 285 191 447 294 449 285 c 2 -7 18 -21 37 -30 l 34 -16 l 161 122 c 231 175 244 182 343 195 c 53 7 122 26 192 54 c 133 51 179 54 255 12 c 61 -33 129 -106 161 -170 c 13 -28 29 -94 40 -172 l 18 -127 l 88 -85 c 544 -523 1058 -1002 1090 -1015 l 37 -16 l -107 -70 c -84 -55 -115 -82 -142 -122 c -51 -78 -76 -164 -76 -263 c 0 -169 52 -262 170 -302 c 34 -12 141 -17 141 -7 c 0 3 -16 38 -36 78 c -42 83 -74 170 -74 202 c 0 40 33 58 92 51 c 29 -4 87 -9 128 -12 c 41 -3 85 -7 97 -10 c 38 -7 82 -53 119 -125 c 41 -77 99 -134 153 -149 c 20 -6 65 -13 101 -17 c 36 -3 73 -12 82 -20 c 9 -9 29 -51 44 -95 c 21 -63 39 -95 87 -151 c 97 -116 102 -133 100 -324 c -2 -177 0 -182 51 -142 c 54 43 103 180 115 321 c 12 150 -11 244 -78 321 c -18 20 -50 71 -71 114 c -30 62 -35 81 -26 95 c 8 14 19 17 46 12 c 83 -14 112 -26 143 -60 c 48 -53 79 -65 191 -73 c 173 -13 214 -48 321 -275 c 46 -98 72 -143 81 -139 c 32 12 59 180 44 284 c -17 120 -99 283 -179 353 c -46 41 -31 42 109 9 c 82 -19 105 -34 130 -84 c 29 -56 81 -78 180 -79 c 89 0 133 -22 156 -75 c 20 -49 18 -95 -11 -213 c -28 -115 -30 -142 -13 -142 c 20 0 87 80 121 143 l 32 62 l -1 154 l -1 154 l 197 -5 c 121 -3 205 -10 218 -17 c 12 -7 45 -32 72 -56 c 62 -55 96 -62 180 -36 c 142 45 204 14 250 -124 c 12 -36 25 -67 30 -70 c 4 -2 18 19 30 47 c 19 43 22 65 18 128 c -5 86 -30 144 -87 203 c -51 55 -73 64 -233 97 c -190 41 -206 45 -290 85 c -49 24 -87 35 -117 35 c -77 0 -174 21 -240 52 c -102 48 -183 133 -260 273 c -68 122 -113 167 -391 391 c -185 149 -420 377 -682 660 c -175 189 -184 201 -199 270 c -15 65 -2 94 42 94 c 21 0 43 12 77 44 c 26 24 72 56 102 72 c 49 25 65 29 150 29 c 52 0 100 3 106 7 c 17 11 157 186 202 253 c 22 33 62 101 88 151 c 60 112 77 132 185 216 c 47 37 178 156 290 266 c 187 182 208 200 248 207 c 41 7 59 22 246 214 c 112 113 247 258 302 322 c 245 284 448 588 575 860 c 54 116 202 355 228 369 c 10 5 28 10 39 10 c 15 0 28 15 47 53 c 15 28 50 90 78 137 c 29 47 58 108 65 135 c 23 90 117 266 207 385 c 47 63 96 135 108 160 c 30 58 63 162 71 223 c 6 48 72 222 115 307 c 19 37 24 70 32 210 c 17 289 -15 582 -93 864 c -22 78 -55 202 -74 276 c -20 74 -52 189 -72 255 c -74 243 -44 407 122 659 c 69 105 298 390 334 415 c 51 36 452 191 958 370 c 533 188 543 193 559 256 c 22 90 -135 260 -331 357 c -170 85 -205 91 -975 163 c -605 57 -724 79 -934 170 c -178 77 -287 105 -475 124 c -96 10 -385 13 -441 4 Z m -2705 -8752 c 42 -19 104 -73 565 -495 c 494 -452 522 -481 622 -632 c 78 -119 85 -137 64 -169 c -20 -30 -58 -32 -154 -10 c -114 27 -215 74 -402 185 c -202 121 -264 146 -347 137 c -54 -6 -172 -54 -205 -84 c -9 -8 -22 -12 -27 -8 c -6 3 -133 146 -282 317 l -271 311 l 6 41 c 16 106 44 255 50 264 c 8 13 248 141 285 152 c 40 12 52 11 96 -9 Z m 477 -1297 c -9 -13 -23 -26 -31 -29 c -14 -5 -121 60 -121 74 c 0 3 17 20 37 38 l 38 32 l 47 -46 c 46 -45 46 -46 30 -69 Z",
@@ -148,34 +200,338 @@ let frames = {
 }
 
 let templateLayoutObject = {
-    verticalSame: {
+    textX: {
+        target: {
+            name: "div",
+            class_additional: "align_center",
+            style: {
+                    others: "color:red;" +
+                        "font-family:Impact;"+
+                        "border:0;"+
+                        "font-size:45px;",
+                    width: `100`,
+                    height: `100`,
+                },
+            innerHTML: "Hello"
+        },
+        children: [
+
+        ]
+    },
+    text1: {
         target: {
             name: "div",
                 style: {
-                    others: "color:red;background-color:blue;font-family:Jokerman",
-                    width: `100`,
-                    height: `100`,
+                    others: "color:red;background-color:blue;font-family:DejaVu Sans Mono",
+                    width: `215`,
+                    height: `175`,
                 }
         },
         children: [
             {
                 name: "div",
-                innerHtml: "There",
+                innerHTML: "HUGE",
+                class_additional: "align_center",
                 style: {
-                    others: "color:red;background-color:red;font-family:Jokerman",
+                    others: "background-color:transparent;" +
+                        "font-family:Impact;" +
+                        "font-size: 103.024px;" +
+                        "color: rgb(255, 223, 43);" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "text-transform: uppercase;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
                     width: `100%`,
                     height: `50%`,
                 }
             },
             {
                 name: "div",
-                innerHtml: "There",
+                innerHTML: "SALE",
+                class_additional: "align_center",
                 style: {
-                    others: "color:orange;background-color:pink;font-family:Jokerman",
+                    others: "background-color:transparent;font-family:Impact;top:50%;font-size: 73.024px;" +
+                        "font-family:Impact;" +
+                        "color: rgb(255, 223, 43);" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "text-transform: uppercase;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
                     width: `100%`,
                     height: `50%`,
                 }
             }
         ]
-    }
+    },
+    text2: {
+        target: {
+            name: "div",
+                style: {
+                    others: "color:red;background-color:blue;font-family:Impact",
+                    width: `270`,
+                    height: `155`,
+                }
+        },
+        children: [
+            {
+                name: "div",
+                innerHTML: "Welcome",
+                class_additional: "align_center",
+                style: {
+                    others: "background-color:transparent;" +
+                        "font-family:Impact;" +
+                        "font-size: 63.024px;" +
+                        "color: rgb(255, 223, 43);" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "text-transform: uppercase;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `40%`,
+                }
+            },
+            {
+                name: "div",
+                innerHTML: "Little One",
+                class_additional: "align_center",
+                style: {
+                    others: "background-color:transparent;top:40%;" +
+                        "font-family:Impact;" +
+                        "font-size: 63.024px;" +
+                        "color: rgb(255, 223, 43);" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "text-transform: uppercase;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `40%`,
+                }
+            },
+            {
+                name: "div",
+                innerHTML: "SALE",
+                class_additional: "align_center",
+                style: {
+                    others: "background-color:transparent;font-family:Impact;top:80%;font-size: 33.024px;" +
+                        "font-family:Impact;" +
+                        "color: rgb(255, 223, 43);" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "text-transform: uppercase;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `20%`,
+                }
+            }
+        ]
+    },
+    text3: {
+        target: {
+            name: "div",
+            class_additional: "align_center",
+            style: {
+                    others: "color:#ffe1f3;" +
+                        "font-family:Impact;"+
+                        "border:0;"+
+                        "text-transform: uppercase;"+
+                        "text-shadow: rgb(255 0 150) 0px 0px 20px;"+
+                        "font-size:130px;",
+                    width: `300`,
+                    height: `100`,
+                },
+            innerHTML: "GLOW"
+        },
+        children: [
+
+        ]
+    },
+    text4: {
+        target: {
+            name: "div",
+            class_additional: "align_center",
+            style: {
+                    others: "color:rgb(255 253 242);" +
+                        "font-family:Brush Script MT;"+
+                        "border:0;"+
+                        "text-shadow: rgb(183 154 2) 7px -1px 18px;"+
+                        "font-size:130px;",
+                    width: `340`,
+                    height: `100`,
+                },
+            innerHTML: "Sparkle"
+        },
+        children: [
+
+        ]
+    },
+    text5: {
+        target: {
+            name: "div",
+                style: {
+                    others: "color:red;background-color:blue;font-family:Impact",
+                    width: `242`,
+                    height: `221`,
+                }
+        },
+        children: [
+            {
+                name: "div",
+                innerHTML: "Cold, ",
+                class_additional: "align_center",
+                style: {
+                    others: "background-color:transparent;" +
+                        "font-family:Impact;" +
+                        "font-size: 63.024px;" +
+                        "color: white;" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `30%`,
+                }
+            },
+            {
+                name: "div",
+                innerHTML: "Smooth",
+                class_additional: "align_center",
+                style: {
+                    others: "background-color:transparent;top:23%;" +
+                        "font-family:Impact;" +
+                        "font-size: 63.024px;" +
+                        "color: white;" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `30%`,
+                }
+            },
+            {
+                name: "div",
+                innerHTML: "& Tasty",
+                class_additional: "align_center",
+                style: {
+                    others: "background-color:transparent;font-family:Impact;top:46%;font-size: 33.024px;" +
+                        "font-family:Impact;" +
+                        "color: white;" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `30%`,
+                }
+            },
+            {
+                name: "div",
+                innerHTML: "ANGELO BREWING",
+                class_additional: "align_center",
+                style: {
+                    others: "background-color:transparent;font-family:Impact;top:69%;font-size: 33.024px;" +
+                        "font-family:Impact;" +
+                        "color: white;" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `10%`,
+                }
+            }
+        ]
+    },
+    text6: {
+        target: {
+            name: "div",
+                style: {
+                    others: "color:red;background-color:transparent;font-family:Impact",
+                    width: `242`,
+                    height: `221`,
+                }
+        },
+        children: [
+            {
+                name: "div",
+                innerHTML: "Charlie and Katie are, ",
+                class_additional: "align_center_left",
+                style: {
+                    others: "background-color:transparent;" +
+                        "font-family:Arial;" +
+                        "font-size: 20.024px;" +
+                        "color: black;" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `20%`,
+                }
+            },
+            {
+                name: "div",
+                innerHTML: "Engaged!",
+                class_additional: "align_center",
+                style: {
+                    others: "background-color:transparent;" +
+                        "font-family:Brush Script MT;" +
+                        "font-size: 80.024px;" +
+                        "color: black;" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `80%`,
+                }
+            }
+        ]
+    },
+    text7: {
+        target: {
+            name: "div",
+            class_additional: "align_center",
+            style: {
+                    others: "color:rgb(255 253 242);" +
+                        "font-family:Impact;"+
+                        "border:0;"+
+                        "text-shadow: rgb(229 69 21) 7px -1px 18px;"+
+                        "font-size:130px;",
+                    width: `340`,
+                    height: `100`,
+                },
+            innerHTML: "ACTION"
+        },
+        children: [
+
+        ]
+    },
 }
