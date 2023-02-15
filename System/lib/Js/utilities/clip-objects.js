@@ -153,6 +153,106 @@ let files = {
             }
         ]
     },
+    "field2.png": {
+        target: {
+            name: "div",
+            class_additional: "",
+                style: {
+                    others: "color:red;background-color:white;font-family:DejaVu Sans Mono;display:flex;flex-direction:column",
+                    width: `150`,
+                    height: `120`,
+                }
+        },
+        children: [
+            {
+                name: "div",
+                innerHTML: "Date:",
+                class_additional: "align-center-left",
+                style: {
+                    others: "background-color:transparent;" +
+                        "font-family:Impact;" +
+                        "font-size: 30.024px;" +
+                        "color: rgb(255, 223, 43);" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `30%`,
+                }
+            },
+            {
+                name: "div",
+                innerHTML: "02/04/2022",
+                class_additional: "align-center-left",
+                style: {
+                    others: "background-color:transparent;font-family:Impact;top:30%;font-size: 30.024px;" +
+                        "font-family:Impact;" +
+                        "color: rgb(255, 223, 43);" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;" ,
+                    width: `100%`,
+                    height: `70%`,
+                }
+            }
+        ]
+    },
+    "field3.png": {
+        target: {
+            name: "div",
+            innerHTML: "Enter Some Data",
+            class_additional: "align-center-left",
+                style: {
+                    others: "color:red;background-color:white;font-family:DejaVu Sans Mono;border:1px solid red",
+                    width: `300`,
+                    height: `50`,
+                }
+        },
+        children: [
+            {
+                name: "div",
+                innerHTML: "Date",
+                class_additional: "align-center",
+                style: {
+                    others: "background-color:transparent;" +
+                        "font-family:Impact;" +
+                        "color: rgb(255, 223, 43);" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "visibility: hidden;" +
+                        "list-style-type: none;",
+                    width: `0%`,
+                    height: `0%`,
+                }
+            },
+            {
+                name: "div",
+                innerHTML: "Enter Some Data",
+                class_additional: "align-center",
+                style: {
+                    others: "background-color:transparent;" +
+                        "font-family:Impact;" +
+                        "font-size: 30.024px;" +
+                        "color: rgb(255, 223, 43);" +
+                        "line-height: 32px;" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `100%`,
+                }
+            }
+        ]
+    },
 }
 let frames = {
     // "frame1.webp": "M 500 250.002 c 0 138.065 -111.931 249.996 -250 249.996 c -138.071 0 -250 -111.931 -250 -249.996 C 0 111.93 111.929 0 250 0 s 250 111.93 250 250.002 Z",

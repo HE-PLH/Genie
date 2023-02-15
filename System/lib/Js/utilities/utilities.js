@@ -368,6 +368,32 @@ let Methods = {
     getParentWithName(sel, el) {
         while ((el = el.parentElement) && !((el.matches || el.matchesSelector).call(el, sel))) ;
         return el;
+    },
+    groupObjArrayBy(arr, field) {
+        let temp = {};
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i][field]) {
+                temp[`${arr[i][field]}`] = {...arr[i]}
+            }
+        }
+        return temp;
+    },
+    emptyObject(obj) {
+        for (let prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                return false;
+            }
+        }
+        return true;
+    },
+    JStoCss(JS) {
+            let cssString = "";
+            for (let objectKey in JS) {
+                cssString += objectKey.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`) + ": " + JS[objectKey] + ";\n";
+            }
+
+            return cssString;
+
     }
 };
 
@@ -768,21 +794,23 @@ function hightlightAll() {
     highlightLayout(ell);
 }
 
-function executeClip(_element, is_tile_img, is_frame, vertical_text_layout, is_file_img) {
+function executeClip(_element, is_tile_img, is_frame, vertical_text_layout, is_file_img, is_xml) {
     let temp1 = document.querySelector(".genie-paint-field"), tag = "";
     tag = _element.getAttribute("alt");
 
     let path;
     if (is_tile_img) {
-        path = graphicsObject[tag];
+        path = graphicsObject[tag] || (IMAGE_LINK + "/" + uploadedImages[tag].name);
     } else if (vertical_text_layout) {
         path = templateLayoutObject[tag || "textX"];
     } else if (is_frame) {
         path = frames[tag];
+    } else if (is_xml) {
+        path = Tables[_element.querySelector(".text-btn").id]
     } else if (is_file_img) {
         path = files[tag];
     } else {
-        path = clipObject[tag]
+        path = clipObject[tag] || SHAPES[tag].clip_path
     }
     if (tag) {
         tag = tag.replace(/\.webp/g, "");
@@ -790,7 +818,6 @@ function executeClip(_element, is_tile_img, is_frame, vertical_text_layout, is_f
         tag = tag.replace(/\.jpg/g, "");
         tag = tag.replace(/\.png/g, "");
     }
-
     if (vertical_text_layout) {
         path = templateLayoutObject[tag || "textX"];
     }
@@ -807,13 +834,13 @@ function executeClip(_element, is_tile_img, is_frame, vertical_text_layout, is_f
         let e = new G(`${tag + "-" + Elements[tag].toString()}`, {framed: path}).create(tag, null, lastContextMenuPt);
     } else if (vertical_text_layout) {
         let e = new G(`${tag + "-" + Elements[tag].toString()}`, {vertical_text_layout: path}).create(tag, null, lastContextMenuPt);
+    } else if (is_xml) {
+        let e = new G(`${tag + "-" + Elements[tag].toString()}`, {xml: path}).create(tag, null, lastContextMenuPt);
     } else if (is_file_img) {
-        console.log(path)
         let e = new G(`${tag + "-" + Elements[tag].toString()}`, {file_img: path}).create(tag, null, lastContextMenuPt);
     } else {
         let e = new G(`${tag + "-" + Elements[tag].toString()}`, {
-            clipped: true,
-            clipPath: path
+            clipPath: {clip_path: path}
         }).create(tag, null, lastContextMenuPt);
     }
 }
@@ -1074,14 +1101,13 @@ function handleCurrentResize(el) {
 }
 
 
-
 function Compressed_layout(parentClass, cls, data) {
     this.parentContainer = document.querySelector(`.${parentClass}`);
     this.currentWindowData = data || document.querySelector(`.${cls}`);
     this.listContainer = createDomElement({name: "ul", class: "ul_main"});
 
     this.init = () => {
-        /*this.parentContainer.style.overflow = "overlay";*/
+        /*this.parentContainer.style.overflow = "auto";*/
         let cont = createDomElement({name: "div", class: "compressed_layout"});
         console.time("loop");
         loop(this.currentWindowData['children'], this.listContainer);
@@ -1143,6 +1169,15 @@ function reload_compressed_layout() {
  ***************************************
  */
 
+// call this to Disable
+function disableScroll() {
+    boundary.el.parentElement.style.overflow = "hidden";
+}
+
+// call this to Enable
+function enableScroll() {
+    boundary.el.parentElement.style.overflow = "auto";
+}
 
 function Events() {
     this.default = () => {
@@ -1423,7 +1458,9 @@ KeyEventHandler.prototype.duplicate = function (elems) {
 KeyEventHandler.prototype.handleKeys = function () {
     if (!BRICK.typing) {
         if (!typing) {
-            if (this.el.parentNode.classList.contains("rule-prop") || this.el.parentNode.id === "special-create") {
+            if (this.el.classList.contains("always-type")) {
+
+            } else if (this.el.parentNode.classList.contains("rule-prop") || this.el.parentNode.id === "special-create") {
                 if (this.el.parentNode.id !== "special-create") {
                     if (!this.el.parentNode.classList.contains("el_prop")) {
                         if (KEY.isCharCode(this.key)) {
@@ -1615,15 +1652,27 @@ MouseEventHandler.prototype.separatedWindowDrag = function (orientation, directi
     if (mouse.dragging.drag_start) {
         right = this.el.nextElementSibling;
         lft = this.el.previousElementSibling;
-        seprator.rightw = right ? right[`client${orientation}`] : null;
-        seprator.lftw = lft ? lft[`client${orientation}`] : null;
-        seprator.pw = lft ? lft.parentElement[`client${orientation}`] : null;
+        if (right) {
+            seprator.rightw = right[`client${orientation}`];
+        } else {
+            seprator.rightw = null;
+        }
+        if (lft) {
+            seprator.lftw = lft[`client${orientation}`];
+        } else {
+            seprator.lftw = null;
+        }
+        if (lft) {
+            seprator.pw = lft.parentElement[`client${orientation}`];
+        } else {
+            seprator.pw = null;
+        }
         orient = orientation.toLowerCase();
         if (right) {
             right.style.transition = "0s width";
         }
         if (lft) {
-            lft.style.transition = "0s width"
+            lft.style.transition = "0s width";
         }
     } else {
         if (!column_resizer) {
@@ -1684,6 +1733,7 @@ MouseEventHandler.prototype.mouse_down = function () {
 };
 
 MouseEventHandler.prototype.released = function () {
+    enableScroll();
     if (wnd) {
         if (wnd.classList.contains("image-mother")) {
             if (this.el.classList.contains("frame-parent")) {
@@ -1764,7 +1814,6 @@ MouseEventHandler.prototype.contextmenu = function () {
 };
 
 
-
 MouseEventHandler.prototype.handle_late_click = function () {
     /*hide context menu*/
     let el = document.querySelector(".contextmenu");
@@ -1805,24 +1854,108 @@ MouseEventHandler.prototype.handle_late_click = function () {
         let cd = document.querySelector(".code_display");
         cd.readOnly = false;
         cd.style.cursor = "auto";
-    } else if (this.el.classList.contains("from-uploads-btn")){
+    } else if (this.el.classList.contains("from-uploads-btn")) {
         document.querySelector(".window").style.display = "block";
-        console.log("summon window")
+        document.getElementById("window_body").innerHTML = `
+        <div id="window-images" class="image-list-container">
+        
+        </div>
+        `
+        appendAllImageToUploadArea(uploadedImages, "window-images", "select-img", "image-thumb");
+    } else if (this.el.classList.contains("from-uploads-btn1")) {
+        document.querySelector(".window").style.display = "block";
+        document.getElementById("window_body").innerHTML = `
+        <div id="window-images" class="image-list-container">
+        
+        </div>
+        `
+        appendAllImageToUploadArea(uploadedImages, "window-images", "select-img1", "image-thumb");
     } else if (this.el.classList.contains("genie-toolbar-item")) {
         toolbarItems(this.el);
         currentResize = this.el.id;
         reloadCurrentTool();
+    } else if (this.el.classList.contains("select-img")) {
+        let tmp = document.getElementById("actual-select-img");
+        tmp.setAttribute("src", this.el.getAttribute("src"))
+        tmp.setAttribute("alt", this.el.getAttribute("alt"))
+        document.querySelector(".window").style.display = "none";
+    } else if (this.el.classList.contains("select-img1")) {
+        let tmp = document.getElementById("actual-select-img1");
+        tmp.setAttribute("src", this.el.getAttribute("src"))
+        tmp.setAttribute("alt", this.el.getAttribute("alt"))
+        document.querySelector(".window").style.display = "none";
     } else if (this.el.classList.contains("text-img-cont")) {
         executeClip(this.el.querySelector("img"), false, false, true);
     } else if (this.el.classList.contains("upload-btn")) {
         document.getElementById('getFile').click()
         console.log("click")
+    } else if (this.el.classList.contains("save-new-element")) {
+        if (this.el.id === "save-clip-path") {
+            let _form_data = {};
+            _form_data["name"] = document.getElementById("element-brand-tag").innerText;
+            _form_data["icon_image"] = document.getElementById("actual-select-img").getAttribute("alt");
+            _form_data["clip_path"] = document.getElementById("clip-text-area").value;
+            _form_data["name"] = document.getElementById("element-brand-tag").value
+            _form_data["tool_type"] = "clipped";
+            _form_data["type"] = "clip-path";
+
+            let ts = "";
+            let temp = Styling.get_style(focusedElements[0].id, null, focusedElements[0].ruleIndex, true);
+
+            _form_data["style"] = temp.cssText.split("{")[1];
+            console.log(_form_data)
+            sendPost({data: _form_data}, API + "/data/new-data/elements", (e) => {
+                console.log(e)
+            })
+
+        } else if (this.el.id === "save-framed-path") {
+            let _form_data = {};
+            _form_data["name"] = document.getElementById("element-brand-tag").innerText;
+            _form_data["icon_image"] = document.getElementById("actual-select-img").getAttribute("alt");
+            _form_data["frame_image"] = document.getElementById("actual-select-img1").getAttribute("alt");
+            _form_data["frame_clip"] = document.getElementById("clip-text-area").value;
+            _form_data["name"] = document.getElementById("element-brand-tag").value
+            _form_data["tool_type"] = "framed";
+            _form_data["type"] = "framed";
+
+            let ts = "";
+            let temp = Styling.get_style(focusedElements[0].id, null, focusedElements[0].ruleIndex, true);
+
+            _form_data["style"] = temp.cssText.split("{")[1];
+            console.log(_form_data)
+            sendPost({data: _form_data}, API + "/data/new-data/elements", (e) => {
+                console.log(e)
+            })
+
+        } else if (this.el.id === "save-graphic-path") {
+            let _form_data = {};
+            _form_data["name"] = document.getElementById("element-brand-tag").innerText;
+            _form_data["icon_image"] = document.getElementById("actual-select-img").getAttribute("alt");
+            _form_data["name"] = document.getElementById("element-brand-tag").value
+            _form_data["tool_type"] = "graphic";
+            _form_data["type"] = "graphic";
+
+            let ts = "";
+            let temp = Styling.get_style(focusedElements[0].id, null, focusedElements[0].ruleIndex, true);
+
+            _form_data["style"] = temp.cssText.split("{")[1];
+            console.log(_form_data)
+            sendPost({data: _form_data}, API + "/data/new-data/elements", (e) => {
+                console.log(e)
+            })
+
+        }
     } else if (this.el.classList.contains("button-cont")) {
         switch (this.el.querySelector(".text-btn").id) {
             case "add-sub-heading-text-btn":
                 // this.el.setAttribute("alt", "text1");
                 console.log("hheey")
                 executeClip(this.el, false, false, true)
+                break;
+            case "normal-table":
+                // this.el.setAttribute("alt", "text1");
+                console.log("hheey")
+                executeClip(this.el, false, false, false, false, true)
                 break;
         }
     } else if (this.el.classList.contains("tab-btn")) {
@@ -2295,6 +2428,7 @@ MouseEventHandler.prototype.handle_inside_element_drag = function (dragger, wnd)
 
 MouseEventHandler.prototype.normal_drag = function () {
     if (mouse.dragging.drag_start) {
+        disableScroll();
         dragger = {};
         if (BRICK.typing) {
             isWindow = false;
@@ -2482,15 +2616,23 @@ MouseEventHandler.prototype.drag = function () {
                             this.separatedWindowDrag("Width", "x", true);
                         }
                     } else {
+                        if (mouse.dragging.element.classList.contains("hs")){
+                            mouse.dragging.offset.x = mouse.dragging.offset.x / offsetTransformX;
+                            mouse.dragging.offset.y = mouse.dragging.offset.y / offsetTransformY;
+                        }
                         this.separatedWindowDrag("Width", "x");
                     }
                 }
             }
             if (mouse.dragging.element.classList.contains("normal_drag")) {
-                /*for (let i = 0; i<focusedElements.length;i++) {
-                    console.log(focusedElements[i])*/
-                mouse.dragging.offset.x = mouse.dragging.offset.x / offsetTransformX;
-                mouse.dragging.offset.y = mouse.dragging.offset.y / offsetTransformY;
+                if (mouse.dragging.element.id === ("window_title")) {
+
+                } else {
+                    /*for (let i = 0; i<focusedElements.length;i++) {
+                        console.log(focusedElements[i])*/
+                    mouse.dragging.offset.x = mouse.dragging.offset.x / offsetTransformX;
+                    mouse.dragging.offset.y = mouse.dragging.offset.y / offsetTransformY;
+                }
                 this.normal_drag();
                 /*}*/
             }

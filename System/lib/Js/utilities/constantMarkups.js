@@ -54,7 +54,14 @@ let ctxmenu = `
         <div class="pre" title="done"></div>
         <div class="blockquote" title="done"></div>
         <div class="form" title="done"></div>
-        <div class="table" title="done"></div>
+        <div class="table" title="done">
+            <div class="table" title="done"></div>
+            <div class="thead" title="done"></div>
+            <div class="tbody" title="done"></div>
+            <div class="th" title="done"></div>
+            <div class="tr" title="done"></div>
+            <div class="td" title="done"></div>
+        </div>
     </div>
     <div class="inline elements" title="twitter">
         <div class="text elements" title="done">
@@ -95,6 +102,7 @@ let ctxmenu = `
     </div>
 </div>
 `;
+let uploadedImages = [];
 /*tools*/
 let RotationalTool = `<div id="rot-resize-cont" class="rot-resize-cont align_center normal_drag _tool rot">
     <div id="rotate_z" class="rot-resize normal_drag"></div>
@@ -555,17 +563,36 @@ let designElements = {
     `
 }
 
-const IMAGE_LINK = "http://localhost:2727/singlemedia"
-function appendImageToUploadArea(img) {
-    let upload_dir = document.getElementById("upload-area");
+const IMAGE_LINK = API + "/singlemedia";
+let SHAPES = {};
+
+function appendAllImageToUploadArea(data, area, imgCls = "tile-img", imgParentCls, imgName = "name") {
+    for (let item in data) {
+        appendImageToUploadArea(area, item, imgCls, imgParentCls, imgName)
+    }
+
+}
+
+function appendImageToUploadArea(area, img, imgCls, imgParentCls) {
+
+    let upload_dir = document.getElementById(area);
     let _temp = `
-        <div class="image-tile">
-            <img class="tile-img" src="${IMAGE_LINK+"/"+img}" alt="person2.jpg">
+        <div class="${imgParentCls}">
+            <img class="${imgCls || "tile-img"}" src="${IMAGE_LINK + "/" + img}" alt="${img}">
         </div>`
 
-    upload_dir.innerHTML+=_temp
+    upload_dir.innerHTML += _temp
 
     console.log(img)
+}
+
+
+function loadAllUserImages(cb) {
+    //load currently uploaded images by user
+    sendGet("http://localhost:2727/data/get-all/media", (e) => {
+        uploadedImages = Methods.groupObjArrayBy(e.response, "name");
+        cb();
+    })
 }
 
 
@@ -623,7 +650,7 @@ let select_layouts = {
                         <use xlink:href="../sources/svg_icons.svg#arrow-right"></use>
                     </svg>
                 </a>
-                <div class="image-box-inner box-inner">
+                <div id="image-box-inner" class="image-box-inner box-inner">
                     <div class="image-thumb align-center">
                         <img class="tab-img" src="../sources/imgs/elements/rectangle.webp" alt="rectangle.webp"/>
                     </div>
@@ -892,31 +919,27 @@ ${searchTool}
 
             // bind upload button to upload event
             document.getElementById("getFile").addEventListener("change", (e) => {
-            console.log(e)
-            let photos = e.target.files;
-            let formData = new FormData();
-
-            for (let i = 0; i < photos.length; i++){
-                const photo = photos[i];
-                formData.append('file', photo);
-            }
-
-            // formData.append("file", photo);
-
-            sendFile(formData, "http://localhost:2727/data/media", (response) => {
-                console.log(response);
-            })
-            /*fetch("http://localhost:2727/data/media", {method: "POST", body: formData}).then((response)=>{
-                console.log(response);
-            });*/
-        })
-
-            //load currently uploaded images by user
-            getFile("http://localhost:2727/data/media/get", (e)=>{
-                e.response.map((item)=>{
-                    appendImageToUploadArea(item.name)
-                })
                 console.log(e)
+                let photos = e.target.files;
+                let formData = new FormData();
+
+                for (let i = 0; i < photos.length; i++) {
+                    const photo = photos[i];
+                    formData.append('file', photo);
+                }
+
+                // formData.append("file", photo);
+
+                sendFile(formData, API + "/data/media", (response) => {
+                    console.log(response);
+                })
+                /*fetch("http://localhost:2727/data/media", {method: "POST", body: formData}).then((response)=>{
+                    console.log(response);
+                });*/
+            })
+
+            loadAllUserImages(() => {
+                appendAllImageToUploadArea(uploadedImages, "upload-area", "tile-img", "image-tile");
             })
 
         }
@@ -952,7 +975,7 @@ ${searchTool}
                     <div class="thumb align-center">Box</div>
                     <div class="thumb align-center">Star</div>
                     <div class="thumb align-center">Table</div>
-                    <div class="thumb align-center">Phhone</div>
+                    <div class="thumb align-center">Phone</div>
                     
                 </div>
             </div>
@@ -973,7 +996,7 @@ ${searchTool}
                         <use xlink:href="../sources/svg_icons.svg#arrow-right"></use>
                     </svg>
                 </a>
-                <div class="image-box-inner box-inner">
+                <div id="image-box-inner" class="image-box-inner box-inner">
                     <div class="image-thumb align-center">
                         <img class="tab-img" src="../sources/imgs/elements/rectangle.webp" alt="rectangle.webp"/>
                     </div>
@@ -1170,7 +1193,11 @@ ${searchTool}
     </div>
             `,
         actions: function () {
-
+            sendGet(API + "/data/get-all/elements", (e) => {
+                //render first 10 elements;
+                SHAPES = Methods.groupObjArrayBy(e.response, "icon_image");
+                appendAllImageToUploadArea(SHAPES, "image-box-inner", "tab-img", "image-thumb align-center", "icon_image");
+            })
         }
     },
     Fields: {
@@ -1310,7 +1337,7 @@ ${searchTool}
 
         }
     },
-    Create: {
+    Tables: {
         markup: `
 ${searchTool}
 <div class="my-collapse">
@@ -1321,8 +1348,8 @@ ${searchTool}
 
 
 <div class="button-cont">
-    <button id="add-clipped-element-btn" class="text-btn">
-    <span>Add Clipped</span>
+    <button id="normal-table" class="text-btn">
+    <span>Add normal table</span>
 </button>
 </div>
 <div class="button-cont">
@@ -3436,20 +3463,131 @@ ${searchTool}
             <div class="vl-item">
                 <div class="vl-top">Clip path</div>
                 <div class="vl-bottom">
-                    <textarea id="clip-text-area" class="clip-text-area"></textarea>
+                    <textarea id="clip-text-area" class="clip-text-area always-type"></textarea>
                 </div>
             </div>
             
             <div class="vl-item">
-                <div class="vl-top">selection Image</div>
-                <div class="vl-bottom">
-                    <button class="double-item-main upload-btn">
-                        <span>upload from device</span>
-                        <input type='file' id="getFile" name="file" multiple='multiple' accept='image/*' style="display:none">
-                    </button>
-                    <button class="from-uploads-btn">
+                <div class="vl-top">Select icon Image</div>
+                <div class="vl-bottom full-btn-cont">
+                    <div class="full-btn-cont">
+                    <button class="from-uploads-btn full-btn">
                         From uploads
                     </button>
+                    </div>
+                    <img id="actual-select-img"/>
+                </div>
+            </div>
+                        
+            <div class="vl-item">
+                <div class="vl-top">Element Name</div>
+                <div class="vl-bottom">
+                    <input id="element-brand-tag" class="always-type" />
+                </div>
+            </div>
+            <div class="vl-item">
+                <div class="vl-top">Save New Element</div>
+                <div class="vl-bottom full-btn-cont">
+                <div class="full-btn-cont">
+                    <button id="save-clip-path" class="full-btn save-new-element">Save New</button>
+                    </div>
+                </div>
+            </div>
+`,
+        actions: function () {
+
+        }
+    },
+    graphic: {
+        markup: `${searchTool}
+            <div class="my-collapse">
+                <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                    <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
+                </svg>
+            </div>
+            
+            <div class="vl-item">
+                <div class="vl-top">Select Image</div>
+                <div class="vl-bottom full-btn-cont">
+                    <div class="full-btn-cont">
+                    <button class="from-uploads-btn full-btn">
+                        From uploads
+                    </button>
+                    </div>
+                    <img id="actual-select-img"/>
+                </div>
+            </div>
+                        
+            <div class="vl-item">
+                <div class="vl-top">Element Name</div>
+                <div class="vl-bottom">
+                    <input id="element-brand-tag" class="always-type" />
+                </div>
+            </div>
+            <div class="vl-item">
+                <div class="vl-top">Save New Element</div>
+                <div class="vl-bottom full-btn-cont">
+                <div class="full-btn-cont">
+                    <button id="save-graphic-path" class="full-btn save-new-element">Save New</button>
+                    </div>
+                </div>
+            </div>
+`,
+        actions: function () {
+
+        }
+    },
+    framed: {
+        markup: `${searchTool}
+            <div class="my-collapse">
+                <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
+                    <use xlink:href="../sources/svg_icons.svg#arrow-back"></use>
+                </svg>
+            </div>
+            <div class="vl-item">
+                <div class="vl-top">Frame Path</div>
+                <div class="vl-bottom">
+                    <textarea id="clip-text-area" class="clip-text-area always-type"></textarea>
+                </div>
+            </div>
+            
+            <div class="vl-item">
+                <div class="vl-top">Select icon Image</div>
+                <div class="vl-bottom full-btn-cont">
+                    
+                    <div class="full-btn-cont">
+                    <button class="from-uploads-btn full-btn">
+                        From uploads
+                    </button>
+                    </div>
+                    <img id="actual-select-img"/>
+                </div>
+            </div>
+            
+            <div class="vl-item">
+                <div class="vl-top">Select Frame Image</div>
+                <div class="vl-bottom full-btn-cont">
+                    <div class="full-btn-cont">
+                        <button class="from-uploads-btn1 full-btn">
+                            From uploads
+                        </button>
+                    </div>
+                    <img id="actual-select-img1"/>
+                </div>
+            </div>
+            
+            <div class="vl-item">
+                <div class="vl-top">Element Name</div>
+                <div class="vl-bottom">
+                    <input id="element-brand-tag" class="always-type" />
+                </div>
+            </div>
+            <div class="vl-item">
+                <div class="vl-top">Save New Element</div>
+                <div class="vl-bottom full-btn-cont">
+                <div class="full-btn-cont">
+                    <button id="save-clip-path" class="full-btn save-new-element">Save New</button>
+                    </div>
                 </div>
             </div>
 `,
@@ -3724,6 +3862,47 @@ let structureObject = {
         let clip = Styling.get_style(temp_el.id, "clip-path", temp_el.ruleIndex);
         let tmp1 = document.querySelector(".clip-text-area");
         tmp1.innerHTML = clip;
+        loadAllUserImages();
+        /*tmp1.addEventListener("change", ()=>{
+            Styling.edit_style(temp_el.id, "clip-path", tmp1.innerHTML, temp_el.ruleIndex);
+        })*/
+    },
+    size: 110
+}
+
+let graphicStructureObject = {
+    body: `<div class="gti-item structure-adjust">
+                        <div class="structure-adjust-img">STRUCTURE</div>
+                    </div>`,
+    action: function (el) {
+        //bold el
+        let temp = el.querySelector(".element-daughter");
+        displaySecLayout(select_layouts["graphic"])
+        let tmp = document.getElementById("actual-select-img");
+        tmp.setAttribute("src", temp.getAttribute("src"))
+        tmp.setAttribute("alt", temp.getAttribute("alt"))
+        loadAllUserImages();
+        /*tmp1.addEventListener("change", ()=>{
+            Styling.edit_style(temp_el.id, "clip-path", tmp1.innerHTML, temp_el.ruleIndex);
+        })*/
+    },
+    size: 110
+}
+
+let frameStructureObject = {
+    body: `<div class="gti-item structure-adjust">
+                        <div class="structure-adjust-img">STRUCTURE</div>
+                    </div>`,
+    action: function (el) {
+        //bold el
+        console.log("heeey")
+        let temp_el = el.querySelector("._clippath")
+        // console.log(temp_el)
+        displaySecLayout(select_layouts["framed"])
+        let clip = Styling.get_style(temp_el.id, "clip-path", temp_el.ruleIndex);
+        let tmp1 = document.querySelector(".clip-text-area");
+        tmp1.innerHTML = clip;
+        loadAllUserImages();
         /*tmp1.addEventListener("change", ()=>{
             Styling.edit_style(temp_el.id, "clip-path", tmp1.innerHTML, temp_el.ruleIndex);
         })*/
@@ -3785,5 +3964,119 @@ let InstantTools = {
         transparent: transparentObject,
         caseAdjust: caseAdjustObject,
         structure: structureObject
+    },
+    appended_img: {
+        colorAdjust: {
+            body: colorAdjustObject.body,
+            action: function (el) {
+                el = el.querySelector("._clippath");
+                displaySecLayout(select_layouts["colorAdjust"]);
+                document.querySelector(".add-own-color").addEventListener("input", (e) => {
+                    document.getElementById("single-btn-item-editable").style.background = e.currentTarget.value;
+                });
+            },
+            size: colorAdjustObject.size,
+        },
+
+        effects: effectsObject,
+        more: moreObject,
+        transparent: transparentObject,
+        structure: graphicStructureObject
+    },
+    graphic: {
+        colorAdjust: {
+            body: colorAdjustObject.body,
+            action: function (el) {
+                el = el.querySelector("._clippath");
+                displaySecLayout(select_layouts["colorAdjust"]);
+                document.querySelector(".add-own-color").addEventListener("input", (e) => {
+                    document.getElementById("single-btn-item-editable").style.background = e.currentTarget.value;
+                });
+            },
+            size: colorAdjustObject.size,
+        },
+
+        effects: effectsObject,
+        more: moreObject,
+        transparent: transparentObject,
+        structure: graphicStructureObject
+    },
+    framed: {
+        colorAdjust: {
+            body: colorAdjustObject.body,
+            action: function (el) {
+                displaySecLayout(select_layouts["colorAdjust"]);
+                document.querySelector(".add-own-color").addEventListener("input", (e) => {
+                    document.getElementById("single-btn-item-editable").style.background = e.currentTarget.value;
+                });
+            },
+            size: colorAdjustObject.size,
+        },
+
+        effects: effectsObject,
+        more: moreObject,
+        transparent: transparentObject,
+        structure: frameStructureObject
     }
+}
+
+let Tables = {
+    "normal-table": {
+        markup: `<div id="my-table" class="hi normal_drag dtsnormal initial" data-styles="top:0;left:0;height:240px;width:300px;display:flex;flex-direction:row;background-color: blue;">
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:30%;display:flex;flex-direction:column;background-color:red">
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    </div>
+                    <div class="separator hs" data-styles="height:100%;width:20px;"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:30%;display:flex;flex-direction:column;;background-color:red">
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    </div>
+                    <div class="separator hs" data-styles="height:100%;width:20px;"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:30%;display:flex;flex-direction:column;;background-color:red">
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    </div>
+                </div>`
+    },
+    "test": {
+        target: {
+            name: "div",
+            class_additional: "",
+            style: {
+                others: "color:red;background-color:white;font-family:DejaVu Sans Mono;display:flex;flex-direction:column",
+                width: `550`,
+                height: `520`,
+            }
+        },
+        children: [
+            {
+                name: "div",
+                class_additional: "",
+                style: {
+                    others: "background-color:transparent;" +
+                        "font-family:Impact;" +
+                        "font-size: 30.024px;" +
+                        "color: rgb(255, 223, 43);" +
+                        "letter-spacing: 0em;" +
+                        "--para-spacing: 0;" +
+                        "--head-indent: 0;" +
+                        "--numeric-list-marker: none;" +
+                        "list-style-type: none;",
+                    width: `100%`,
+                    height: `30%`,
+                }
+            },
+            ]
+    }
+
 }

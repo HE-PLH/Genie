@@ -24,7 +24,7 @@ input{
     display: flex;
     flex-direction: column;
     white-space: nowrap;
-    overflow: overlay;
+    overflow: auto;
 }
 
 .rule-props-cont:hover .rule-props-cont-del{
@@ -40,7 +40,7 @@ input{
 
 #genie-styles-main .rule-props-cont{
     border-bottom: 1px solid gray;
-    overflow: overlay;
+    overflow: auto;
 }
 
 .rule-prop, .c-l{

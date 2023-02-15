@@ -17,12 +17,19 @@ function sendRequest(info, URL, callback) {
     })
 }
 
-function getFile(URL, callback) {
+function sendGet(URL, callback) {
     axios.get(URL, {
         withCredentials: true
     })
         .then(response => {
            callback(response.data);
+        })
+}
+
+function sendPost(info, URL, callback) {
+    axios.post(URL, info, { withCredentials: true })
+        .then(response => {
+            callback(response.data);
         })
 }
 
@@ -71,7 +78,7 @@ function alter(info, URL, g) {
 }
 
 function Error() {
-    cl("error", "red");
+    console.log("error", "red");
 }
 
 function success(w, y, g) {

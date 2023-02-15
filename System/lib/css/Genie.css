@@ -29,7 +29,7 @@
     scrollbar-width: thin;
     scrollbar-color: #494b6e gray;
     pointer-events: auto;
-    font-family: Canva Sans,Noto Sans Variable,Noto Sans,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
+    /*font-family: Canva Sans,Noto Sans Variable,Noto Sans,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;*/
     text-overflow: ellipsis;
     /*overflow: hidden;*/
 }
@@ -67,6 +67,14 @@
   ==== COMPRESSED LAYOUT
 ***************************************
 */
+
+.hide{
+    display: none;
+}
+.show-flex{
+    display: flex;
+}
+
 div.compressed_layout ul {
     list-style-type: none;
     margin: 0 0 8px 0;
@@ -390,24 +398,29 @@ div.compressed_layout ul li ul li ul li {
 .window_top {
     height: 10%;
     background: grey;
+    display: flex;
+    flex-direction: row;
 }
 
 .window_body {
     height: 88%;
     background: white;
+    overflow: auto;
 }
 
 .window_title, .window_controls {
-    float: left;
+
     height: 100%;
 }
 
 .window_title {
-    width: 90%;
+    width: calc(100% - 50px);
+    color: whitesmoke;
+    padding-left: 15px;
 }
 
 .window_controls {
-    width: 10%;
+    width: 50px;
     float: right;
     display: flex;
     align-items: center;
@@ -861,7 +874,7 @@ div.compressed_layout ul li ul li ul li {
 }
 
 .element-mother img {
-    background-color: #878d91;
+    background-color: transparent;
     top: 0;
     left: 0;
     right: 0;
@@ -1016,7 +1029,7 @@ div.compressed_layout ul li ul li ul li {
     flex-direction: row;
 }
 
-.tab-img, .nav-item-display-body .tile-img, .nav-item-display-body .frame-tile-img {
+.tab-img, .select-img, .select-img1, .nav-item-display-body .tile-img, .nav-item-display-body .frame-tile-img {
     width: 64px;
 }
 
@@ -1557,6 +1570,7 @@ div.compressed_layout ul li ul li ul li {
     min-height: 100px;
     display: flex;
     flex-direction: column;
+    margin: 5px;
 }
 
 .vl-top{
@@ -1573,4 +1587,28 @@ div.compressed_layout ul li ul li ul li {
     height: 70%;
     display: flex;
     flex-direction: column;
+}
+
+#element-brand-tag{
+    height: 40px;
+    background-color: whitesmoke;
+    padding-left: 10px;
+}
+
+.full-btn-cont{
+    display: flex;
+    justify-content: center;
+}
+.full-btn:hover{
+    background-color: #3b15ea;
+}
+.full-btn{
+    min-width: 100px;
+    padding: 10px;
+    color: white;
+    background-color: var(--primary);
+    width: fit-content;
+    border-radius: 10px;
+    border: 0;
+    margin: 5px;
 }

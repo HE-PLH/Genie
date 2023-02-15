@@ -52,7 +52,7 @@
 <div class="container" id="container">
     <div class="window" id="window">
         <div class="window_top fill_width">
-            <div class="window_title normal_drag" draggable="true">
+            <div id="window_title" class="window_title normal_drag" draggable="true">
                 <p class="inert">window</p>
             </div>
             <div class="window_controls">
@@ -65,26 +65,21 @@
             </div>
 
         </div>
-        <div class="window_body fill_width">
-            <div class="window_body_left fill_height">
-                <div class="window_body_left_top fill_width">
-                    <button class="fill_height btn">FO</button>
-                    <button class="fill_height btn">F</button>
-                </div>
-                <div class="window_body_left_bottom fill_width"></div>
+        <div id="window_body" class="window_body fill_width">
+            <!--<div class="window_body_left fill_height">
+
             </div>
-            <div draggable="true" class="separator fill_height"></div>
             <div class="window_body_right fill_height">
-                <div class="window_body_right_top fill_width">
+                &lt;!&ndash;<div class="window_body_right_top fill_width">
                     <textarea class="code_display"></textarea>
-                </div>
+                </div>&ndash;&gt;
                 <div class="window_body_right_bottom fill_width">
                     <form class="q_box fill_height" method="post" action="../server/ServerRequest.php" onsubmit="return rqst()">
                         <button type="submit" class="ok fill_height btn">ok</button>
                         <button class="cancel fill_height btn">cancel</button>
                     </form>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
     <div class="genie-top-nav fill_width">
@@ -208,7 +203,7 @@
                     Elements
                 </span>
             </div>
-            <!--<div class="genie-left-nav-item">
+            <div class="genie-left-nav-item">
                 <div>
                     <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
                         <use xlink:href="../sources/svg_icons.svg#categories"></use>
@@ -216,9 +211,9 @@
                 </div>
 
                 <span>
-                    Create
+                    Tables
                 </span>
-            </div>-->
+            </div>
             <div class="genie-left-nav-item">
                 <div>
                     <svg viewBox="0 0 24 24" class="ic" width="100%" height="100%">
@@ -343,6 +338,8 @@
     </div>
 </div>
 
+
+<script src="../lib/Js/utilities/globals.js"></script>
 <script src="../lib/Js/utilities/cookie.js"></script>
 <script src="../lib/Js/external/axios.min.js"></script>
 <script src="../lib/Js/external/jquery-3.3.1.min.js"></script>

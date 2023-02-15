@@ -390,7 +390,7 @@ eader, go to notifications, icon:read" data-channel=3D"notification-changed=
 
 
   <div class=3D"Header-item position-relative d-none d-lg-flex">
-    <details class=3D"details-overlay details-reset">
+    <details class=3D"details-auto details-reset">
   <summary class=3D"Header-link" aria-label=3D"Create new=E2=80=A6" data-ga=
 -click=3D"Header, create new, icon:add" aria-haspopup=3D"menu" role=3D"butt=
 on">
@@ -441,7 +441,7 @@ er, create new issue" data-skip-pjax=3D"">
 
   <div class=3D"Header-item position-relative mr-0 d-none d-lg-flex">
    =20
-  <details class=3D"details-overlay details-reset js-feature-preview-indica=
+  <details class=3D"details-auto details-reset js-feature-preview-indica=
 tor-container" data-feature-preview-indicator-src=3D"/users/HE-PLH/feature_=
 preview/indicator_check">
 
@@ -655,7 +655,7 @@ ajiAyodeji/simple-ajax-library">simple-ajax-library</a>
 
     <li>
       <details id=3D"funding-links-modal" class=3D"details-reset details-ov=
-erlay details-overlay-dark d-inline-block float-left">
+erlay details-auto-dark d-inline-block float-left">
         <summary id=3D"sponsor-button-repo" class=3D"btn btn-sm" title=3D"S=
 ponsor BolajiAyodeji/simple-ajax-library" data-ga-click=3D"Repository, show=
  sponsor modal, action:blob#show; text:Sponsor" role=3D"button">
@@ -666,7 +666,7 @@ den=3D"true"><path fill-rule=3D"evenodd" d=3D"M8.727 3C7.091 3 6.001 4.65 6=
 2 4.1 10.364 3 8.727 3z"></path></svg>
           Sponsor
         </summary>
-        <details-dialog class=3D"anim-fade-in fast Box Box--overlay d-flex =
+        <details-dialog class=3D"anim-fade-in fast Box Box--auto d-flex =
 flex-column" src=3D"/BolajiAyodeji/simple-ajax-library/funding_links?fragme=
 nt=3D1" preload=3D"" role=3D"dialog" aria-modal=3D"true">
           <div class=3D"Box-header">
@@ -701,7 +701,7 @@ n=3D"1.1" width=3D"12" height=3D"16" aria-hidden=3D"true"><path fill-rule=
 om/notifications/subscribe" accept-charset=3D"UTF-8" method=3D"post">     =
 =20
 
-      <details class=3D"details-reset details-overlay select-menu float-lef=
+      <details class=3D"details-reset details-auto select-menu float-lef=
 t">
         <summary class=3D"select-menu-button float-left btn btn-sm btn-with=
 -count" data-hydro-click=3D"{&quot;event_type&quot;:&quot;repository.click&=
@@ -891,7 +891,7 @@ sers starred this repository">
 
   <li>
           <div class=3D"float-left">
-            <details class=3D"details-reset details-overlay details-overlay=
+            <details class=3D"details-reset details-auto details-auto=
 -dark">
                     <summary class=3D"btn btn-sm btn-with-count" title=3D"F=
 ork your own copy of BolajiAyodeji/simple-ajax-library to your account" dat=
@@ -914,7 +914,7 @@ A1.993 1.993 0 005 15a1.993 1.993 0 001-3.72V9.5l3-3V4.72A1.993 1.993 0 008=
                   Fork
                 </summary>
 
-  <details-dialog class=3D"Box anim-fade-in fast Box--overlay d-flex flex-c=
+  <details-dialog class=3D"Box anim-fade-in fast Box--auto d-flex flex-c=
 olumn" role=3D"dialog" aria-modal=3D"true" src=3D"/BolajiAyodeji/simple-aja=
 x-library/fork?fragment=3D1" preload=3D"true">
   <div class=3D"Box-header">
@@ -1203,7 +1203,7 @@ fa74bf -->
 -row pb-3">
       <span class=3D"d-flex flex-justify-between width-full width-md-auto">
        =20
-<details class=3D"details-reset details-overlay branch-select-menu " id=3D"=
+<details class=3D"details-reset details-auto branch-select-menu " id=3D"=
 branch-select-menu">
   <summary class=3D"btn css-truncate btn-sm" data-hotkey=3D"w" title=3D"Swi=
 tch branches or tags" aria-haspopup=3D"menu" role=3D"button">
@@ -1346,12 +1346,12 @@ ef63cb" data-pjax=3D"">0789542</a>
 
     <div class=3D"Box-body d-flex flex-items-center flex-auto f6 border-bot=
 tom-0 flex-wrap">
-      <details class=3D"details-reset details-overlay details-overlay-dark =
+      <details class=3D"details-reset details-auto details-auto-dark =
 lh-default text-gray-dark float-left mr-2" id=3D"blob_contributors_box">
         <summary class=3D"btn-link" role=3D"button">
           <span><strong>1</strong> contributor</span>
         </summary>
-        <details-dialog class=3D"Box Box--overlay d-flex flex-column anim-f=
+        <details-dialog class=3D"Box Box--auto d-flex flex-column anim-f=
 ade-in fast" aria-label=3D"Users who have contributed to this file" src=3D"=
 /BolajiAyodeji/simple-ajax-library/contributors-list/master/dist/simpleAjax=
 .js" preload=3D"" role=3D"dialog" aria-modal=3D"true">
@@ -2040,7 +2040,7 @@ pan class=3D"pl-kos">}</span><span class=3D"pl-kos">;</span></td>
       </tr>
 </tbody></table>
 
-  <details class=3D"details-reset details-overlay BlobToolbar position-abso=
+  <details class=3D"details-reset details-auto BlobToolbar position-abso=
 lute js-file-line-actions dropdown d-none" aria-hidden=3D"true">
     <summary class=3D"btn-octicon ml-0 px-2 p-0 bg-white border border-gray=
 -dark rounded-1" aria-label=3D"Inline file action toolbar" aria-haspopup=3D=
@@ -2083,10 +2083,10 @@ em" href=3D"https://github.com/BolajiAyodeji/simple-ajax-library/issues/new=
 
  =20
 
-  <details class=3D"details-reset details-overlay details-overlay-dark">
+  <details class=3D"details-reset details-auto details-auto-dark">
     <summary data-hotkey=3D"l" aria-label=3D"Jump to line" role=3D"button">=
 </summary>
-    <details-dialog class=3D"Box Box--overlay d-flex flex-column anim-fade-=
+    <details-dialog class=3D"Box Box--auto d-flex flex-column anim-fade-=
 in fast linejump" aria-label=3D"Jump to line" role=3D"dialog" aria-modal=3D=
 "true">
       <!-- '"` --><!-- </textarea></xmp> --><form class=3D"js-jump-to-line-=
@@ -2202,10 +2202,10 @@ d" d=3D"M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 =
    =20
  =20
   <template id=3D"site-details-dialog">
-  <details class=3D"details-reset details-overlay details-overlay-dark lh-d=
+  <details class=3D"details-reset details-auto details-auto-dark lh-d=
 efault text-gray-dark hx_rsm" open=3D"">
     <summary role=3D"button" aria-label=3D"Close dialog"></summary>
-    <details-dialog class=3D"Box Box--overlay d-flex flex-column anim-fade-=
+    <details-dialog class=3D"Box Box--auto d-flex flex-column anim-fade-=
 in fast hx_rsm-dialog hx_rsm-modal">
       <button class=3D"Box-btn-octicon m-0 btn-octicon position-absolute ri=
 ght-0 top-0" type=3D"button" aria-label=3D"Close dialog" data-close-dialog=
@@ -4683,11 +4683,11 @@ portant; }
 .muted-link:hover { text-decoration: none; color: rgb(3, 102, 214) !importa=
 nt; }
 
-.details-overlay[open] > summary::before { position: fixed; top: 0px; right=
+.details-auto[open] > summary::before { position: fixed; top: 0px; right=
 : 0px; bottom: 0px; left: 0px; z-index: 80; display: block; cursor: default=
 ; content: " "; background: transparent; }
 
-.details-overlay-dark[open] > summary::before { z-index: 99; background: rg=
+.details-auto-dark[open] > summary::before { z-index: 99; background: rg=
 ba(27, 31, 35, 0.5); }
 
 .details-reset > summary { list-style: none; }
@@ -8644,7 +8644,7 @@ m; }
 .select-menu .select-menu-clear-item + .select-menu-no-results { display: n=
 one !important; }
 
-.select-menu.is-loading .select-menu-loading-overlay { display: block; }
+.select-menu.is-loading .select-menu-loading-auto { display: block; }
 
 .select-menu.is-loading .select-menu-modal { min-height: 200px; }
 
@@ -8652,11 +8652,11 @@ one !important; }
 
 .select-menu-error { display: none; }
 
-.select-menu-loading-overlay { position: absolute; top: 0px; z-index: 5; di=
+.select-menu-loading-auto { position: absolute; top: 0px; z-index: 5; di=
 splay: none; width: 100%; height: 100%; background-color: rgba(255, 255, 25=
 5, 0.8); border: 1px solid transparent; border-radius: 5px; }
 
-.select-menu-loading-overlay .octicon-octoface { position: absolute; top: 5=
+.select-menu-loading-auto .octicon-octoface { position: absolute; top: 5=
 0%; left: 50%; margin: -16px 0px 0px -16px; }
 
 .select-menu-modal-holder { position: absolute; z-index: 30; display: none;=
@@ -9062,21 +9062,21 @@ x; }
 
 .triage-mode .table-list-triage { display: block; }
 
-.Box--overlay { width: 448px; margin-right: auto; margin-left: auto; backgr=
+.Box--auto { width: 448px; margin-right: auto; margin-left: auto; backgr=
 ound-color: rgb(255, 255, 255); background-clip: padding-box; border-color:=
  rgb(68, 77, 86); box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 18px; }
 
-.Box--overlay .Box-header { margin: 0px; border-width: 0px 0px 1px; border-=
+.Box--auto .Box-header { margin: 0px; border-width: 0px 0px 1px; border-=
 top-left-radius: 3px; border-top-right-radius: 3px; }
 
-.Box-overlay--narrow { width: 320px; }
+.Box-auto--narrow { width: 320px; }
 
-.Box-overlay--wide { width: 640px; }
+.Box-auto--wide { width: 640px; }
 
-.Overlay { position: fixed; top: 0px; right: 0px; bottom: 0px; left: 0px; z=
+.auto { position: fixed; top: 0px; right: 0px; bottom: 0px; left: 0px; z=
 -index: 99; overflow-y: auto; }
 
-.Box-body.scrollable-overlay { max-height: 400px; overflow-y: scroll; }
+.Box-body.scrollable-auto { max-height: 400px; overflow-y: scroll; }
 
 .Box-body .help { padding-top: 8px; margin: 0px; color: rgb(88, 96, 105); t=
 ext-align: center; }
@@ -10464,10 +10464,10 @@ style: dashed dashed solid; border-color: rgba(255, 255, 255, 0.38) rgba(25=
 5, 255, 255, 0.38) rgb(184, 182, 182); border-image: initial; border-radius=
 : 4px; box-shadow: rgba(27, 31, 35, 0.1) 0px 1px 1px; }
 
-.konami-overlay { position: fixed; top: 0px; right: 0px; bottom: 0px; left:=
+.konami-auto { position: fixed; top: 0px; right: 0px; bottom: 0px; left:=
  0px; z-index: 100; background: none; }
 
-.konami-overlay .dot { position: absolute; z-index: 100; color: rgb(0, 238,=
+.konami-auto .dot { position: absolute; z-index: 100; color: rgb(0, 238,=
  0); }
 
 .konami .key + .key { margin-left: 12px; }
@@ -11471,11 +11471,11 @@ argin-left: 8px; }
 .billing-addon-items .payment-summary { margin-right: 8px; margin-left: 8px=
 ; }
 
-.billing-credit-card .javascript-disabled-overlay { position: absolute; top=
+.billing-credit-card .javascript-disabled-auto { position: absolute; top=
 : 0px; left: 0px; z-index: 1; display: none; width: 100%; height: 100%; bac=
 kground-color: rgb(255, 255, 255); opacity: 0.5; }
 
-.billing-credit-card.disabled .javascript-disabled-overlay { display: block=
+.billing-credit-card.disabled .javascript-disabled-auto { display: block=
 ; }
 
 .billing-extra-box, .billing-vat-box { padding-left: 10px; margin: 10px 0px=
@@ -12282,11 +12282,11 @@ px; }
 
 .branches .clear-search { display: none; }
 
-.branches .loading-overlay { position: absolute; top: 0px; z-index: 20; dis=
+.branches .loading-auto { position: absolute; top: 0px; z-index: 20; dis=
 play: none; width: 100%; height: 100%; padding-top: 50px; text-align: cente=
 r; background-color: rgba(255, 255, 255, 0.7); }
 
-.branches.is-search-mode .clear-search, .branches .loading-overlay .spinner=
+.branches.is-search-mode .clear-search, .branches .loading-auto .spinner=
  { display: inline-block; }
 
 .branch-a-b-count .count-half { position: relative; float: left; width: 90p=
@@ -12979,7 +12979,7 @@ e: rgb(29, 127, 179); }
 .dashboards-overview-cards .dashboards-overview-graph .y.unique line { stro=
 ke: rgb(29, 127, 179); }
 
-.dashboards-overview-cards .dashboards-overview-graph .overlay { fill-opaci=
+.dashboards-overview-cards .dashboards-overview-graph .auto { fill-opaci=
 ty: 0; }
 
 .dashboards-overview-cards .metric-0 circle { fill: rgb(29, 179, 79); strok=
@@ -13388,7 +13388,7 @@ th: 2px; }
 .graphs .dir { float: right; padding-top: 5px; font-size: 12px; font-weight=
 : 400; line-height: 100%; color: rgb(106, 115, 125); }
 
-.graphs .selection .overlay { }
+.graphs .selection .auto { }
 
 .graphs .selection .selection { fill: rgb(36, 41, 46); fill-opacity: 0.1; s=
 troke: rgb(36, 41, 46); stroke-dasharray: 3, 3; stroke-opacity: 0.4; stroke=
@@ -15372,7 +15372,7 @@ oke-dasharray: 3, 3; stroke-width: 1.5; }
 
 .org-insights-graph-canvas .y.unique line { stroke: rgb(29, 127, 179); }
 
-.org-insights-graph-canvas .overlay { fill-opacity: 0; }
+.org-insights-graph-canvas .auto { fill-opacity: 0; }
 
 .org-insights-graph-canvas .graph-loading { padding: 110px 0px; }
 
@@ -18763,7 +18763,7 @@ troke-width: 2px; }
 
 .traffic-graph .y.unique line { stroke: rgb(0, 92, 197); }
 
-.traffic-graph .overlay { fill-opacity: 0; }
+.traffic-graph .auto { fill-opacity: 0; }
 
 .uniques-graph .axis .tick:last-child line { stroke: rgb(0, 92, 197); strok=
 e-width: 2px; }
@@ -19390,7 +19390,7 @@ close-button::before { content: ""; position: absolute; top: -16px; left: -=
   .page-responsive .hx_rsm-close-button .octicon-x, .page-responsive .hx_rs=
 m .close-button .octicon-x { color: rgb(106, 115, 125); }
   .page-responsive .hx_rsm-loading, .page-responsive .hx_rsm .select-menu-l=
-oading-overlay { animation-delay: 1s; }
+oading-auto { animation-delay: 1s; }
   .page-responsive .hx_rsm-trigger::before, .page-responsive .hx_rsm .selec=
 t-menu-button::before { animation: 0.24s cubic-bezier(0, 0, 0.2, 1) 0s 1 no=
 rmal backwards running hx_rsm-trigger-animation; }
@@ -19529,13 +19529,13 @@ les/ajax/success@2x.png"); }
 /ajax/error@2x.png"); }
 }
 
-.hx_Box--overlay--wide { width: 800px; }
+.hx_Box--auto--wide { width: 800px; }
 
 .hx_text-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",=
  Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !impor=
 tant; }
 
-.details-overlay[open] > .dropdown-item:hover { color: inherit; background:=
+.details-auto[open] > .dropdown-item:hover { color: inherit; background:=
  rgb(255, 255, 255); }
 
 remote-input[loading] .form-control { padding-right: 30px; background-image=

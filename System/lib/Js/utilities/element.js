@@ -697,8 +697,9 @@ const PATH_COMMANDS = {
 };
 
 function fromPathToArray(path) {
-    const items = path.replace(/[\n\r]/g, '').replace(/-/g, ' -').replace(/(\d*\.)(\d+)(?=\.)/g, '$1$2 ').trim().split(/\s*,|\s+/);
+    const items = path.toString().replace(/[\n\r]/g, '').replace(/-/g, ' -').replace(/(\d*\.)(\d+)(?=\.)/g, '$1$2 ').trim().split(/\s*,|\s+/);
 
+    console.log(items)
     const segments = [];
     let currentCommand = '';
     let currentElement = {};
@@ -710,6 +711,7 @@ function fromPathToArray(path) {
             items.unshift(it);
         }
         currentElement = {type: currentCommand};
+        console.log(currentCommand)
         PATH_COMMANDS[currentCommand].forEach((prop) => {
             it = items.shift();
             currentElement[prop] = it;
@@ -905,10 +907,10 @@ function initiateStyle(parentPath, id, custom) {
 function G(id, params) {
     this.tagName = "div";
     this.id = id || "div";
-    this.clipped = params ? params.clipped : null;
     this.clip_path = params ? params.clipPath : null;
     this.appended_img = params ? params.appended_img : null;
     this.framed = params ? params.framed : null;
+    this.xml = params ? params.xml : null;
     this.vertical_text_layout = params ? params.vertical_text_layout : null;
     this.file_img = params ? params.file_img : null;
     this.target = document.getElementById(`.${this.id}`);
@@ -978,6 +980,35 @@ function getViewBox(clip_path) {
     return {x: temp_x, y: temp_y}
 }
 
+function createGenieElement(trg, el) {
+    let childId = `ch${Math.floor(Math.random() * 10000)}`
+    // child elements
+    let cls = el.classList.contains("separator")?`${el.className} normal_drag fill-height fill_height`:`${el.className} no-cursor`;
+    let child = createDomElement({
+        name: `div`,
+        appendTo: trg,
+        id: `${childId}`,
+        class: `${cls}`,
+        innerHTML: ``,
+        contentEditable: false,
+        "data-styles": "normal",
+    })
+    initiateStyle(trg, childId, el.getAttribute("data-styles"));
+
+    child.ruleIndex = ruleIndex;
+    return child;
+}
+
+function getTabStyle(el) {
+    for (let i = el.classList.length - 1; i >= 0; i--) {
+        const className = el.classList[i];
+        if (className.startsWith('dts')) {
+            return className.split("dts")[1];
+        }
+    }
+    return "";
+}
+
 G.prototype.create = function (tag_name, parent_path, parent) {
     this.parentPath = parent_path || "genie-paint-field";
     this.tagName = tag_name || "div";
@@ -985,7 +1016,45 @@ G.prototype.create = function (tag_name, parent_path, parent) {
     parent = parent ? parent.classList.contains("hi") ? parent : null : null;
     this.parent = parent || document.getElementById(`${this.parentPath}`);
 
-    if (this.clipped) {
+    if (this.xml) {
+        let temp = createDomElement({
+            name: `div`,
+            appendTo: document.querySelector("body"),
+            id: `${"temp-struct"}`,
+            class: `hide`,
+            innerHTML: this.xml.markup
+        })
+
+        temp = temp.children[0];
+
+        let f = (trg, el, children) => {
+            let child;
+            for (let i = 0; i < children.length; i++) {
+                child = children[i];
+                let new_trg = createGenieElement(trg, child)
+                if (child["children"] && child["children"].length > 0) {
+
+                    f(new_trg, child, child["children"]);
+                }
+            }
+
+        };
+        this.target = createDomElement({
+                name: `div`,
+                appendTo: this.parent,
+                id: `${this.id}`,
+                class: `${temp.className}`,
+                innerHTML: ``,
+                contentEditable: false,
+                "data-styles": getTabStyle(temp),
+            });
+            initiateStyle(this.parentPath, this.id, temp.getAttribute("data-styles"));
+            this.target.ruleIndex = ruleIndex;
+        if (temp["children"].length) {
+             f(this.target, temp, temp["children"]);
+        }
+
+    } else if (this.clip_path) {
         this.childId = `poly${Math.floor(Math.random() * 10000)}`;
         this.target = createDomElement({
             name: `div`,
@@ -1006,7 +1075,9 @@ G.prototype.create = function (tag_name, parent_path, parent) {
             contentEditable: false,
         });
 
-        let temp = (getViewBox(this.clip_path));
+        let s = getAllGroups(/path\("(.*)"\)/g, (this.clip_path["clip_path"]));
+        let cl = s.length ? s[0][1] : this.clip_path["clip_path"];
+        let temp = getViewBox(cl);
 
         console.log(temp)
 
@@ -1023,10 +1094,8 @@ G.prototype.create = function (tag_name, parent_path, parent) {
             newX: test,
             newY: test,
         })
-        console.log(e)
-
         initiateStyle(this.parentPath, this.childId, `
-                clip-path: ${`path("${this.clip_path}")`};
+                clip-path: ${`path("${cl}")`};
                 width: ${e.width}px;
                 height: ${e.height}px;
                 border: 0;
@@ -1116,15 +1185,14 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 Styling.edit_style(_temp_id, "width", `${temp.x * ratio}px`, ruleIndex)
             })*/
 
-        }
-        else if (this.appended_img) {
+        } else if (this.appended_img) {
             this.childId = `poly${Math.floor(Math.random() * 10000)}`;
 
             this.target = createDomElement({
                 name: `div`,
                 appendTo: this.parent,
                 id: `${this.id}`,
-                class: `hi normal_drag initial element-mother image-mother`,
+                class: `hi normal_drag graphic initial element-mother image-mother`,
                 innerHTML: ``,
                 contentEditable: false,
                 "data-styles": "appended_img",
@@ -1147,8 +1215,7 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 let ratio = (t.x / t.y) || 1;
                 Styling.edit_style(this.id, "width", `${temp.x * ratio}px`, ruleIndex)
             })
-        }
-        else if (this.file_img) {
+        } else if (this.file_img) {
             if (this.file_img.children.length) {
                 this.target = createDomElement({
                     name: `${"div"}`,
@@ -1173,7 +1240,7 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                     initiateStyle(this.parentPath, this.childId, `left:0%;width: ${style.width}; height: ${style.height};background-color: transparent;border:0;position: absolute;` + style.others);
                     this.child.ruleIndex = ruleIndex;
                 });
-            }else{
+            } else {
 
                 this.target = createDomElement({
                     name: `${"div"}`,
@@ -1189,8 +1256,7 @@ G.prototype.create = function (tag_name, parent_path, parent) {
             initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${this.file_img.target.style.width}px; height: ${this.file_img.target.style.height}px;` + this.file_img.target.style.others)
             this.target.ruleIndex = ruleIndex;
 
-        }
-        else if (this.vertical_text_layout) {
+        } else if (this.vertical_text_layout) {
             if (this.vertical_text_layout.children.length) {
                 this.target = createDomElement({
                     name: `${"div"}`,
@@ -1215,7 +1281,7 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                     initiateStyle(this.parentPath, this.childId, `left:0%;width: ${style.width}; height: ${style.height};background-color: transparent;border:0;position: absolute;` + style.others);
                     this.child.ruleIndex = ruleIndex;
                 });
-            }else{
+            } else {
 
                 this.target = createDomElement({
                     name: `${"div"}`,
@@ -1231,8 +1297,7 @@ G.prototype.create = function (tag_name, parent_path, parent) {
             initiateStyle(this.parentPath, this.id, `left:0;top:0;width: ${this.vertical_text_layout.target.style.width}px; height: ${this.vertical_text_layout.target.style.height}px;` + this.vertical_text_layout.target.style.others)
             this.target.ruleIndex = ruleIndex;
 
-        }
-        else {
+        } else {
             switch (this.tagName) {
                 case "poly1":
                     this.target = createDomElement({
