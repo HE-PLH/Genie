@@ -984,12 +984,13 @@ function createGenieElement(trg, el) {
     let childId = `ch${Math.floor(Math.random() * 10000)}`
     // child elements
     let cls = el.classList.contains("separator")?`${el.className} normal_drag fill-height fill_height`:`${el.className} no-cursor`;
+
     let child = createDomElement({
         name: `div`,
         appendTo: trg,
         id: `${childId}`,
         class: `${cls}`,
-        innerHTML: ``,
+        innerHTML: `${getElementText(el)}`,
         contentEditable: false,
         "data-styles": "normal",
     })
@@ -1008,6 +1009,21 @@ function getTabStyle(el) {
     }
     return "";
 }
+function getElementText(el){
+    let child = el.firstChild,
+    texts = [];
+
+while (child) {
+    if (child.nodeType == 3) {
+        texts.push(child.data);
+    }
+    child = child.nextSibling;
+}
+
+let text = texts.join("");
+return text;
+}
+
 
 G.prototype.create = function (tag_name, parent_path, parent) {
     this.parentPath = parent_path || "genie-paint-field";
@@ -1033,7 +1049,6 @@ G.prototype.create = function (tag_name, parent_path, parent) {
                 child = children[i];
                 let new_trg = createGenieElement(trg, child)
                 if (child["children"] && child["children"].length > 0) {
-
                     f(new_trg, child, child["children"]);
                 }
             }

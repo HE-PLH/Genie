@@ -68,6 +68,9 @@
 ***************************************
 */
 
+.partial-hide{
+    visibility: hidden;
+}
 .hide{
     display: none;
 }

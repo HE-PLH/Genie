@@ -4023,24 +4023,72 @@ let InstantTools = {
 let Tables = {
     "normal-table": {
         markup: `<div id="my-table" class="hi normal_drag dtsnormal initial" data-styles="top:0;left:0;height:240px;width:300px;display:flex;flex-direction:row;background-color: blue;">
-                    <div id="my-table-col" class="hi" data-styles="height:100%;width:30%;display:flex;flex-direction:column;background-color:red">
-                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
-                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
-                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
-                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
-                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
-                    </div>
-                    <div class="separator hs" data-styles="height:100%;width:20px;"></div>
-                    <div id="my-table-col" class="hi" data-styles="height:100%;width:30%;display:flex;flex-direction:column;;background-color:red">
-                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:14%;display:flex;flex-direction:column;background-color:red">
+                        <div id="my-table-th" class="hi" data-styles="height:20%;width:100%;background-color:green;color: white;border: 1px solid gray;font-size:24px">DESCRIPTION</div>
                         <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
                         <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
                         <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
                         <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
                     </div>
-                    <div class="separator hs" data-styles="height:100%;width:20px;"></div>
-                    <div id="my-table-col" class="hi" data-styles="height:100%;width:30%;display:flex;flex-direction:column;;background-color:red">
+                    <div class="separator hs" data-styles="height:100%;width:5px;background-color:transparent"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:14%;display:flex;flex-direction:column;background-color:red">
+                        <div id="my-table-th" class="hi" data-styles="height:20%;width:100%;background-color:green;color: white;border: 1px solid gray;font-size:24px">QTY</div>
                         <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    </div>
+                    <div class="separator hs" data-styles="height:100%;width:5px;background-color:transparent"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:14%;display:flex;flex-direction:column;background-color:red">
+                        <div id="my-table-th" class="hi" data-styles="height:20%;width:100%;background-color:green;color: white;border: 1px solid gray;font-size:24px">DESCRIPTION</div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    </div>
+                    <div class="separator hs" data-styles="height:100%;width:5px;background-color:transparent"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:14%;display:flex;flex-direction:column;background-color:red">
+                        <div id="my-table-th" class="hi" data-styles="height:20%;width:100%;background-color:green;color: white;border: 1px solid gray;font-size:24px">QTY</div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    </div>
+                    <div class="separator hs" data-styles="height:100%;width:5px;background-color:transparent"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:14%;display:flex;flex-direction:column;background-color:red">
+                        <div id="my-table-th" class="hi" data-styles="height:20%;width:100%;background-color:green;color: white;border: 1px solid gray;font-size:24px">DESCRIPTION</div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    </div>
+                    <div class="separator hs" data-styles="height:100%;width:5px;background-color:transparent"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:14%;display:flex;flex-direction:column;background-color:red">
+                        <div id="my-table-th" class="hi" data-styles="height:20%;width:100%;background-color:green;color: white;border: 1px solid gray;font-size:24px">QTY</div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    </div>
+                    <div class="separator hs" data-styles="height:100%;width:5px;background-color:transparent"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:14%;display:flex;flex-direction:column;background-color:red">
+                        <div id="my-table-th" class="hi" data-styles="height:20%;width:100%;background-color:green;color: white;border: 1px solid gray;font-size:24px">DESCRIPTION</div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    </div>
+                    <div class="separator hs" data-styles="height:100%;width:5px;background-color:transparent"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:14%;display:flex;flex-direction:column;background-color:red">
+                        <div id="my-table-th" class="hi" data-styles="height:20%;width:100%;background-color:green;color: white;border: 1px solid gray;font-size:24px">QTY</div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                        <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
+                    </div>
+                    <div class="separator hs" data-styles="height:100%;width:5px;background-color:transparent"></div>
+                    <div id="my-table-col" class="hi" data-styles="height:100%;width:14%;display:flex;flex-direction:column;background-color:red">
+                        <div id="my-table-th" class="hi" data-styles="height:20%;width:100%;background-color:green;color: white;border: 1px solid gray;font-size:24px">Price</div>
                         <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
                         <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
                         <div id="my-table-td" class="hi" data-styles="height:20%;width:100%;background-color:white;border: 1px solid gray"></div>
